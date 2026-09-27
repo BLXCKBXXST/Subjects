@@ -37,7 +37,7 @@ named-checkconf && ...    ← выполняется автоматически
 
 | № | Файл | Что показать |
 |:---:|---|---|
-| 01 | `01_vbox_gateway_settings.png` | VirtualBox → gateway → Настройка → Сеть — Адаптер 1 и 2 |
+| 01 | `01_vbox_gateway_settings.jpg` | VirtualBox → gateway → Настройка → Сеть — Адаптер 1 и 2 |
 | 02 | `02_etc_hosts.png` | `nano /etc/hosts` — добавлена строка с hostname |
 | 03 | `03_iptables_rules.png` | `nano /etc/iptables/rules.v4` — DNAT DNS удален |
 | 04 | `04_bind9_install.png` | Установка `bind9` и `dnsutils` |
@@ -62,4 +62,4 @@ named-checkconf && ...    ← выполняется автоматически
 
 ## 📂 Куда положить скриншоты
 
-Файлы клади в `../img/` с именами **точно как в таблице** (`.png`, без пробелов).
+Файлы клади в `../img/` с именами **точно как в таблице** (для первого кадра `.jpg`, для остальных `.png`, без пробелов).
