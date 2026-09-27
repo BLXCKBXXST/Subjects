@@ -19,7 +19,7 @@ void insertDouble(struct Node **root, int value);
 void generateNumbers(int A[], int n);
 void inorder(struct Node *root);
 void printStats(struct Node *root);
-void printExtras(const int A[], int n, struct Node *root);
+void printExtras(const int A[], int n);
 void freeTree(struct Node *root);
 
 #endif

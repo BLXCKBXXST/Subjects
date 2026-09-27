@@ -3,7 +3,7 @@
 #include <time.h>
 #include "sdp.h"
 
-int main(int argc, char *argv[])
+int main(void)
 {
     int A[100];
     struct Node *root = NULL;
@@ -18,9 +18,7 @@ int main(int argc, char *argv[])
     inorder(root);
     printf("\n");
     printStats(root);
-
-    if (argc > 1 && argv[1][0] == '+')
-        printExtras(A, 100, root);
+    printExtras(A, 100);
 
     freeTree(root);
     return 0;

@@ -38,7 +38,7 @@ static void printRow(const char *name, struct Node *root)
            n ? (double)sumHeight(root, 1) / n : 0);
 }
 
-void printExtras(const int A[], int n, struct Node *root)
+void printExtras(const int A[], int n)
 {
     int *sorted = malloc((size_t)n * sizeof(int));
     if (sorted == NULL)
@@ -66,8 +66,13 @@ void printExtras(const int A[], int n, struct Node *root)
     inorder(sdp1);
     printf("\nОбход СДП2:\n");
     inorder(sdp2);
-    printf("\n\nГрафическое изображение СДП:\n");
-    printTreeVisual(root);
+
+    printf("\n\nИСДП (корень сверху):\n");
+    printTreeVisual(isdp);
+    printf("\nСДП1 (рекурсивно, корень сверху):\n");
+    printTreeVisual(sdp1);
+    printf("\nСДП2 (двойная косвенность, корень сверху):\n");
+    printTreeVisual(sdp2);
 
     freeTree(isdp);
     freeTree(sdp1);
