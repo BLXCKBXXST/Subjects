@@ -128,11 +128,16 @@ void printTreeVisual(FILE *out, struct Node *root)
         if (p->maxX[d] > right) right = p->maxX[d];
     }
     int width = right - left + 3;
-    int rows = p->depth * 2 - 1;
+    if (p->depth <= 0)
+    {
+        freeLayout(p);
+        return;
+    }
+    size_t rows = (size_t)p->depth * 2 - 1;
     char **lines = malloc((size_t)rows * sizeof(*lines));
     if (lines == NULL)
         exit(1);
-    for (int r = 0; r < rows; r++)
+    for (size_t r = 0; r < rows; r++)
     {
         lines[r] = malloc((size_t)width + 1);
         if (lines[r] == NULL)
@@ -142,7 +147,7 @@ void printTreeVisual(FILE *out, struct Node *root)
     }
 
     draw(p, 1 - left, 0, lines);
-    for (int r = 0; r < rows; r++)
+    for (size_t r = 0; r < rows; r++)
     {
         int end = width;
         while (end > 0 && lines[r][end - 1] == ' ')
