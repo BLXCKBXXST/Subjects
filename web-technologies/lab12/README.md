@@ -67,12 +67,12 @@ lab12/
 │
 └── latex-report/                   ← LaTeX-отчёт для Overleaf
     ├── main.tex, config.tex, parts/, fonts/, screenshots/, img/
-    └── lab12_latex_report.pdf      ← скомпилированный отчёт (появится после компиляции)
+    └── img/                         ← исходные скриншоты не сохранились
 ```
 
 ---
 
-## 🚀 Порядок работы
+## 🚀 Порядок работы (историческая инструкция)
 
 1. **Открыть локальные решения.** `xdg-open codepen-solutions/1.1-html-tags/index.html`
    и т.д. для четырёх блоков. Картинки лежат локально, CSS Netology и MDL
@@ -92,7 +92,7 @@ lab12/
 
 ---
 
-## 🔗 Ссылки на форки Codepen
+## 🔗 Исторические ссылки на форки Codepen
 
 | Блок | URL форка |
 |---|---|
@@ -101,11 +101,11 @@ lab12/
 | 2.1 | [codepen.io/blxckweed/pen/vEymBmY](https://codepen.io/blxckweed/pen/vEymBmY) |
 | 2.2 | [codepen.io/blxckweed/pen/vEymBxB](https://codepen.io/blxckweed/pen/vEymBxB) |
 
-Эти же URL подставлены в `latex-report/parts/chap3.tex`.
+Эти же URL сохранились в `latex-report/parts/chap3.tex`. Их текущая доступность не считается обязательной для архива: локальные решения сохранены отдельно.
 
 ---
 
-## 📤 Формат сдачи
+## 📤 Формат сдачи (исторически)
 
 PDF-отчёт (скомпилированный из `latex-report/`) + четыре URL форков
 Codepen — загружаются в ЭИОС. Локальные `codepen-solutions/*/index.html`
@@ -116,6 +116,6 @@ Codepen — загружаются в ЭИОС. Локальные `codepen-solu
 
 ## Отчёт
 
-В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
+Для архива уже собрана [PDF-копия отчёта](archive/lab12_archival.pdf), а четыре локальных HTML/CSS-решения заново отображены и сохранены в [archive/evidence/](archive/README.md). Старые снимки интерфейса Codepen отсутствуют и не заменялись имитациями.
 
-[Общие правила для отчётов](../REPORTS.md).
+Первоначальный [latex-report/](latex-report/README.md) и [список девяти скриншотов](latex-report/screenshots/README.md) сохранены как исторические материалы. [Общее описание архива](../ARCHIVE.md).

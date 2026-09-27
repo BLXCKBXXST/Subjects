@@ -74,12 +74,12 @@ lab11/
 │
 └── latex-report/                   ← LaTeX-отчёт для Overleaf
     ├── main.tex, config.tex, parts/, fonts/, screenshots/, img/
-    └── img/                     ← собственные скриншоты (нужно добавить)
+    └── img/                     ← исходные скриншоты не сохранились
 ```
 
 ---
 
-## 🚀 Порядок работы
+## 🚀 Порядок работы (историческая инструкция)
 
 1. **HTML-каркас.** Открыть [`figma-mockup/desktop/home.html`](figma-mockup/desktop/home.html) в браузере — посмотреть текущий вид. При желании заменить картинки в [`figma-mockup/img/`](figma-mockup/img/) (см. [`PROMPTS.md`](figma-mockup/img/PROMPTS.md)) и пересобрать: `cd figma-mockup && python3 build.py`.
 2. **Импорт в Figma.** Установить плагин `html.to.design`, импортировать 15 HTML на 5 страниц файла Figma (детали — в [`figma-mockup/README.md`](figma-mockup/README.md)).
@@ -90,15 +90,13 @@ lab11/
 
 ---
 
-## 🔗 Ссылка на Figma
+## 🔗 Историческая ссылка на Figma
 
-> **TODO:** вставить URL общего доступа к Figma-файлу (Share → `Anyone with the link can view`).
-
-Эту же ссылку нужно подставить в `latex-report/parts/chap3.tex`.
+Ссылка общего доступа к исходному Figma-файлу не сохранилась. `TODO` в первоначальном `latex-report/parts/chap3.tex` оставлен без выдуманной замены. Для архивной PDF-копии используется сохранившийся HTML-каркас, а не Figma-файл.
 
 ---
 
-## 📤 Формат сдачи
+## 📤 Формат сдачи (исторически)
 
 PDF-отчёт (скомпилированный из `latex-report/`) + ссылка на Figma-файл — загружаются в ЭИОС. Согласно методичке: ссылка не в режиме прототипа, timestamp последней правки должен совпадать с датой отправки.
 
@@ -106,6 +104,6 @@ PDF-отчёт (скомпилированный из `latex-report/`) + ссы�
 
 ## Отчёт
 
-В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
+Для архива уже собрана [PDF-копия отчёта](archive/lab11_archival.pdf) и сохранены [семь новых рендеров HTML-макетов](archive/README.md). Первоначальные LaTeX-исходники и [список 17 исторических скриншотов](latex-report/screenshots/README.md) оставлены без подмены отсутствующих кадров.
 
-[Общие правила для отчётов](../REPORTS.md).
+Повторно собирать работу в Figma ради архива не требуется. [Общее описание архива](../ARCHIVE.md).
