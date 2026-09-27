@@ -138,6 +138,15 @@
 %%% Листинги %%%
 \usepackage{listings}
 \usepackage{xcolor}
+% В listings нет встроенного CSS во всех сборках TeX Live.
+\lstdefinelanguage{CSS}{
+  sensitive=false,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  alsoletter={-},
+  morekeywords={color,background,background-color,font-size,display,
+    margin,padding,border,border-radius,grid,flex,gap}
+}
 \lstset{
   basicstyle=\small\ttfamily,
   breaklines=true,
