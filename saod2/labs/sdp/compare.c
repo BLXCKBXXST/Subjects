@@ -76,6 +76,11 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     else
         perror("Не удалось сохранить sdp-sdp.svg");
 
+    if (saveTreeSvg("sdp-sdp2.svg", sdp2))
+        printLink("sdp-sdp2.svg");
+    else
+        perror("Не удалось сохранить sdp-sdp2.svg");
+
     freeTree(isdp);
     free(sorted);
 }
