@@ -7,7 +7,7 @@ int size(struct Node *root);
 int checkSum(struct Node *root);
 int height(struct Node *root);
 int sumHeight(struct Node *root, int level);
-void printTreeVisual(struct Node *root);
+void printTreeVisual(FILE *out, struct Node *root);
 
 static int compareInts(const void *a, const void *b)
 {
@@ -33,9 +33,20 @@ static struct Node *ISDP(const int A[], int left, int right)
 static void printRow(const char *name, struct Node *root)
 {
     int n = size(root);
-    printf("%-5s | %6d | %12d | %6d | %12.2f\n",
-           name, n, checkSum(root), height(root),
-           n ? (double)sumHeight(root, 1) / n : 0);
+    fprintf(stdout, "│ %s │ %6d │ %17d │ %6d │ %15.2f │\n",
+            name, n, checkSum(root), height(root),
+            n ? (double)sumHeight(root, 1) / n : 0);
+}
+
+static void printForest(FILE *out, struct Node *isdp,
+                        struct Node *sdp1, struct Node *sdp2)
+{
+    fprintf(out, "\nИСДП:\n");
+    printTreeVisual(out, isdp);
+    fprintf(out, "\nСДП1 (рекурсивно):\n");
+    printTreeVisual(out, sdp1);
+    fprintf(out, "\nСДП2 (двойная косвенность):\n");
+    printTreeVisual(out, sdp2);
 }
 
 void printExtras(const int A[], int n)
@@ -49,7 +60,6 @@ void printExtras(const int A[], int n)
     struct Node *isdp = ISDP(sorted, 0, n - 1);
     struct Node *sdp1 = NULL;
     struct Node *sdp2 = NULL;
-
     for (int i = 0; i < n; i++)
     {
         insertRecursive(&sdp1, A[i]);
@@ -57,22 +67,33 @@ void printExtras(const int A[], int n)
     }
 
     printf("\nСравнение деревьев (n = %d):\n", n);
-    printf("Дерево| Размер | Контр. сумма | Высота | Средн. высота\n");
-    printRow("ИСДП", isdp);
-    printRow("СДП1", sdp1);
-    printRow("СДП2", sdp2);
+    printf("┌───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
+    printf("│ Дерево│ Размер │ Контрольная сумма │ Высота │ Средняя высота  │\n");
+    printf("├───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
+    printRow("ИСДП ", isdp);
+    printRow("СДП1 ", sdp1);
+    printRow("СДП2 ", sdp2);
+    printf("└───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
 
     printf("\nОбход СДП1:\n");
     inorder(sdp1);
     printf("\nОбход СДП2:\n");
     inorder(sdp2);
+    printf("\n");
 
-    printf("\n\nИСДП (корень сверху):\n");
-    printTreeVisual(isdp);
-    printf("\nСДП1 (рекурсивно, корень сверху):\n");
-    printTreeVisual(sdp1);
-    printf("\nСДП2 (двойная косвенность, корень сверху):\n");
-    printTreeVisual(sdp2);
+    printForest(stdout, isdp, sdp1, sdp2);
+
+    FILE *file = fopen("sdp-trees.txt", "w");
+    if (file != NULL)
+    {
+        printForest(file, isdp, sdp1, sdp2);
+        if (fclose(file) == 0)
+            printf("\nДеревья сохранены в sdp-trees.txt\n");
+        else
+            perror("Ошибка сохранения sdp-trees.txt");
+    }
+    else
+        perror("Не удалось создать sdp-trees.txt");
 
     freeTree(isdp);
     freeTree(sdp1);

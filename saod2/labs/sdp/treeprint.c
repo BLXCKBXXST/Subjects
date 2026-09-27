@@ -3,114 +3,154 @@
 #include <string.h>
 #include "sdp.h"
 
-struct Position
+struct Layout
 {
     struct Node *node;
-    int x;
-    int level;
-    int left;
-    int right;
+    struct Layout *left, *right;
+    int leftX, rightX;
+    int depth;
+    int *minX, *maxX;
 };
 
-static int place(struct Node *root, int level, int *next, struct Position P[])
+static struct Layout *makeLayout(struct Node *node)
 {
-    if (root == NULL)
-        return -1;
+    if (node == NULL)
+        return NULL;
 
-    int left = place(root->Left, level + 1, next, P);
-    int current = (*next)++;
-    P[current].node = root;
-    P[current].x = current * 6 + 3;
-    P[current].level = level;
-    P[current].left = left;
-    P[current].right = place(root->Right, level + 1, next, P);
-    return current;
+    struct Layout *p = calloc(1, sizeof(*p));
+    if (p == NULL)
+        exit(1);
+    p->node = node;
+    p->left = makeLayout(node->Left);
+    p->right = makeLayout(node->Right);
+
+    int leftDepth = p->left ? p->left->depth : 0;
+    int rightDepth = p->right ? p->right->depth : 0;
+    p->depth = 1 + (leftDepth > rightDepth ? leftDepth : rightDepth);
+    p->minX = malloc((size_t)p->depth * sizeof(int));
+    p->maxX = malloc((size_t)p->depth * sizeof(int));
+    if (p->minX == NULL || p->maxX == NULL)
+        exit(1);
+
+    if (p->left && p->right)
+    {
+        int separation = 8;
+        int overlap = leftDepth < rightDepth ? leftDepth : rightDepth;
+        for (int d = 0; d < overlap; d++)
+        {
+            int need = p->left->maxX[d] - p->right->minX[d] + 6;
+            if (need > separation)
+                separation = need;
+        }
+        p->leftX = -separation / 2;
+        p->rightX = p->leftX + separation;
+    }
+    else if (p->left)
+        p->leftX = -4;
+    else if (p->right)
+        p->rightX = 4;
+
+    char label[32];
+    snprintf(label, sizeof(label), "%d", node->Data);
+    int len = (int)strlen(label);
+    p->minX[0] = -len / 2;
+    p->maxX[0] = p->minX[0] + len - 1;
+
+    for (int d = 1; d < p->depth; d++)
+    {
+        int min = 1000000000;
+        int max = -1000000000;
+        if (p->left && d <= leftDepth)
+        {
+            min = p->left->minX[d - 1] + p->leftX;
+            max = p->left->maxX[d - 1] + p->leftX;
+        }
+        if (p->right && d <= rightDepth)
+        {
+            int a = p->right->minX[d - 1] + p->rightX;
+            int b = p->right->maxX[d - 1] + p->rightX;
+            if (a < min) min = a;
+            if (b > max) max = b;
+        }
+        p->minX[d] = min;
+        p->maxX[d] = max;
+    }
+    return p;
 }
 
-static int countNodes(struct Node *root)
+static void freeLayout(struct Layout *p)
 {
-    if (root == NULL)
-        return 0;
-    return 1 + countNodes(root->Left) + countNodes(root->Right);
+    if (p == NULL)
+        return;
+    freeLayout(p->left);
+    freeLayout(p->right);
+    free(p->minX);
+    free(p->maxX);
+    free(p);
 }
 
-static int treeHeight(struct Node *root)
+static void draw(struct Layout *p, int x, int level, char **lines)
 {
-    if (root == NULL)
-        return 0;
-    int left = treeHeight(root->Left);
-    int right = treeHeight(root->Right);
-    return 1 + (left > right ? left : right);
+    if (p == NULL)
+        return;
+    char label[32];
+    snprintf(label, sizeof(label), "%d", p->node->Data);
+    int len = (int)strlen(label);
+    memcpy(lines[2 * level] + x - len / 2, label, (size_t)len);
+
+    if (p->left)
+    {
+        int child = x + p->leftX;
+        lines[2 * level + 1][(x + child) / 2] = '/';
+        draw(p->left, child, level + 1, lines);
+    }
+    if (p->right)
+    {
+        int child = x + p->rightX;
+        lines[2 * level + 1][(x + child) / 2] = '\\';
+        draw(p->right, child, level + 1, lines);
+    }
 }
 
-void printTreeVisual(struct Node *root)
+void printTreeVisual(FILE *out, struct Node *root)
 {
     if (root == NULL)
     {
-        printf("(пустое дерево)\n");
+        fprintf(out, "(пустое дерево)\n");
         return;
     }
 
-    int n = countNodes(root);
-    int levels = treeHeight(root);
-    struct Position *P = malloc((size_t)n * sizeof(*P));
-    if (P == NULL)
-        exit(1);
-
-    int next = 0;
-    int rootIndex = place(root, 0, &next, P);
-    int rootX = P[rootIndex].x;
-    int leftWidth = rootX;
-    int rightWidth = P[n - 1].x - rootX;
-    int half = (leftWidth > rightWidth ? leftWidth : rightWidth) + 5;
-    int width = 2 * half + 1;
-    int shift = half - rootX;
-    int rows = levels * 2 - 1;
-
-    char **canvas = malloc((size_t)rows * sizeof(*canvas));
-    if (canvas == NULL)
-        exit(1);
-
-    for (int row = 0; row < rows; row++)
+    struct Layout *p = makeLayout(root);
+    int left = 0, right = 0;
+    for (int d = 0; d < p->depth; d++)
     {
-        canvas[row] = malloc((size_t)width + 1);
-        if (canvas[row] == NULL)
+        if (p->minX[d] < left) left = p->minX[d];
+        if (p->maxX[d] > right) right = p->maxX[d];
+    }
+    int width = right - left + 3;
+    int rows = p->depth * 2 - 1;
+    char **lines = malloc((size_t)rows * sizeof(*lines));
+    if (lines == NULL)
+        exit(1);
+    for (int r = 0; r < rows; r++)
+    {
+        lines[r] = malloc((size_t)width + 1);
+        if (lines[r] == NULL)
             exit(1);
-        memset(canvas[row], ' ', (size_t)width);
-        canvas[row][width] = '\0';
+        memset(lines[r], ' ', (size_t)width);
+        lines[r][width] = '\0';
     }
 
-    for (int i = 0; i < n; i++)
-    {
-        int x = P[i].x + shift;
-        int row = P[i].level * 2;
-        char number[24];
-        snprintf(number, sizeof(number), "%d", P[i].node->Data);
-        int start = x - (int)strlen(number) / 2;
-        memcpy(canvas[row] + start, number, strlen(number));
-
-        if (P[i].left >= 0)
-        {
-            int childX = P[P[i].left].x + shift;
-            canvas[row + 1][(x + childX) / 2] = '/';
-        }
-        if (P[i].right >= 0)
-        {
-            int childX = P[P[i].right].x + shift;
-            canvas[row + 1][(x + childX) / 2] = '\\';
-        }
-    }
-
-    for (int row = 0; row < rows; row++)
+    draw(p, 1 - left, 0, lines);
+    for (int r = 0; r < rows; r++)
     {
         int end = width;
-        while (end > 0 && canvas[row][end - 1] == ' ')
+        while (end > 0 && lines[r][end - 1] == ' ')
             end--;
-        canvas[row][end] = '\0';
-        printf("%s\n", canvas[row]);
-        free(canvas[row]);
+        lines[r][end] = '\0';
+        fprintf(out, "%s\n", lines[r]);
+        free(lines[r]);
     }
-
-    free(canvas);
-    free(P);
+    free(lines);
+    freeLayout(p);
 }
