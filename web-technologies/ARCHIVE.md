@@ -4,7 +4,7 @@
 
 ## Что сохранилось
 
-- **Лабораторные 4–9:** оригинальные PDF, изображения выполнения, скрипты настройки Ubuntu/VirtualBox. Например, [папка отчёта №4](lab4/latex-report/).
+- **Лабораторные 4–9:** оригинальные PDF, изображения выполнения и скрипты настройки Ubuntu/VirtualBox. Отчёты: [№4](lab4/latex-report/lab4_latex_report.pdf), [№5](lab5/latex-report/lab5_latex_report.pdf), [№6](lab6/latex-report/lab6_latex_report.pdf), [№7](lab7/latex-report/lab7_latex_report.pdf), [№8](lab8/latex-report/lab8_latex_report.pdf), [№9](lab9/latex-report/lab9_latex_report.pdf).
 - **Лабораторные 10–14:** сохранились тексты LaTeX и исходники, но не исторические скриншоты и не итоговые PDF. Из исходников собраны пять **архивных PDF-копий** с приложениями из 20 заново полученных иллюстраций. Пропавшие оригинальные рисунки в этих PDF опущены, а не заменены выдуманными скриншотами Figma, Codepen или старого сервера.
 - **Лабораторная 15:** [решения Python/Stepik](lab15/README.md); отдельного LaTeX-отчёта в архиве не было.
 - **РГЗ:** [проект видеохостинга](RGZ/) и [сохранённый PDF](RGZ/latex-report/RGZ_latex_report.pdf).
