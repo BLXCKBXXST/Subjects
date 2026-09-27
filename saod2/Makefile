@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp-recursive sdp-double
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -60,3 +60,18 @@ run-search-old: build/search-old
 
 clean:
 	rm -rf build
+
+# СДП: две реализации с одним main.c
+SDP_SOURCES = labs/sdp/main.c labs/sdp/recursive.c labs/sdp/double.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
+
+build/sdp-recursive: $(SDP_SOURCES) labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+build/sdp-double: $(SDP_SOURCES) labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DUSE_DOUBLE $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-sdp-recursive: build/sdp-recursive
+	./build/sdp-recursive
+
+run-sdp-double: build/sdp-double
+	./build/sdp-double
