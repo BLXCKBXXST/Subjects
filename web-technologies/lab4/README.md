@@ -1,9 +1,11 @@
 # Практическая работа №4
 **Настройка шлюза (NAT) и DHCP-сервера** на Ubuntu Server 20.04
 
-## Скачать
+## Скрипты и отчёт
 
-**[📦 Скачать scripts.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab4_scripts.zip)**
+Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab4` или клонируй Subjects.
+
+[Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab4_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
 

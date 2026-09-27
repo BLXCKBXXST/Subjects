@@ -1,9 +1,11 @@
 # Практическая работа №5
 **Настройка DNS + DHCP + DDNS** для локальной сети на Ubuntu Server
 
-## Скачать
+## Скрипты и отчёт
 
-**[📦 Скачать scripts.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab5_scripts.zip)**
+Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab5` или клонируй Subjects.
+
+[Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab5_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
 

@@ -4,9 +4,11 @@
 **Вариант:** N=29 | Студент: yazikov | Группа: iks531  
 **Домен:** `yazikov.iks531.local`
 
-## Скачать
+## Скрипты и отчёт
 
-**[📦 Скачать scripts.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab8_scripts.zip)**
+Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab8` или клонируй Subjects.
+
+[Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab8_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
 
@@ -47,7 +49,7 @@
 ### 1. На ВМ `gateway` — добавить DNS-запись
 
 ```bash
-cd web-technologies-labs/lab8
+cd ~/Subjects/web-technologies/lab8
 sudo bash gateway_lab8_dns.sh
 ```
 
@@ -63,7 +65,7 @@ sudo bash gateway_lab8_dns.sh
 Скопируй папку `lab8` на ВМ wordpress (`scp` или `git clone`).
 
 ```bash
-cd web-technologies-labs/lab8
+cd ~/Subjects/web-technologies/lab8
 sudo bash wordpress_lab8_prepare.sh
 ```
 
@@ -118,7 +120,7 @@ sudo bash wordpress_lab8_post.sh
 ### 5. На ВМ `desktop1` — проверка доступа
 
 ```bash
-cd web-technologies-labs/lab8
+cd ~/Subjects/web-technologies/lab8
 sudo bash desktop_lab8_check.sh
 ```
 
