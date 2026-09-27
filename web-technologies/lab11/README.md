@@ -71,7 +71,7 @@ lab11/
 │
 └── latex-report/                   ← LaTeX-отчёт для Overleaf
     ├── main.tex, config.tex, parts/, fonts/, screenshots/, img/
-    └── lab11_latex_report.pdf      ← скомпилированный отчёт (появится после компиляции)
+    └── img/                     ← собственные скриншоты (нужно добавить)
 ```
 
 ---
@@ -101,7 +101,8 @@ PDF-отчёт (скомпилированный из `latex-report/`) + ссы�
 
 ---
 
-## 📦 LaTeX-отчёт
+## Отчёт
 
-- **[📦 Скачать latex-report.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab11_overleaf.zip)** — каркас для импорта в Overleaf
-- **[📄 Скачать готовый PDF](https://github.com/BLXCKBXXST/web-technologies-labs/raw/main/lab11/latex-report/lab11_latex_report.pdf)** *(появится после первой компиляции)*
+В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
+
+[Общие правила для отчётов](../REPORTS.md).

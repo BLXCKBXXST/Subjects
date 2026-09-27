@@ -94,6 +94,21 @@
 %%% Рисунки и таблицы %%%
 \usepackage{graphicx, caption, subcaption}
 \graphicspath{{img/}}
+
+%%% В черновике отсутствующие снимки показываются явной рамкой.
+%%% Перед сдачей добавьте реальные PNG в img/ и проверьте отчёт.
+\newcommand{\ReportImage}[2][]{%
+  \IfFileExists{#2.png}{\includegraphics[#1]{#2.png}}{%
+    \IfFileExists{#2.jpg}{\includegraphics[#1]{#2.jpg}}{%
+      \PackageWarning{lab-report}{Missing screenshot: #2.png}%
+      \fbox{\parbox[c][35mm][c]{0.75\textwidth}{\centering
+        \textbf{СКРИНШОТ НЕ ДОБАВЛЕН}\\[2mm]
+        \texttt{\detokenize{#2.png}}\\[2mm]
+        Добавьте настоящий скриншот перед сдачей отчёта.}}%
+    }%
+  }%
+}
+
 \captionsetup[figure]{font=small,width=\textwidth,name=Рисунок,justification=centering}
 \captionsetup[subfigure]{font=small}
 \captionsetup[table]{singlelinecheck=false,font=small,width=\textwidth,justification=justified}
@@ -123,6 +138,15 @@
 %%% Листинги %%%
 \usepackage{listings}
 \usepackage{xcolor}
+% В listings нет встроенного CSS во всех сборках TeX Live.
+\lstdefinelanguage{CSS}{
+  sensitive=false,
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+  alsoletter={-},
+  morekeywords={color,background,background-color,font-size,display,
+    margin,padding,border,border-radius,grid,flex,gap}
+}
 \lstset{
   basicstyle=\small\ttfamily,
   breaklines=true,
@@ -151,6 +175,7 @@
 \usepackage{icomma}
 \usepackage{textcomp}
 \usepackage{amsmath}
+\usepackage{amssymb} % символ \blacksquare в задании CSS
 
 %%% Переменные отчёта %%%
 \input{config}

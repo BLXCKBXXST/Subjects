@@ -4,9 +4,13 @@
 **Вариант:** N=29 | Студент: yazikov | Группа: iks531  
 **Домен:** `yazikov.iks531.local`
 
-## Скачать
+## Скрипты и отчёт
 
-**[📦 Скачать scripts.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab9_scripts.zip)**
+Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab9` или клонируй Subjects.
+
+Команды ниже рассчитаны на случай, когда ты скопировал `lab9` прямо в домашнюю папку ВМ (`~/lab9`). Если клонировал **весь** репозиторий, вместо `cd ~/lab9` используй `cd ~/Subjects/web-technologies/lab9` (или другой путь к своему клону).
+
+[Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab9_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
 
@@ -48,7 +52,7 @@
 Скопируй папку `lab9` на каждую клиентскую ВМ (`scp` или `git clone`) и запусти:
 
 ```bash
-cd web-technologies-labs/lab9
+cd ~/lab9
 sudo bash client_lab9_prepare.sh
 ```
 
@@ -59,7 +63,7 @@ sudo bash client_lab9_prepare.sh
 ### 2. На ВМ `gateway` — установка Ansible
 
 ```bash
-cd web-technologies-labs/lab9
+cd ~/lab9
 sudo bash gateway_lab9_setup.sh
 ```
 

@@ -4,9 +4,13 @@
 **Вариант:** N=29 | Студент: yazikov | Группа: iks531  
 **Домен:** `yazikov.iks531.local`
 
-## Скачать
+## Скрипты и отчёт
 
-**[📦 Скачать scripts.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab7_scripts.zip)**
+Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab7` или клонируй Subjects.
+
+Команды ниже рассчитаны на случай, когда ты скопировал `lab7` прямо в домашнюю папку ВМ (`~/lab7`). Если клонировал **весь** репозиторий, вместо `cd ~/lab7` используй `cd ~/Subjects/web-technologies/lab7` (или другой путь к своему клону).
+
+[Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab7_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
 
@@ -47,7 +51,7 @@
 ### 1. На ВМ `gateway` — добавить DNS-записи
 
 ```bash
-cd web-technologies-labs/lab7
+cd ~/lab7
 sudo bash gateway_lab7_dns.sh
 ```
 
@@ -65,7 +69,7 @@ sudo bash gateway_lab7_dns.sh
 Скопируй папку `lab7` на ВМ mail (через shared folder или `scp`).
 
 ```bash
-cd web-technologies-labs/lab7
+cd ~/lab7
 sudo bash mail_lab7_prepare.sh
 ```
 
@@ -120,7 +124,7 @@ reboot
 ### 4. На ВМ `mail` — проверка после перезагрузки
 
 ```bash
-cd web-technologies-labs/lab7
+cd ~/lab7
 sudo bash mail_lab7_post.sh
 ```
 
@@ -131,7 +135,7 @@ sudo bash mail_lab7_post.sh
 ### 5. На ВМ `desktop1` — проверка доступа и отправка письма
 
 ```bash
-cd web-technologies-labs/lab7
+cd ~/lab7
 sudo bash desktop_lab7_hints.sh
 ```
 

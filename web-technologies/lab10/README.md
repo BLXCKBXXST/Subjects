@@ -1,7 +1,7 @@
 # Практическая работа №10
 **Основы Figma. Создание макета интернет-магазина домашних растений**
 
-В отличие от серверных лаб (4–9) здесь нет ВМ, `config.sh` и bash-скриптов: вся работа ведётся в графическом редакторе Figma в браузере. В этой папке лежит только методичка и LaTeX-отчёт.
+В отличие от серверных лаб (4–9) здесь нет ВМ, `config.sh` и bash-скриптов: вся работа ведётся в графическом редакторе Figma в браузере. В папке есть методичка, HTML-материалы для макета и LaTeX-отчёт.
 
 ---
 
@@ -57,9 +57,8 @@ PDF-отчёт (скомпилированный из `latex-report/`) + ссы�
 
 ---
 
-## 📦 LaTeX-отчёт
+## Отчёт
 
-- **[📦 Скачать latex-report.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab10_overleaf.zip)** — каркас для импорта в Overleaf
-- **[📄 Скачать готовый PDF](https://github.com/BLXCKBXXST/web-technologies-labs/raw/main/lab10/latex-report/lab10_latex_report.pdf)** *(появится после первой компиляции)*
+В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
 
-Подробнее об импорте — [latex-report/README.md](latex-report/README.md).
+[Общие правила для отчётов](../REPORTS.md).
