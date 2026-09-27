@@ -8,6 +8,8 @@
 
 Скрипты находятся в этой папке, параметры варианта — в [config.sh](config.sh). Раньше здесь была ссылка на ZIP из старого репозитория; в Subjects архивы больше автоматически не собираются. Для работы на ВМ скопируй папку `lab8` или клонируй Subjects.
 
+Команды ниже рассчитаны на случай, когда ты скопировал `lab8` прямо в домашнюю папку ВМ (`~/lab8`). Если клонировал **весь** репозиторий, вместо `cd ~/lab8` используй `cd ~/Subjects/web-technologies/lab8` (или другой путь к своему клону).
+
 [Как собрать или обновить отчёт](latex-report/README.md) · [Сохранённый PDF](latex-report/lab8_latex_report.pdf) · [Список скриншотов](latex-report/screenshots/README.md)
 
 ---
@@ -49,7 +51,7 @@
 ### 1. На ВМ `gateway` — добавить DNS-запись
 
 ```bash
-cd ~/Subjects/web-technologies/lab8
+cd ~/lab8
 sudo bash gateway_lab8_dns.sh
 ```
 
@@ -65,7 +67,7 @@ sudo bash gateway_lab8_dns.sh
 Скопируй папку `lab8` на ВМ wordpress (`scp` или `git clone`).
 
 ```bash
-cd ~/Subjects/web-technologies/lab8
+cd ~/lab8
 sudo bash wordpress_lab8_prepare.sh
 ```
 
@@ -120,7 +122,7 @@ sudo bash wordpress_lab8_post.sh
 ### 5. На ВМ `desktop1` — проверка доступа
 
 ```bash
-cd ~/Subjects/web-technologies/lab8
+cd ~/lab8
 sudo bash desktop_lab8_check.sh
 ```
 
