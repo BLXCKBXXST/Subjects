@@ -1,0 +1,34 @@
+name: Temporary web report QA
+on:
+  push:
+    branches: [docs/web-reports-repair]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+
+jobs:
+  static-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 web-technologies/tools/check_reports.py
+
+  build-draft-reports:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: XeLaTeX build for labs 10–14 (draft, missing figures are marked)
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            web-technologies/lab10/latex-report/main.tex
+            web-technologies/lab11/latex-report/main.tex
+            web-technologies/lab12/latex-report/main.tex
+            web-technologies/lab13/latex-report/main.tex
+            web-technologies/lab14/latex-report/main.tex
+          work_in_root_file_dir: true
+          latexmk_use_xelatex: true
+          continue_on_error: true
