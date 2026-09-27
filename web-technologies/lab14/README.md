@@ -15,7 +15,7 @@
 | Браузер | Chrome/Firefox/Safari — открывается напрямую (`file://`) или с веб-сервера |
 | Линтеры JS | [JSHint](https://jshint.com), [ESLint](https://eslint.org) — проверка качества кода |
 | Валидатор разметки | [validator.w3.org](https://validator.w3.org) — проверка семантики вёрстки |
-| Хостинг | домашний сервер `server34.netcraze.club` + reverse-proxy [Caddy](https://caddyserver.com/) |
+| Исторический хостинг | домашний сервер `server34.netcraze.club` + reverse-proxy [Caddy](https://caddyserver.com/) |
 
 ---
 
@@ -53,7 +53,7 @@ lab14/
 │
 └── latex-report/                   ← LaTeX-отчёт для Overleaf
     ├── main.tex, config.tex, parts/, fonts/, screenshots/, img/
-    └── lab14_latex_report.pdf      ← скомпилированный отчёт (появится после компиляции)
+    └── img/                         ← исходные скриншоты не сохранились
 ```
 
 ---
@@ -88,9 +88,9 @@ cd resume && python3 -m http.server 8000
 
 ---
 
-## 🌐 Хостинг
+## 🌐 Историческое развёртывание
 
-Развёрнутая версия (временно, на период сдачи задания): **<https://resume.server34.netcraze.club>**
+На момент сдачи работа разворачивалась по адресу **<https://resume.server34.netcraze.club>**. Сейчас его доступность не подтверждается и для архива не требуется.
 
 Деплой и снос делаются скриптом [deploy.sh](deploy.sh):
 
@@ -105,7 +105,7 @@ cd resume && python3 -m http.server 8000
 
 ---
 
-## 📤 Формат сдачи
+## 📤 Формат сдачи (исторически)
 
 PDF-отчёт (скомпилированный из `latex-report/`) + ссылка на развёрнутый сайт — загружаются в курс.
 
@@ -113,6 +113,6 @@ PDF-отчёт (скомпилированный из `latex-report/`) + ссы�
 
 ## Отчёт
 
-В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
+Для архива уже собрана [PDF-копия отчёта](archive/lab14_archival.pdf). Сохранённый сайт повторно открыт в браузере в десктопном и мобильном виде; эти новые рендеры лежат в [archive/evidence/](archive/README.md). Исторические кадры сервера, HTTPS, печати и редактирования не подменялись выдуманными изображениями.
 
-[Общие правила для отчётов](../REPORTS.md).
+Первоначальные LaTeX-исходники и [исторический список восьми скриншотов](latex-report/screenshots/README.md) сохранены отдельно. [Общее описание архива](../ARCHIVE.md).
