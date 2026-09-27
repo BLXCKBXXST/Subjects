@@ -1,0 +1,73 @@
+name: One-time web coursework preservation
+on:
+  push:
+    branches: [archive/web-technologies-2026]
+    paths: ['.github/workflows/web-archive-once.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  preserve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Re-render saved HTML and rerun saved JavaScript (NOT historic screenshots)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install playwright==1.55.0 pillow==11.3.0 pypdf==6.1.3
+          python -m playwright install --with-deps chromium
+          python web-technologies/tools/archive_web.py capture
+          python web-technologies/tools/archive_web.py prepare
+      - name: Compile five visibly labelled archival PDFs with XeLaTeX
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: |
+            .web-archive-build/lab10/main.tex
+            .web-archive-build/lab11/main.tex
+            .web-archive-build/lab12/main.tex
+            .web-archive-build/lab13/main.tex
+            .web-archive-build/lab14/main.tex
+          work_in_root_file_dir: true
+          latexmk_use_xelatex: true
+          continue_on_error: false
+      - name: Validate output and commit reconstructed evidence to feature branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          for lab in 10 11 12 13 14; do
+            source_pdf=".web-archive-build/lab$lab/main.pdf"
+            dest_dir="web-technologies/lab$lab/archive"
+            test -s "$source_pdf"
+            cp "$source_pdf" "$dest_dir/lab"$lab"_archival.pdf"
+            test -s "$dest_dir/lab"$lab"_archival.pdf"
+          done
+          python - <<'PY'
+          from pathlib import Path
+          from pypdf import PdfReader
+          for n in range(10, 15):
+              base=Path(f'web-technologies/lab{n}/archive')
+              pdf=base/f'lab{n}_archival.pdf'
+              pages=PdfReader(str(pdf)).pages
+              assert len(pages)>=5, (n,len(pages))
+              images=list((base/'evidence').glob('*.png'))
+              expected={10:3,11:7,12:4,13:4,14:2}[n]
+              assert len(images)==expected, (n,len(images),expected)
+              print(f'lab{n}: verified {len(pages)} PDF pages / {len(images)} saved-source renders / {pdf.stat().st_size} bytes')
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add web-technologies/lab10/archive web-technologies/lab11/archive web-technologies/lab12/archive web-technologies/lab13/archive web-technologies/lab14/archive
+          git commit -m "Preserve five archival PDFs and 20 clearly labelled source reconstructions"
+          git push origin HEAD:archive/web-technologies-2026
