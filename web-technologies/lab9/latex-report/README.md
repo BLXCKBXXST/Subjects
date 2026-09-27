@@ -1,44 +1,22 @@
-# Lab 9 — LaTeX Report (Ansible Monitoring)
+# Отчёт к лабораторной №9 — Ansible
 
-## Скачать
+В этой папке сохранён [PDF предыдущего выполнения](lab9_latex_report.pdf), LaTeX-исходники и изображения. PDF не пересобирается автоматически после изменений в исходниках. Если повторно выполняешь работу или меняешь параметры стенда, обнови текст и реальные скриншоты.
 
-**[📦 Скачать latex-report.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab9_overleaf.zip)**
+**Сначала выполни лабораторную** по [основной инструкции](../README.md). Дальше проверь ФИО, группу, преподавателя, дату и параметры своего варианта в `config.tex`. В `parts/` лежат главы отчёта; сравни их со своим выполнением, особенно IP-адреса, конфигурации и описанные результаты.
 
-**[📄 Скачать готовый PDF](https://github.com/BLXCKBXXST/web-technologies-labs/raw/main/lab9/latex-report/lab9_latex_report.pdf)**
+Для изображений есть [список кадров](screenshots/README.md) и вспомогательный [screenshots.sh](screenshots/screenshots.sh). Скрипт проводит по командам и подсказывает, **что снять вручную**, а не делает скриншоты за тебя. Снимки с ВМ перенеси в `img/` и сверь их имена с `\includegraphics` в главах. Сохранившиеся здесь PNG и JPG относятся к предыдущему выполнению.
 
-## Импорт в Overleaf
+## Сборка в Overleaf
 
-1. Скачай архив по ссылке выше
-2. Overleaf → **New Project → Upload Project** → выбери zip
-3. Главный файл: `main.tex`, компилятор: **XeLaTeX**
-4. Свои данные — редактируй только `config.tex`
-5. Скриншоты клади в папку `img/` (имена: `01_...`, `02_...`)
-   — см. гайд [`screenshots/README.md`](screenshots/README.md)
+Из корня клона Subjects:
 
-## Структура
-
+```bash
+cd web-technologies/lab9/latex-report
+zip -r ../lab9_overleaf.zip main.tex config.tex parts fonts img
 ```
-latex-report/
-├── main.tex
-├── config.tex
-├── lab9_latex_report.pdf
-├── fonts/
-│   ├── times.ttf
-│   ├── timesbd.ttf
-│   ├── timesi.ttf
-│   └── timesbi.ttf
-├── img/
-│   ├── 01_gateway_ip_a.png
-│   ├── 02_client_ssh_status.png
-│   └── ...
-├── screenshots/
-│   ├── screenshots.sh
-│   └── README.md
-└── parts/
-    ├── title.tex
-    ├── intro.tex
-    ├── chap1.tex
-    ├── chap2.tex
-    ├── chap3.tex
-    └── conclusion.tex
-```
+
+В Windows выдели те же файлы и папки в Проводнике и создай ZIP. **Важно:** `main.tex` и `config.tex` должны лежать прямо в корне архива, не в ещё одной папке.
+
+В Overleaf: **New Project → Upload Project** → выбери ZIP → **Menu → Compiler: XeLaTeX**, главный документ `main.tex`. После сборки проверь картинки, подписи и страницы. Готовый PDF из репозитория доступен выше, но он не отражает твои новые правки.
+
+[Общая инструкция для всех отчётов](../../REPORTS.md).
