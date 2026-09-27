@@ -120,3 +120,6 @@ Thumbs.db
 programming/lab-04/task13/task13
 programming/lab-04/task14/task14
 programming/lab-09/sort
+
+# Временные копии отчётов при архивной сборке
+/.web-archive-build/
