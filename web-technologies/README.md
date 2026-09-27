@@ -72,7 +72,7 @@ Lab 10 (Figma) ВМ не использует — работа ведётся в
 ## Структура репозитория
 
 ```
-web-technologies-labs/
+web-technologies/
 │
 ├── labN/                          ← папка каждой лабораторной работы
 │   ├── README.md                  ← описание лабы + ссылка на скачивание scripts.zip
@@ -97,12 +97,7 @@ web-technologies-labs/
 │       ├── fonts/                 ← шрифты (Times New Roman и др. для ГОСТ)
 │       └── labN_latex_report.pdf  ← скомпилированный PDF отчёта
 │
-├── LaTeX_g7-32_template_tsvs-main/  ← базовый LaTeX-шаблон по ГОСТ 7.32
-│
-└── .github/
-    └── workflows/
-        └── release-latex.yml      ← GitHub Actions: собирает ZIP для Overleaf
-                                      и scripts.zip при каждом push в main
+└── LaTeX_g7-32_template_tsvs-main/  ← базовый LaTeX-шаблон по ГОСТ 7.32
 ```
 
 ---
