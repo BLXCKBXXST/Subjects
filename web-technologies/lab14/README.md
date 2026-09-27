@@ -108,7 +108,8 @@ PDF-отчёт (скомпилированный из `latex-report/`) + ссы�
 
 ---
 
-## 📦 LaTeX-отчёт
+## Отчёт
 
-- **[📦 Скачать latex-report.zip](https://github.com/BLXCKBXXST/web-technologies-labs/releases/download/overleaf-zips/lab14_overleaf.zip)** — каркас для импорта в Overleaf
-- **[📄 Скачать готовый PDF](https://github.com/BLXCKBXXST/web-technologies-labs/raw/main/lab14/latex-report/lab14_latex_report.pdf)** *(появится после первой компиляции)*
+В [latex-report/](latex-report/README.md) находятся LaTeX-исходники и подробная инструкция по сборке. [Список скриншотов](latex-report/screenshots/README.md) указывает реальные кадры, которые нужно получить и положить в `latex-report/img/`. **В Subjects пока нет готового PDF этой работы**: после добавления изображений собери отчёт через XeLaTeX или импортируй ZIP в Overleaf по инструкции.
+
+[Общие правила для отчётов](../REPORTS.md).
