@@ -71,7 +71,7 @@ const expHtml = data.experience.map(function (item, i) {
 % — Скриншот: резюме локально, десктоп —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/01_resume_desktop}
+  \ReportImage[width=0.85\textwidth]{img/01_resume_desktop}
   \caption{Сайт-резюме, открытый локально (десктопная версия)}
   \label{fig:resume_desktop}
 \end{figure}
@@ -135,7 +135,7 @@ function saveResumeData(data) {
 % — Скриншот: поле в режиме редактирования —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/02_editing}
+  \ReportImage[width=0.85\textwidth]{img/02_editing}
   \caption{Редактирование поля резюме с анимацией-подсветкой}
   \label{fig:editing}
 \end{figure}
@@ -171,7 +171,7 @@ function readPhoto(file, callback) {
 % — Скриншот: загрузка фотографии —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/03_photo_upload}
+  \ReportImage[width=0.85\textwidth]{img/03_photo_upload}
   \caption{Загрузка фотографии в резюме через выбор файла}
   \label{fig:photo}
 \end{figure}
@@ -229,7 +229,7 @@ function createRipple(event, host) {
 % — Скриншот: эффект Material Wave —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/04_ripple}
+  \ReportImage[width=0.85\textwidth]{img/04_ripple}
   \caption{Эффект Material Wave при клике по элементу резюме}
   \label{fig:ripple}
 \end{figure}
@@ -261,7 +261,7 @@ document.getElementById('btn-pdf').addEventListener('click', function () {
 % — Скриншот: предпросмотр печати —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/05_print_preview}
+  \ReportImage[width=0.85\textwidth]{img/05_print_preview}
   \caption{Предпросмотр печати: резюме готово к сохранению в PDF}
   \label{fig:print}
 \end{figure}
@@ -277,7 +277,7 @@ document.getElementById('btn-pdf').addEventListener('click', function () {
 % — Скриншот: мобильная версия —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.45\textwidth]{img/06_resume_mobile}
+  \ReportImage[width=0.45\textwidth]{img/06_resume_mobile}
   \caption{Адаптивная вёрстка на мобильной ширине (\(360\,\)px)}
   \label{fig:mobile}
 \end{figure}
@@ -317,7 +317,7 @@ Let's~Encrypt; готовый адрес --- \url{https://resume.server34.netcra
 % — Скриншот: живой сайт по HTTPS —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/07_resume_live_https}
+  \ReportImage[width=0.85\textwidth]{img/07_resume_live_https}
   \caption{Развёрнутый сайт по адресу
            \texttt{https://resume.server34.netcraze.club}
            (Let's~Encrypt-сертификат активен)}
@@ -327,7 +327,7 @@ Let's~Encrypt; готовый адрес --- \url{https://resume.server34.netcra
 % — Скриншот: docker compose ps на сервере —
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.85\textwidth]{img/08_docker_compose_ps}
+  \ReportImage[width=0.85\textwidth]{img/08_docker_compose_ps}
   \caption{Сервис \texttt{resume} в общем \texttt{docker-compose.yml}
            домашнего сервера}
   \label{fig:compose_ps}
