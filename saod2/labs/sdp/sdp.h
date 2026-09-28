@@ -13,6 +13,7 @@ void insertDouble(struct Node **root, int value);
 void generateNumbers(int A[], int n);
 void inorder(struct Node *root);
 void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2);
+void printSummary(const int A[], int maxN);
 int saveTreeSvg(const char *filename, struct Node *root);
 void freeTree(struct Node *root);
 
