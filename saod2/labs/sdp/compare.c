@@ -79,6 +79,29 @@ static void printLink(const char *name)
         printf("%s\n", name);
 }
 
+static void saveAndPreview(const char *filename, struct Node *root, int hasChafa)
+{
+    if (!saveTreeSvg(filename, root))
+    {
+        perror(filename);
+        return;
+    }
+
+    printLink(filename);
+    printf("\n");
+    fflush(stdout);
+
+    if (hasChafa)
+    {
+        char command[160];
+        snprintf(command, sizeof(command),
+                 "chafa --format symbols --size 78x18 %s", filename);
+        if (system(command) != 0)
+            printf("Не удалось показать превью %s\n", filename);
+    }
+    printf("\n");
+}
+
 void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
 {
     int *sorted = malloc((size_t)n * sizeof(int));
@@ -103,20 +126,13 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     printRow("СДП2", sdp2);
     printf("└───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
 
-    if (saveTreeSvg("sdp-isdp.svg", isdp))
-        printLink("sdp-isdp.svg");
-    else
-        perror("Не удалось сохранить sdp-isdp.svg");
+    int hasChafa = system("command -v chafa >/dev/null 2>&1") == 0;
+    if (!hasChafa)
+        printf("\nДля символьных превью установите chafa: sudo apt install chafa\n");
 
-    if (saveTreeSvg("sdp-sdp.svg", sdp1))
-        printLink("sdp-sdp.svg");
-    else
-        perror("Не удалось сохранить sdp-sdp.svg");
-
-    if (saveTreeSvg("sdp-sdp2.svg", sdp2))
-        printLink("sdp-sdp2.svg");
-    else
-        perror("Не удалось сохранить sdp-sdp2.svg");
+    saveAndPreview("sdp-isdp.svg", isdp, hasChafa);
+    saveAndPreview("sdp-sdp.svg", sdp1, hasChafa);
+    saveAndPreview("sdp-sdp2.svg", sdp2, hasChafa);
 
     freeTree(isdp);
     free(sorted);
