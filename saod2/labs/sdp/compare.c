@@ -151,3 +151,69 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     freeTree(isdp);
     free(sorted);
 }
+
+static void summaryRow(int N, const char *name, struct Node *root)
+{
+    char cell[64];
+    int n = size(root);
+    printf("│");
+    snprintf(cell, sizeof(cell), "%d", N);
+    printCell(cell, 5);
+    printCell(name, 7);
+    snprintf(cell, sizeof(cell), "%d", n);
+    printCell(cell, 8);
+    snprintf(cell, sizeof(cell), "%d", checkSum(root));
+    printCell(cell, 19);
+    snprintf(cell, sizeof(cell), "%d", height(root));
+    printCell(cell, 8);
+    snprintf(cell, sizeof(cell), "%.2f",
+             n ? (double)sumHeight(root, 1) / n : 0);
+    printCell(cell, 17);
+    printf("\n");
+}
+
+void printSummary(const int A[], int maxN)
+{
+    int *sorted = malloc((size_t)maxN * sizeof(int));
+    if (sorted == NULL)
+        exit(1);
+    struct Node *sdp1 = NULL;
+    struct Node *sdp2 = NULL;
+
+    printf("\nСводная таблица по всем N:\n");
+    printf("┌─────┬───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
+    printf("│");
+    printCell("N", 5);
+    printCell("Дерево", 7);
+    printCell("Размер", 8);
+    printCell("Контрольная сумма", 19);
+    printCell("Высота", 8);
+    printCell("Средняя высота", 17);
+    printf("\n");
+    printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
+
+    for (int n = 100; n <= maxN; n += 100)
+    {
+        for (int i = n - 100; i < n; i++)
+        {
+            insertRecursive(&sdp1, A[i]);
+            insertDouble(&sdp2, A[i]);
+        }
+
+        memcpy(sorted, A, (size_t)n * sizeof(int));
+        qsort(sorted, (size_t)n, sizeof(int), compareInts);
+        struct Node *isdp = ISDP(sorted, 0, n - 1);
+
+        summaryRow(n, "ИСДП", isdp);
+        summaryRow(n, "СДП1", sdp1);
+        summaryRow(n, "СДП2", sdp2);
+        freeTree(isdp);
+
+        if (n < maxN)
+            printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
+    }
+    printf("└─────┴───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
+    freeTree(sdp1);
+    freeTree(sdp2);
+    free(sorted);
+}
