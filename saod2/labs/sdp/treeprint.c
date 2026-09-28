@@ -146,7 +146,7 @@ int saveTreeSvg(const char *filename, struct Node *root)
             width, height, width, height);
     fprintf(file, "<rect width=\"100%%\" height=\"100%%\" fill=\"white\"/>\n");
     /* Едва заметные границы между уровнями дерева. */
-    fprintf(file, "<g stroke=\"#64748b\" stroke-opacity=\"0.16\" stroke-width=\"1\" stroke-dasharray=\"4 7\">\n");
+    fprintf(file, "<g stroke=\"#64748b\" stroke-opacity=\"0.30\" stroke-width=\"1\" stroke-dasharray=\"4 7\">\n");
     for (int level = 0; level < p->depth - 1; level++)
         fprintf(file, "<line x1=\"8\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
                 76 + 76 * level, width - 8, 76 + 76 * level);

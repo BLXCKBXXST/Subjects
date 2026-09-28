@@ -2,3 +2,6 @@ sdp-trees.txt
 sdp-isdp.svg
 sdp-sdp.svg
 sdp-sdp2.svg
+
+# Generated SVGs for n=200..500
+sdp-*.svg

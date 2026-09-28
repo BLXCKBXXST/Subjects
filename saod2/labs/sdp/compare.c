@@ -126,13 +126,27 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     printRow("СДП2", sdp2);
     printf("└───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
 
-    int hasChafa = system("command -v chafa >/dev/null 2>&1") == 0;
-    if (!hasChafa)
-        printf("\nДля символьных превью установите chafa: sudo apt install chafa\n");
+    static int hasChafa = -1;
+    if (hasChafa == -1)
+        hasChafa = system("command -v chafa >/dev/null 2>&1") == 0;
 
-    saveAndPreview("sdp-isdp.svg", isdp, hasChafa);
-    saveAndPreview("sdp-sdp.svg", sdp1, hasChafa);
-    saveAndPreview("sdp-sdp2.svg", sdp2, hasChafa);
+    char file1[64], file2[64], file3[64];
+    if (n == 100)
+    {
+        snprintf(file1, sizeof(file1), "sdp-isdp.svg");
+        snprintf(file2, sizeof(file2), "sdp-sdp.svg");
+        snprintf(file3, sizeof(file3), "sdp-sdp2.svg");
+    }
+    else
+    {
+        snprintf(file1, sizeof(file1), "sdp-isdp-%d.svg", n);
+        snprintf(file2, sizeof(file2), "sdp-sdp-%d.svg", n);
+        snprintf(file3, sizeof(file3), "sdp-sdp2-%d.svg", n);
+    }
+
+    saveAndPreview(file1, isdp, hasChafa);
+    saveAndPreview(file2, sdp1, hasChafa);
+    saveAndPreview(file3, sdp2, hasChafa);
 
     freeTree(isdp);
     free(sorted);
