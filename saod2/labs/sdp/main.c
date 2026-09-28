@@ -27,6 +27,8 @@ int main(void)
         inorder(sdp1);
         printf("\n");
         printExtras(A, n, sdp1, sdp2);
+        if (n == 100)
+            printSummary(A, MAX_N);
     }
 
     freeTree(sdp1);
