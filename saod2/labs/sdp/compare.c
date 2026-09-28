@@ -30,12 +30,43 @@ static struct Node *ISDP(const int A[], int left, int right)
     return root;
 }
 
+/* printf считает байты UTF-8, а не ширину русских букв в терминале. */
+static int textWidth(const char *s)
+{
+    int length = 0;
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++)
+        if ((*p & 0xc0) != 0x80)
+            length++;
+    return length;
+}
+
+static void printCell(const char *value, int width)
+{
+    int spaces = width - textWidth(value);
+    if (spaces < 0)
+        spaces = 0;
+    int left = spaces / 2;
+    int right = spaces - left;
+    printf("%*s%s%*s│", left, "", value, right, "");
+}
+
 static void printRow(const char *name, struct Node *root)
 {
+    char number[64];
     int n = size(root);
-    printf("│ %-5s │ %6d │ %17d │ %6d │ %15.2f │\n",
-           name, n, checkSum(root), height(root),
-           n ? (double)sumHeight(root, 1) / n : 0);
+
+    printf("│");
+    printCell(name, 7);
+    snprintf(number, sizeof(number), "%d", n);
+    printCell(number, 8);
+    snprintf(number, sizeof(number), "%d", checkSum(root));
+    printCell(number, 19);
+    snprintf(number, sizeof(number), "%d", height(root));
+    printCell(number, 8);
+    snprintf(number, sizeof(number), "%.2f",
+             n ? (double)sumHeight(root, 1) / n : 0);
+    printCell(number, 17);
+    printf("\n");
 }
 
 static void printLink(const char *name)
@@ -59,7 +90,13 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
 
     printf("\nСравнение деревьев (n = %d):\n", n);
     printf("┌───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
-    printf("│ Дерево│ Размер │ Контрольная сумма │ Высота │ Средняя высота  │\n");
+    printf("│");
+    printCell("Дерево", 7);
+    printCell("Размер", 8);
+    printCell("Контрольная сумма", 19);
+    printCell("Высота", 8);
+    printCell("Средняя высота", 17);
+    printf("\n");
     printf("├───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
     printRow("ИСДП", isdp);
     printRow("СДП1", sdp1);
