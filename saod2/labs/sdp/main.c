@@ -59,7 +59,6 @@ int main(void)
         insertDouble(&sdp2, A[i]);
     }
 
-    printf("\n========== Вывод 1 (n = 100) ==========\n");
     printf("Обход ИСДП, СДП1 и СДП2 слева направо:\n");
     inorder(sdp1);
     printf("\n");
