@@ -14,22 +14,18 @@ int main(void)
     srand((unsigned)time(NULL));
     generateNumbers(A, MAX_N);
 
-    for (int n = 100; n <= MAX_N; n += 100)
+    for (int i = 0; i < 100; i++)
     {
-        for (int i = n - 100; i < n; i++)
-        {
-            insertRecursive(&sdp1, A[i]);
-            insertDouble(&sdp2, A[i]);
-        }
-
-        printf("\n========== Вывод %d (n = %d) ==========\n", n / 100, n);
-        printf("Обход ИСДП, СДП1 и СДП2 слева направо:\n");
-        inorder(sdp1);
-        printf("\n");
-        printExtras(A, n, sdp1, sdp2);
-        if (n == 100)
-            printSummary(A, MAX_N);
+        insertRecursive(&sdp1, A[i]);
+        insertDouble(&sdp2, A[i]);
     }
+
+    printf("\n========== Вывод 1 (n = 100) ==========\n");
+    printf("Обход ИСДП, СДП1 и СДП2 слева направо:\n");
+    inorder(sdp1);
+    printf("\n");
+    printSummary(A, MAX_N);
+    printExtras(A, 100, sdp1, sdp2);
 
     freeTree(sdp1);
     freeTree(sdp2);
