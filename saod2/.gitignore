@@ -5,3 +5,6 @@ sdp-sdp2.svg
 
 # Generated SVGs for n=200..500
 sdp-*.svg
+
+# Изображения, сгенерированные лабораторными
+/images/
