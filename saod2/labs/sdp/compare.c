@@ -50,25 +50,6 @@ static void printCell(const char *value, int width)
     printf("%*s%s%*s│", left, "", value, right, "");
 }
 
-static void printRow(const char *name, struct Node *root)
-{
-    char number[64];
-    int n = size(root);
-
-    printf("│");
-    printCell(name, 7);
-    snprintf(number, sizeof(number), "%d", n);
-    printCell(number, 8);
-    snprintf(number, sizeof(number), "%d", checkSum(root));
-    printCell(number, 19);
-    snprintf(number, sizeof(number), "%d", height(root));
-    printCell(number, 8);
-    snprintf(number, sizeof(number), "%.2f",
-             n ? (double)sumHeight(root, 1) / n : 0);
-    printCell(number, 17);
-    printf("\n");
-}
-
 static void printLink(const char *name)
 {
     char cwd[4096];
@@ -110,21 +91,6 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     memcpy(sorted, A, (size_t)n * sizeof(int));
     qsort(sorted, (size_t)n, sizeof(int), compareInts);
     struct Node *isdp = ISDP(sorted, 0, n - 1);
-
-    printf("\nСравнение деревьев (n = %d):\n", n);
-    printf("┌───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
-    printf("│");
-    printCell("Дерево", 7);
-    printCell("Размер", 8);
-    printCell("Контрольная сумма", 19);
-    printCell("Высота", 8);
-    printCell("Средняя высота", 17);
-    printf("\n");
-    printf("├───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
-    printRow("ИСДП", isdp);
-    printRow("СДП1", sdp1);
-    printRow("СДП2", sdp2);
-    printf("└───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
 
     static int hasChafa = -1;
     if (hasChafa == -1)
