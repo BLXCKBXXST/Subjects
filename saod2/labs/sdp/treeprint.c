@@ -145,6 +145,13 @@ int saveTreeSvg(const char *filename, struct Node *root)
     fprintf(file, "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 %d %d\" width=\"%d\" height=\"%d\">\n",
             width, height, width, height);
     fprintf(file, "<rect width=\"100%%\" height=\"100%%\" fill=\"white\"/>\n");
+    /* Едва заметные границы между уровнями дерева. */
+    fprintf(file, "<g stroke=\"#64748b\" stroke-opacity=\"0.16\" stroke-width=\"1\" stroke-dasharray=\"4 7\">\n");
+    for (int level = 0; level < p->depth - 1; level++)
+        fprintf(file, "<line x1=\"8\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
+                76 + 76 * level, width - 8, 76 + 76 * level);
+    fprintf(file, "</g>\n");
+
     fprintf(file, "<g stroke=\"#64748b\" stroke-width=\"2\">\n");
     svgEdges(file, p, start, 0);
     fprintf(file, "</g>\n<g fill=\"#2563eb\" stroke=\"#1e40af\" stroke-width=\"1\">\n");

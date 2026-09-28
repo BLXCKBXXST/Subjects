@@ -69,3 +69,9 @@ build/sdp: $(SDP_SOURCES) labs/sdp/sdp.h | build
 
 run-sdp: build/sdp
 	./build/sdp
+	@ if [ -t 1 ] && command -v chafa >/dev/null 2>&1; then \
+		printf '\nПревью ИСДП:\n'; \
+		chafa --format iterm --size 78x18 sdp-isdp.svg || true; \
+		printf '\nПревью СДП1 (СДП2 выглядит так же):\n'; \
+		chafa --format iterm --size 78x18 sdp-sdp.svg || true; \
+	fi
