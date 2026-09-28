@@ -69,9 +69,13 @@ build/sdp: $(SDP_SOURCES) labs/sdp/sdp.h | build
 
 run-sdp: build/sdp
 	./build/sdp
-	@ if [ -t 1 ] && command -v chafa >/dev/null 2>&1; then \
+	@if ! command -v chafa >/dev/null 2>&1; then \
+		echo 'Превью не показано: chafa не установлен (sudo apt install chafa).'; \
+	elif [ ! -t 1 ]; then \
+		echo 'Превью не показано: вывод не подключён к интерактивному терминалу.'; \
+	else \
 		printf '\nПревью ИСДП:\n'; \
-		chafa --format iterm --size 78x18 sdp-isdp.svg || true; \
-		printf '\nПревью СДП1 (СДП2 выглядит так же):\n'; \
-		chafa --format iterm --size 78x18 sdp-sdp.svg || true; \
+		chafa --format iterm --size 78x18 sdp-isdp.svg || echo 'Ошибка chafa: проверьте поддержку SVG в chafa --version'; \
+		printf '\nПревью СДП (СДП1 = СДП2):\n'; \
+		chafa --format iterm --size 78x18 sdp-sdp.svg || echo 'Ошибка chafa: проверьте поддержку SVG в chafa --version'; \
 	fi
