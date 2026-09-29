@@ -10,8 +10,10 @@ all: $(addprefix build/,$(PROGRAMS))
 build:
 	mkdir -p build
 
-build/coursework: coursework/src/main.c $(wildcard coursework/src/*.h) | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) $(LDLIBS) -o $@
+COURSEWORK_SOURCES = coursework/src/main.c coursework/src/sort.c coursework/src/search.c
+
+build/coursework: $(COURSEWORK_SOURCES) $(wildcard coursework/src/*.h) | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(COURSEWORK_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
 
 build/records: labs/records/main.c | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) $(LDLIBS) -o $@
