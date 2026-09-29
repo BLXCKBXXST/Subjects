@@ -9,6 +9,8 @@
 
 static void deleteSvg(void)
 {
+    char name[80];
+
     remove("sdp-isdp.svg");
     remove("sdp-sdp.svg");
     remove("sdp-sdp2.svg");
@@ -16,6 +18,23 @@ static void deleteSvg(void)
     remove("images/sdp/sdp-isdp.svg");
     remove("images/sdp/sdp-sdp.svg");
     remove("images/sdp/sdp-sdp2.svg");
+
+    for (int n = 200; n <= 500; n += 100)
+    {
+        snprintf(name, sizeof(name), "sdp-isdp-%d.svg", n);
+        remove(name);
+        snprintf(name, sizeof(name), "sdp-sdp-%d.svg", n);
+        remove(name);
+        snprintf(name, sizeof(name), "sdp-sdp2-%d.svg", n);
+        remove(name);
+
+        snprintf(name, sizeof(name), "images/sdp/sdp-isdp-%d.svg", n);
+        remove(name);
+        snprintf(name, sizeof(name), "images/sdp/sdp-sdp-%d.svg", n);
+        remove(name);
+        snprintf(name, sizeof(name), "images/sdp/sdp-sdp2-%d.svg", n);
+        remove(name);
+    }
 
     rmdir("images/sdp");
     rmdir("images");
