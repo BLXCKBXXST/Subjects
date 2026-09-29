@@ -17,4 +17,8 @@ void printSummary(const int A[], int maxN);
 int saveTreeSvg(const char *filename, struct Node *root);
 void freeTree(struct Node *root);
 
+struct Node *searchRecursive(struct Node *root, int key);
+struct Node *searchIterative(struct Node *p, int key);
+void searchMultiple(struct Node *sdp1, struct Node *sdp2);
+
 #endif

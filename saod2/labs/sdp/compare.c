@@ -2,7 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 #include "sdp.h"
+
+static void deleteSvg(void)
+{
+    remove("sdp-isdp.svg");
+    remove("sdp-sdp.svg");
+    remove("sdp-sdp2.svg");
+}
+
+static void stopProgram(int signalNumber)
+{
+    unlink("sdp-isdp.svg");
+    unlink("sdp-sdp.svg");
+    unlink("sdp-sdp2.svg");
+    _exit(128 + signalNumber);
+}
+
+static void setupSvg(void)
+{
+    static int ready = 0;
+
+    if (ready)
+        return;
+
+    deleteSvg();
+    atexit(deleteSvg);
+    signal(SIGINT, stopProgram);
+    ready = 1;
+}
+
 
 int size(struct Node *root);
 int checkSum(struct Node *root);
@@ -85,6 +115,8 @@ static void saveAndPreview(const char *filename, struct Node *root, int hasChafa
 
 void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
 {
+    setupSvg();
+
     int *sorted = malloc((size_t)n * sizeof(int));
     if (sorted == NULL)
         exit(1);

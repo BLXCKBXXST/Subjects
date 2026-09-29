@@ -64,7 +64,7 @@ clean:
 	rm -rf build
 
 # СДП: оба алгоритма в одной программе
-SDP_SOURCES = labs/sdp/main.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
+SDP_SOURCES = labs/sdp/main.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c labs/sdp/search.c labs/sdp/search_iterative.c
 
 build/sdp: $(SDP_SOURCES) labs/sdp/sdp.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
