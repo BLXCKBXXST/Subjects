@@ -1,9 +1,13 @@
 #ifndef CP866_H
 #define CP866_H
 
-static void cp866_to_utf8(const char *src, char *dst) {
+static void cp866_to_utf8(const char *src, int dlina, char *dst) {
+    int i;
     unsigned char c;
-    while ((c = (unsigned char)*src++) != 0) {
+
+    for (i = 0; i < dlina; i++) {
+        c = (unsigned char)src[i];
+
         if (c >= 0x80 && c <= 0x9F) {
             *dst++ = (char)0xD0;
             *dst++ = (char)(c - 0x80 + 0x90);
@@ -23,6 +27,7 @@ static void cp866_to_utf8(const char *src, char *dst) {
             *dst++ = (char)c;
         }
     }
+
     *dst = 0;
 }
 
