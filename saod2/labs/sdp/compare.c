@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <errno.h>
-#include <sys/stat.h>
 #include "sdp.h"
 
 int size(struct Node *root);
@@ -62,21 +60,6 @@ static void printLink(const char *name)
         printf("%s\n", name);
 }
 
-static int ensureImageDirectory(void)
-{
-    if (mkdir("images", 0777) != 0 && errno != EEXIST)
-    {
-        perror("images");
-        return 0;
-    }
-    if (mkdir("images/sdp", 0777) != 0 && errno != EEXIST)
-    {
-        perror("images/sdp");
-        return 0;
-    }
-    return 1;
-}
-
 static void saveAndPreview(const char *filename, struct Node *root, int hasChafa)
 {
     if (!saveTreeSvg(filename, root))
@@ -113,26 +96,9 @@ void printExtras(const int A[], int n, struct Node *sdp1, struct Node *sdp2)
     if (hasChafa == -1)
         hasChafa = system("command -v chafa >/dev/null 2>&1") == 0;
 
-    char file1[64], file2[64], file3[64];
-    if (n == 100)
-    {
-        snprintf(file1, sizeof(file1), "images/sdp/sdp-isdp.svg");
-        snprintf(file2, sizeof(file2), "images/sdp/sdp-sdp.svg");
-        snprintf(file3, sizeof(file3), "images/sdp/sdp-sdp2.svg");
-    }
-    else
-    {
-        snprintf(file1, sizeof(file1), "images/sdp/sdp-isdp-%d.svg", n);
-        snprintf(file2, sizeof(file2), "images/sdp/sdp-sdp-%d.svg", n);
-        snprintf(file3, sizeof(file3), "images/sdp/sdp-sdp2-%d.svg", n);
-    }
-
-    if (ensureImageDirectory())
-    {
-        saveAndPreview(file1, isdp, hasChafa);
-        saveAndPreview(file2, sdp1, hasChafa);
-        saveAndPreview(file3, sdp2, hasChafa);
-    }
+    saveAndPreview("sdp-isdp.svg", isdp, hasChafa);
+    saveAndPreview("sdp-sdp.svg", sdp1, hasChafa);
+    saveAndPreview("sdp-sdp2.svg", sdp2, hasChafa);
 
     freeTree(isdp);
     free(sorted);
