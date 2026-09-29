@@ -55,6 +55,8 @@ int main(void)
 
     A[1] = A[0];
 
+    printf("Гарантированный повтор: %d %d\n", A[0], A[1]);
+
     for (int i = 0; i < 100; i++)
     {
         insertRecursive(&sdp1, A[i]);
