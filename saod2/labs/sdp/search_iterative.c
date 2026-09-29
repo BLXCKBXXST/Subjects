@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "sdp.h"
 
 struct Node *searchIterative(struct Node *p, int key)
