@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -63,11 +63,17 @@ run-search-old: build/search-old
 clean:
 	rm -rf build
 
-# СДП: оба алгоритма в одной программе
-SDP_SOURCES = labs/sdp/main.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c labs/sdp/search.c labs/sdp/search_iterative.c
+# СДП: как в 3.2, поиск выбирается при компиляции
+SDP_COMMON = labs/sdp/main.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
 
-build/sdp: $(SDP_SOURCES) labs/sdp/sdp.h | build
+build/sdp: $(SDP_COMMON) labs/sdp/search.c labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+build/sdp-iterative: $(SDP_COMMON) labs/sdp/search_iterative.c labs/sdp/sdp.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
 
 run-sdp: build/sdp
 	./build/sdp
+
+run-sdp-iterative: build/sdp-iterative
+	./build/sdp-iterative

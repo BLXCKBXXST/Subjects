@@ -66,7 +66,7 @@ int main(void)
     printSummary(A, MAX_N);
     printExtras(A, 100, sdp1, sdp2);
 
-    searchMultiple(sdp1, sdp2);
+    searchMultiple(sdp1);
 
     freeTree(sdp1);
     freeTree(sdp2);
