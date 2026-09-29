@@ -14,10 +14,12 @@ static void deleteSvg(void)
 
 static void stopProgram(int signalNumber)
 {
+    (void)signalNumber;
+
     unlink("sdp-isdp.svg");
     unlink("sdp-sdp.svg");
     unlink("sdp-sdp2.svg");
-    _exit(128 + signalNumber);
+    _exit(0);
 }
 
 static void setupSvg(void)
