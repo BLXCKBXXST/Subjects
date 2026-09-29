@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -77,3 +77,19 @@ run-sdp: build/sdp
 
 run-sdp-iterative: build/sdp-iterative
 	./build/sdp-iterative
+
+
+# СДП с повторяющимися ключами: равные элементы идут вправо
+SDP_REPEAT_COMMON = labs/sdp/main_repeat.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
+
+build/sdp-repeat: $(SDP_REPEAT_COMMON) labs/sdp/search.c labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+build/sdp-repeat-iterative: $(SDP_REPEAT_COMMON) labs/sdp/search_iterative.c labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-sdp-repeat: build/sdp-repeat
+	./build/sdp-repeat
+
+run-sdp-repeat-iterative: build/sdp-repeat-iterative
+	./build/sdp-repeat-iterative
