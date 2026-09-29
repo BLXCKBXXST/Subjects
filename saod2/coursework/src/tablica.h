@@ -21,11 +21,28 @@ static int shirina(const char *s) {
     return w;
 }
 
+static void ubrat_probely(char *s) {
+    int i = 0;
+
+    while (s[i] != '\0')
+        i++;
+
+    while (i > 0 && s[i - 1] == ' ') {
+        s[i - 1] = '\0';
+        i--;
+    }
+}
+
 static void yacheyka(const char *s, int w) {
     int d = w - shirina(s);
+    int left = d / 2;
+    int right = d - left;
     int i;
-    printf("│ %s", s);
-    for (i = 0; i < d + 1; i++) printf(" ");
+
+    printf("│ ");
+    for (i = 0; i < left; i++) printf(" ");
+    printf("%s", s);
+    for (i = 0; i < right + 1; i++) printf(" ");
 }
 
 static void liniya(const char *l, const char *m, const char *r) {
@@ -53,12 +70,19 @@ static void tab_shapka(void) {
 
 static void tab_stroka(int nomer, struct Zapis *z) {
     char avt[32], zag[80], izd[40], num[12], god[12], str[12];
+
     cp866_to_utf8(z->avtor, 12, avt);
     cp866_to_utf8(z->zagl, 32, zag);
     cp866_to_utf8(z->izd, 16, izd);
+
+    ubrat_probely(avt);
+    ubrat_probely(zag);
+    ubrat_probely(izd);
+
     sprintf(num, "%d", nomer);
     sprintf(god, "%d", z->god);
     sprintf(str, "%d", z->str);
+
     yacheyka(num, W_NUM);
     yacheyka(avt, W_AVT);
     yacheyka(zag, W_ZAG);
