@@ -20,20 +20,21 @@ int zagruzit(struct Zapis *baza, struct Zapis **uk) {
     return n;
 }
 
-int sravni_stroki(const char *a, const char *b) {
-    int i = 0;
-    while (a[i] != '\0' && b[i] != '\0') {
-        if ((unsigned char)a[i] != (unsigned char)b[i])
-            return (unsigned char)a[i] - (unsigned char)b[i];
-        i++;
+int sravni_pole(const char *a, const char *b, int dlina) {
+    int i;
+    for (i = 0; i < dlina; i++) {
+        if ((unsigned char)a[i] < (unsigned char)b[i])
+            return -1;
+        if ((unsigned char)a[i] > (unsigned char)b[i])
+            return 1;
     }
-    return (unsigned char)a[i] - (unsigned char)b[i];
+    return 0;
 }
 
 int sravni(struct Zapis *a, struct Zapis *b) {
-    if (a->god != b->god)
-        return a->god - b->god;
-    return sravni_stroki(a->avtor, b->avtor);
+    if (a->god < b->god) return -1;
+    if (a->god > b->god) return 1;
+    return sravni_pole(a->avtor, b->avtor, 12);
 }
 
 void hoar(struct Zapis **uk, int left, int right) {
