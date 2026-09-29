@@ -197,8 +197,8 @@ void printSummary(const int A[], int maxN)
         qsort(sorted, (size_t)n, sizeof(int), compareInts);
         struct Node *isdp = ISDP(sorted, 0, n - 1);
 
-        summaryRow(n, 1, "ИСДП", isdp);
-        summaryRow(n, 0, "СДП1", sdp1);
+        summaryRow(n, 0, "ИСДП", isdp);
+        summaryRow(n, 1, "СДП1", sdp1);
         summaryRow(n, 0, "СДП2", sdp2);
         freeTree(isdp);
 
