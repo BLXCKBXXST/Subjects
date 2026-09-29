@@ -53,9 +53,9 @@ static void tab_shapka(void) {
 
 static void tab_stroka(int nomer, struct Zapis *z) {
     char avt[32], zag[80], izd[40], num[12], god[12], str[12];
-    cp866_to_utf8(z->avtor, avt);
-    cp866_to_utf8(z->zagl, zag);
-    cp866_to_utf8(z->izd, izd);
+    cp866_to_utf8(z->avtor, 12, avt);
+    cp866_to_utf8(z->zagl, 32, zag);
+    cp866_to_utf8(z->izd, 16, izd);
     sprintf(num, "%d", nomer);
     sprintf(god, "%d", z->god);
     sprintf(str, "%d", z->str);
