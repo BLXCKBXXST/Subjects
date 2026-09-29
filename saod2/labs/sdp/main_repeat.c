@@ -20,7 +20,7 @@ void insertRecursive(struct Node **root, int value)
 
     if (value < (*root)->Data)
         insertRecursive(&(*root)->Left, value);
-    else
+    else if (value >= (*root)->Data)
         insertRecursive(&(*root)->Right, value);
 }
 
@@ -30,7 +30,7 @@ void insertDouble(struct Node **root, int value)
     {
         if (value < (*root)->Data)
             root = &(*root)->Left;
-        else
+        else if (value >= (*root)->Data)
             root = &(*root)->Right;
     }
 
