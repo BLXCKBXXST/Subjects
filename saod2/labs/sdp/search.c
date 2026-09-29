@@ -17,31 +17,63 @@ struct Node *searchRecursive(struct Node *root, int key)
 
 void searchMultiple(struct Node *sdp1, struct Node *sdp2)
 {
-    int count;
+    int variant;
 
-    printf("\nПоиск по ключам\n");
-    printf("Количество ключей (0 - выход): ");
-
-    if (scanf("%d", &count) != 1 || count <= 0)
-        return;
-
-    for (int i = 0; i < count; i++)
+    while (1)
     {
-        int key;
-        struct Node *recursiveResult;
-        struct Node *iterativeResult;
+        printf("\nПоиск по ключам\n");
+        printf("1 - рекурсивный поиск\n");
+        printf("2 - нерекурсивный поиск\n");
+        printf("0 - выход\n");
+        printf("> ");
 
-        printf("Ключ %d: ", i + 1);
-
-        if (scanf("%d", &key) != 1)
+        if (scanf("%d", &variant) != 1)
             return;
 
-        recursiveResult = searchRecursive(sdp1, key);
-        iterativeResult = searchIterative(sdp2, key);
+        if (variant == 0)
+            return;
 
-        printf("  рекурсивный поиск: %s\n",
-               recursiveResult != NULL ? "найден" : "не найден");
-        printf("  нерекурсивный поиск: %s\n",
-               iterativeResult != NULL ? "найден" : "не найден");
+        if (variant != 1 && variant != 2)
+        {
+            printf("Нет такого варианта.\n");
+            continue;
+        }
+
+        int count;
+
+        printf("Количество ключей (0 - назад): ");
+
+        if (scanf("%d", &count) != 1)
+            return;
+
+        if (count == 0)
+            continue;
+
+        if (count < 0)
+        {
+            printf("Количество ключей должно быть положительным.\n");
+            continue;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            int key;
+            struct Node *result;
+
+            printf("Ключ %d: ", i + 1);
+
+            if (scanf("%d", &key) != 1)
+                return;
+
+            if (variant == 1)
+                result = searchRecursive(sdp1, key);
+            else
+                result = searchIterative(sdp2, key);
+
+            if (result != NULL)
+                printf("Ключ %d найден\n", key);
+            else
+                printf("Ключ %d не найден\n", key);
+        }
     }
 }
