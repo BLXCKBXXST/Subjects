@@ -1,12 +1,11 @@
 #include "tea.h"
 #include <fstream>
 #include <string>
-#include <cmath>
 
 int main() {
     ifstream binary("tea.bin", ios::binary);
     int n;
-    if (!binary.read((char*)&n, sizeof(n)) || n < 0 || n > 10000) {
+    if (!binary.read((char*)&n, sizeof(n)) || n < 0) {
         cout << "Файл tea.bin отсутствует или поврежден." << endl;
         return 1;
     }
@@ -21,12 +20,7 @@ int main() {
     Tea tea = {};
 
     for (int i = 0; i < n; i++) {
-        if (!binary.read((char*)&tea, sizeof(tea)) ||
-            tea.type[39] != '\0' || tea.package[39] != '\0' ||
-            tea.brand[39] != '\0' || tea.type[0] == '\0' ||
-            tea.package[0] == '\0' || tea.brand[0] == '\0' ||
-            !isfinite(tea.price) || tea.price < 0 || tea.price > 1000000 ||
-            tea.quantity < 0 || tea.quantity > 1000000) {
+        if (!binary.read((char*)&tea, sizeof(tea))) {
             cout << "Файл tea.bin поврежден." << endl;
             delete[] packages;
             delete[] counts;
