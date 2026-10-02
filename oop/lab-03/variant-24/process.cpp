@@ -14,26 +14,23 @@ int main() {
         return 0;
     }
 
-    string* packages = new string[n];
-    long long* counts = new long long[n]();
-    int kinds = 0;
-    Tea tea = {};
-
+    Tea* teas = new Tea[n];
     for (int i = 0; i < n; i++) {
-        if (!binary.read((char*)&tea, sizeof(tea))) {
-            cout << "Файл tea.bin поврежден." << endl;
-            delete[] packages;
-            delete[] counts;
-            return 1;
+        binary.read((char*)&teas[i], sizeof(Tea));
+    }
+    if (!binary) {
+        cout << "Файл tea.bin поврежден." << endl;
+        delete[] teas;
+        return 1;
+    }
+
+    string packages[4] = {"Пачка", "Пакетики", "Жесть", "Фарфор"};
+    long long counts[4] = {};
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (teas[i].package == packages[j])
+                counts[j] += teas[i].quantity;
         }
-        int j = 0;
-        while (j < kinds && packages[j] != tea.package)
-            j++;
-        if (j == kinds) {
-            packages[j] = tea.package;
-            kinds++;
-        }
-        counts[j] += tea.quantity;
     }
 
     binary.seekg(sizeof(n));
@@ -41,15 +38,15 @@ int main() {
          << "Количество | Сумма, грн" << endl;
     double total = 0;
     for (int i = 0; i < n; i++) {
-        binary.read((char*)&tea, sizeof(tea));
-        tea.show();
-        total += tea.total();
+        binary.read((char*)&teas[i], sizeof(Tea));
+        teas[i].show();
+        total += teas[i].total();
     }
     cout << "Всего, грн: " << total << endl;
 
     long long best = 0;
     cout << "\nПродажи по упаковкам (штук):" << endl;
-    for (int i = 0; i < kinds; i++) {
+    for (int i = 0; i < 4; i++) {
         cout << packages[i] << ": " << counts[i] << endl;
         if (counts[i] > best)
             best = counts[i];
@@ -58,13 +55,12 @@ int main() {
         cout << "Продаж нет." << endl;
     } else {
         cout << "Лучше продается:" << endl;
-        for (int i = 0; i < kinds; i++) {
+        for (int i = 0; i < 4; i++) {
             if (counts[i] == best)
                 cout << packages[i] << " (" << best << " шт.)" << endl;
         }
     }
 
-    delete[] packages;
-    delete[] counts;
+    delete[] teas;
     return 0;
 }
