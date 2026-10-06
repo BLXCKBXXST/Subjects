@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>СДП — удаление вершин</title>
+<style>
+  body { margin: 16px; font: 16px sans-serif; }
+  img { display: block; }
+</style>
+<h1>СДП — удаление вершин</h1>
+<p>Рисунок обновляется после каждого удаления. Масштаб можно менять в браузере.</p>
+<img id="tree" src="../../sdp-delete.svg" alt="Изображение дерева">
+<script>
+  setInterval(function () {
+    document.getElementById('tree').src = '../../sdp-delete.svg?' + Date.now();
+  }, 1000);
+</script>
+</html>
