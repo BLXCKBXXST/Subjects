@@ -35,3 +35,60 @@ int deleteNode(struct Node **root, int key)
 
     return 1;
 }
+
+int deleteNodeMove(struct Node **root, int key)
+{
+    struct Node **p = root;
+    struct Node *q;
+    struct Node *r;
+    struct Node *s;
+
+    while (*p != NULL && (*p)->Data != key)
+    {
+        if (key < (*p)->Data)
+            p = &(*p)->Left;
+        else
+            p = &(*p)->Right;
+    }
+
+    if (*p == NULL)
+        return 0;
+
+    q = *p;
+
+    if (q->Left == NULL)
+    {
+        *p = q->Right;
+    }
+    else if (q->Right == NULL)
+    {
+        *p = q->Left;
+    }
+    else
+    {
+        r = q->Left;
+        s = q;
+
+        if (r->Right == NULL)
+        {
+            r->Right = q->Right;
+            *p = r;
+        }
+        else
+        {
+            while (r->Right != NULL)
+            {
+                s = r;
+                r = r->Right;
+            }
+
+            s->Right = r->Left;
+            r->Left = q->Left;
+            r->Right = q->Right;
+            *p = r;
+        }
+    }
+
+    free(q);
+    return 1;
+}
