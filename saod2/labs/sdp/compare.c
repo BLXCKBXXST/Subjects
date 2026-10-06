@@ -108,7 +108,7 @@ static void saveAndPreview(const char *filename, struct Node *root, int hasChafa
     {
         char command[160];
         snprintf(command, sizeof(command),
-                 "chafa --format symbols --size 78x18 %s", filename);
+                 "chafa --format symbols --colors none --invert --size 78x18 %s", filename);
         if (system(command) != 0)
             printf("Не удалось показать превью %s\n", filename);
     }

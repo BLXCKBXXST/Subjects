@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -93,3 +93,10 @@ run-sdp-repeat: build/sdp-repeat
 
 run-sdp-repeat-iterative: build/sdp-repeat-iterative
 	./build/sdp-repeat-iterative
+
+# 3.4 — удаление 10 введённых ключей из СДП
+build/sdp-delete: labs/sdp/main_delete.c labs/sdp/delete.c labs/sdp/common.c labs/sdp/sdp.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-sdp-delete: build/sdp-delete
+	./build/sdp-delete
