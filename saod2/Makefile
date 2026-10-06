@@ -94,8 +94,8 @@ run-sdp-repeat: build/sdp-repeat
 run-sdp-repeat-iterative: build/sdp-repeat-iterative
 	./build/sdp-repeat-iterative
 
-# 3.4 — удаление 10 введённых ключей из СДП
-build/sdp-delete: labs/sdp/main_delete.c labs/sdp/delete.c labs/sdp/common.c labs/sdp/sdp.h | build
+# 3.4 — удаление введённых ключей из СДП
+build/sdp-delete: labs/sdp/main_delete.c labs/sdp/delete.c labs/sdp/common.c labs/sdp/treeprint.c labs/sdp/sdp.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
 
 run-sdp-delete: build/sdp-delete
