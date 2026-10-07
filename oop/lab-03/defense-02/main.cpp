@@ -93,8 +93,6 @@ int main() {
     int hallCount;
     int capacity;
 
-    file.ignore();
-
     for (int i = 0; i < n; i++) {
         getline(file, name);
         getline(file, phone);
@@ -102,7 +100,7 @@ int main() {
         getline(file, hours);
         file >> hallCount;
         file >> capacity;
-        file.ignore();
+        file.ignore(1000, '\n');
 
         halls[i].setName(name);
         halls[i].setPhone(phone);
