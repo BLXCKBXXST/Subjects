@@ -9,24 +9,25 @@ struct Ochered {
 };
 
 int bin_poisk(struct Zapis **uk, int n, int god) {
-    int left = 0;
-    int right = n - 1;
-    int found = -1;
+    if (n == 0)
+        return -1;
 
-    while (left <= right) {
-        int mid = (left + right) / 2;
+    int L = 0;
+    int R = n - 1;
 
-        if (uk[mid]->god < god) {
-            left = mid + 1;
-        } else if (uk[mid]->god > god) {
-            right = mid - 1;
-        } else {
-            found = mid;
-            right = mid - 1;
-        }
+    while (L < R) {
+        int m = (L + R) / 2;
+
+        if (uk[m]->god < god)
+            L = m + 1;
+        else
+            R = m;
     }
 
-    return found;
+    if (uk[L]->god == god)
+        return L;
+
+    return -1;
 }
 
 struct Ochered *sozdat_ochered(struct Zapis **uk, int n, int god) {
