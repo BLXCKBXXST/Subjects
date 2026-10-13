@@ -10,13 +10,21 @@ struct Node
 };
 
 void addAVL(int D, struct Node **p);
+
 void generateNumbers(int A[], int n);
 void inorder(struct Node *p);
 int size(struct Node *p);
 int checkSum(struct Node *p);
 int height(struct Node *p);
 int sumHeight(struct Node *p, int level);
-void printComparison(const int A[], int n, struct Node *avl);
 void freeTree(struct Node *p);
+
+void printComparison(const int A[], int maxN);
+
+struct Node *searchNode(struct Node *p, int key);
+void searchMultiple(struct Node *root);
+
+int saveTreeSvg(const char *filename, struct Node *root);
+void showTreeImage(struct Node *root);
 
 #endif

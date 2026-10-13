@@ -36,40 +36,53 @@ static struct Node *ISDP(int A[], int left, int right)
     return p;
 }
 
-static void printRow(const char *name, struct Node *root)
+static void printRow(int n, const char *name, struct Node *root)
 {
-    int n = size(root);
+    int count = size(root);
     double average = 0;
 
-    if (n != 0)
-        average = (double)sumHeight(root, 1) / n;
+    if (count != 0)
+        average = (double)sumHeight(root, 1) / count;
 
-    printf("| %-4s | %6d | %13d | %6d | %14.2f |\n",
-           name, n, checkSum(root), height(root), average);
+    printf("| %3d | %-4s | %6d | %13d | %6d | %14.2f |\n",
+           n, name, count, checkSum(root), height(root), average);
 }
 
-void printComparison(const int A[], int n, struct Node *avl)
+void printComparison(const int A[], int maxN)
 {
-    int *sorted = malloc((size_t)n * sizeof(int));
-    struct Node *isdp;
+    int *sorted = malloc((size_t)maxN * sizeof(int));
+    struct Node *avl = NULL;
 
     if (sorted == NULL)
         exit(1);
 
-    for (int i = 0; i < n; i++)
-        sorted[i] = A[i];
-
-    sortArray(sorted, n);
-    isdp = ISDP(sorted, 0, n - 1);
-
     printf("\nСравнение ИСДП и АВЛ:\n");
-    printf("+------+--------+---------------+--------+----------------+\n");
-    printf("|      | Размер | Контр. сумма  | Высота | Средн. высота  |\n");
-    printf("+------+--------+---------------+--------+----------------+\n");
-    printRow("ИСДП", isdp);
-    printRow("АВЛ", avl);
-    printf("+------+--------+---------------+--------+----------------+\n");
+    printf("+-----+------+--------+---------------+--------+----------------+\n");
+    printf("|  N  |      | Размер | Контр. сумма  | Высота | Средн. высота  |\n");
+    printf("+-----+------+--------+---------------+--------+----------------+\n");
 
-    freeTree(isdp);
+    for (int n = 100; n <= maxN; n += 100)
+    {
+        for (int i = n - 100; i < n; i++)
+            addAVL(A[i], &avl);
+
+        for (int i = 0; i < n; i++)
+            sorted[i] = A[i];
+
+        sortArray(sorted, n);
+        struct Node *isdp = ISDP(sorted, 0, n - 1);
+
+        printRow(n, "ИСДП", isdp);
+        printRow(n, "АВЛ", avl);
+
+        freeTree(isdp);
+
+        if (n < maxN)
+            printf("+-----+------+--------+---------------+--------+----------------+\n");
+    }
+
+    printf("+-----+------+--------+---------------+--------+----------------+\n");
+
+    freeTree(avl);
     free(sorted);
 }

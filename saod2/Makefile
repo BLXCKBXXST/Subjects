@@ -103,7 +103,7 @@ run-sdp-delete: build/sdp-delete
 
 
 # 3.5 — АВЛ-дерево
-AVL_SOURCES = labs/avl/main.c labs/avl/avl.c labs/avl/common.c labs/avl/compare.c
+AVL_SOURCES = labs/avl/main.c labs/avl/avl.c labs/avl/common.c labs/avl/compare.c labs/avl/search.c labs/avl/treeprint.c labs/avl/preview.c
 
 build/avl: $(AVL_SOURCES) labs/avl/avl.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@

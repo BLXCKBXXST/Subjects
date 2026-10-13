@@ -3,24 +3,27 @@
 #include <time.h>
 #include "avl.h"
 
-#define N 100
+#define MAX_N 500
+#define TREE_N 100
 
 int main(void)
 {
-    int A[N];
+    int A[MAX_N];
     struct Node *root = NULL;
 
     srand((unsigned)time(NULL));
-    generateNumbers(A, N);
+    generateNumbers(A, MAX_N);
 
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < TREE_N; i++)
         addAVL(A[i], &root);
 
-    printf("Обход АВЛ-дерева слева направо:\n");
+    printf("Обход АВЛ-дерева из %d вершин слева направо:\n", TREE_N);
     inorder(root);
     printf("\n");
 
-    printComparison(A, N, root);
+    printComparison(A, MAX_N);
+    showTreeImage(root);
+    searchMultiple(root);
 
     freeTree(root);
     return 0;
