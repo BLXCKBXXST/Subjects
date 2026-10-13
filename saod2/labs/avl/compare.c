@@ -36,16 +36,62 @@ static struct Node *ISDP(int A[], int left, int right)
     return p;
 }
 
-static void printRow(int n, const char *name, struct Node *root)
+static int textWidth(const char *s)
 {
+    int length = 0;
+
+    for (const unsigned char *p = (const unsigned char *)s; *p; p++)
+        if ((*p & 0xc0) != 0x80)
+            length++;
+
+    return length;
+}
+
+static void printCell(const char *value, int width)
+{
+    int spaces = width - textWidth(value);
+
+    if (spaces < 0)
+        spaces = 0;
+
+    int left = spaces / 2;
+    int right = spaces - left;
+
+    printf("%*s%s%*s│", left, "", value, right, "");
+}
+
+static void printRow(int N, int showN, const char *name, struct Node *root)
+{
+    char cell[64];
     int count = size(root);
     double average = 0;
 
     if (count != 0)
         average = (double)sumHeight(root, 1) / count;
 
-    printf("| %3d | %-4s | %6d | %13d | %6d | %14.2f |\n",
-           n, name, count, checkSum(root), height(root), average);
+    printf("│");
+
+    if (showN)
+        snprintf(cell, sizeof(cell), "%d", N);
+    else
+        cell[0] = '\0';
+
+    printCell(cell, 5);
+    printCell(name, 7);
+
+    snprintf(cell, sizeof(cell), "%d", count);
+    printCell(cell, 8);
+
+    snprintf(cell, sizeof(cell), "%d", checkSum(root));
+    printCell(cell, 19);
+
+    snprintf(cell, sizeof(cell), "%d", height(root));
+    printCell(cell, 8);
+
+    snprintf(cell, sizeof(cell), "%.2f", average);
+    printCell(cell, 17);
+
+    printf("\n");
 }
 
 void printComparison(const int A[], int maxN)
@@ -57,9 +103,16 @@ void printComparison(const int A[], int maxN)
         exit(1);
 
     printf("\nСравнение ИСДП и АВЛ:\n");
-    printf("+-----+------+--------+---------------+--------+----------------+\n");
-    printf("|  N  |      | Размер | Контр. сумма  | Высота | Средн. высота  |\n");
-    printf("+-----+------+--------+---------------+--------+----------------+\n");
+    printf("┌─────┬───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
+    printf("│");
+    printCell("N", 5);
+    printCell("Дерево", 7);
+    printCell("Размер", 8);
+    printCell("Контрольная сумма", 19);
+    printCell("Высота", 8);
+    printCell("Средняя высота", 17);
+    printf("\n");
+    printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
 
     for (int n = 100; n <= maxN; n += 100)
     {
@@ -72,16 +125,16 @@ void printComparison(const int A[], int maxN)
         sortArray(sorted, n);
         struct Node *isdp = ISDP(sorted, 0, n - 1);
 
-        printRow(n, "ИСДП", isdp);
-        printRow(n, "АВЛ", avl);
+        printRow(n, 1, "ИСДП", isdp);
+        printRow(n, 0, "АВЛ", avl);
 
         freeTree(isdp);
 
         if (n < maxN)
-            printf("+-----+------+--------+---------------+--------+----------------+\n");
+            printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
     }
 
-    printf("+-----+------+--------+---------------+--------+----------------+\n");
+    printf("└─────┴───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
 
     freeTree(avl);
     free(sorted);
