@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -100,3 +100,13 @@ build/sdp-delete: labs/sdp/main_delete.c labs/sdp/delete.c labs/sdp/delete_input
 
 run-sdp-delete: build/sdp-delete
 	./build/sdp-delete
+
+
+# 3.5 — АВЛ-дерево
+AVL_SOURCES = labs/avl/main.c labs/avl/avl.c labs/avl/common.c labs/avl/compare.c
+
+build/avl: $(AVL_SOURCES) labs/avl/avl.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-avl: build/avl
+	./build/avl
