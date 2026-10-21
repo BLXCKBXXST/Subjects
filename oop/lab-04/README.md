@@ -17,3 +17,5 @@ g++ -std=c++11 -Wall -Wextra -pedantic main.cpp -o lab4
 
 Использованы `push_back`, `begin`, `end`, `empty`, `insert`, `size`, `copy_if`, `back_inserter`, `sort`, `lower_bound`, `for_each`.
 [result.txt](result.txt): после вставки числа полос идут в порядке 2, 3, 4.
+
+[Защита №108: гостиница](defense-108/) — четыре объекта из `gost.txt`, расчёт убытков и отбор гостиниц с занятостью больше 50%. Из папки `oop`: `make run-defense4`.
