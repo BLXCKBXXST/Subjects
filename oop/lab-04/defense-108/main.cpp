@@ -62,13 +62,6 @@ int main() {
     Hotel* hotel3 = new Hotel(readHotel(file));
     Hotel* hotel4 = new Hotel(readHotel(file));
 
-    if (!file) {
-        cout << "В gost.txt должны быть данные четырёх гостиниц." << endl;
-        delete hotel3;
-        delete hotel4;
-        return 1;
-    }
-
     cout << "Статические объекты:" << endl;
     hotel1.show();
     hotel2.show();
