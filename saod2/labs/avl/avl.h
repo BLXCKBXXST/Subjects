@@ -10,6 +10,7 @@ struct Node
 };
 
 void addAVL(int D, struct Node **p);
+int deleteAVL(int D, struct Node **p);
 
 void generateNumbers(int A[], int n);
 void inorder(struct Node *p);
