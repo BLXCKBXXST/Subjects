@@ -4,7 +4,7 @@ CFLAGS ?= -std=c11 -O2
 PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
-.PHONY: all clean run-avl-delete-manual $(addprefix run-,$(PROGRAMS))
+.PHONY: all clean $(addprefix run-,$(PROGRAMS))
 all: $(addprefix build/,$(PROGRAMS))
 
 build:
@@ -112,13 +112,10 @@ run-avl: build/avl
 	./build/avl
 
 # 3.6 — удаление из АВЛ-дерева
-AVL_DELETE_SOURCES = labs/avl/main_delete.c labs/avl/avl.c labs/avl/common.c labs/avl/search.c labs/avl/treeprint.c labs/avl/preview.c
+AVL_DELETE_SOURCES = labs/avl/main_delete.c labs/avl/avl.c labs/avl/common.c labs/avl/treeprint.c labs/avl/preview.c
 
 build/avl-delete: $(AVL_DELETE_SOURCES) labs/avl/avl.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_DELETE_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
 
 run-avl-delete: build/avl-delete
 	./build/avl-delete
-
-run-avl-delete-manual: build/avl-delete
-	./build/avl-delete --manual

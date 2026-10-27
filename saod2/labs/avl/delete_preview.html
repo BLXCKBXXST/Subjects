@@ -8,7 +8,7 @@
   button { font: inherit; }
 </style>
 <h1>АВЛ-дерево — удаление вершин</h1>
-<p>Масштаб можно менять в браузере.</p>
+<p>После удаления дерево обновляется автоматически. Масштаб можно менять в браузере.</p>
 <p>
   <button id="previous">← Назад</button>
   <span id="caption"></span>
@@ -18,16 +18,35 @@
 <script src="../../avl-delete-steps.js"></script>
 <script>
   let step = 0;
+  let knownCount = window.deletedKeys.length;
   function showStep() {
     document.getElementById('caption').textContent = step === 0
-      ? 'Исходное дерево (шаг 0 из ' + deletedKeys.length + ')'
-      : 'Шаг ' + step + ' из ' + deletedKeys.length + ': удалён ключ ' + deletedKeys[step - 1];
-    document.getElementById('tree').src = '../../avl-delete-' + step + '.svg';
+      ? 'Исходное дерево (шаг 0 из ' + knownCount + ')'
+      : 'Шаг ' + step + ' из ' + knownCount + ': удалён ключ ' + window.deletedKeys[step - 1];
+    document.getElementById('tree').src = '../../avl-delete-' + step + '.svg?' + Date.now();
     document.getElementById('previous').disabled = step === 0;
-    document.getElementById('next').disabled = step === deletedKeys.length;
+    document.getElementById('next').disabled = step === knownCount;
   }
   document.getElementById('previous').onclick = function () { step--; showStep(); };
   document.getElementById('next').onclick = function () { step++; showStep(); };
   showStep();
+
+  // Перечитываем список шагов, сохраняя выбранный пользователем шаг.
+  setInterval(function () {
+    const script = document.createElement('script');
+    script.src = '../../avl-delete-steps.js?' + Date.now();
+    script.onload = function () {
+      script.remove();
+      const wasLatest = step === knownCount;
+      const newCount = window.deletedKeys.length;
+      if (newCount !== knownCount) {
+        knownCount = newCount;
+        if (wasLatest || step > knownCount) step = knownCount;
+        showStep();
+      }
+    };
+    script.onerror = function () { script.remove(); };
+    document.head.appendChild(script);
+  }, 1000);
 </script>
 </html>

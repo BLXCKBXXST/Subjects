@@ -40,24 +40,32 @@ int saveDeleteStep(struct Node *root, int step)
 
 void showDeletePreview(const int deletedKeys[], int count)
 {
-    FILE *file = fopen("avl-delete-steps.js", "w");
+    static int browserOpened = 0;
+    FILE *file = fopen("avl-delete-steps.tmp.js", "w");
     if (file == NULL)
     {
-        perror("avl-delete-steps.js");
+        perror("avl-delete-steps.tmp.js");
         return;
     }
 
-    fputs("const deletedKeys = [", file);
+    fputs("window.deletedKeys = [", file);
     for (int i = 0; i < count; i++)
         fprintf(file, "%s%d", i ? ", " : "", deletedKeys[i]);
     fputs("];\n", file);
     if (fclose(file) != 0)
     {
+        perror("avl-delete-steps.tmp.js");
+        return;
+    }
+    if (rename("avl-delete-steps.tmp.js", "avl-delete-steps.js") != 0)
+    {
         perror("avl-delete-steps.js");
         return;
     }
 
-    printf("Рисунки всех шагов: avl-delete-0.svg ... avl-delete-%d.svg\n", count);
+    if (browserOpened)
+        return;
+
     printf("Просмотр удаления: labs/avl/delete_preview.html\n");
     fflush(stdout);
     if (system("command -v xdg-open >/dev/null 2>&1") == 0)
@@ -65,4 +73,7 @@ void showDeletePreview(const int deletedKeys[], int count)
         if (system("xdg-open labs/avl/delete_preview.html >/dev/null 2>&1 &") != 0)
             printf("Откройте labs/avl/delete_preview.html в браузере.\n");
     }
+    else
+        printf("Откройте labs/avl/delete_preview.html в браузере.\n");
+    browserOpened = 1;
 }

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <time.h>
 #include "avl.h"
 
@@ -15,70 +14,39 @@ static void printTree(struct Node *root)
     printf("\n");
 }
 
-int main(int argc, char *argv[])
+int main(void)
 {
-    int manual = argc > 1 && strcmp(argv[1], "--manual") == 0;
-    // Здесь меняйте число вершин исходного дерева: вручную / случайно.
-    int vertexCount = manual ? 12 : 100;
+    // Здесь меняйте число вершин исходного дерева.
+    int vertexCount = 100;
     if (vertexCount < 1 || vertexCount > 1000)
     {
         printf("Число вершин должно быть от 1 до 1000.\n");
         return 1;
     }
     int values[vertexCount];
-    int deletedKeys[vertexCount];
-    int count = vertexCount;
+    int deletedKeys[DELETE_N];
     struct Node *root = NULL;
 
-    if (manual)
-    {
-        printf("Введите %d разных кодов символов в порядке ручного задания:\n", count);
-        for (int i = 0; i < count; i++)
-        {
-            printf("Код %d: ", i + 1);
-            fflush(stdout);
-            if (scanf("%d", &values[i]) != 1)
-            {
-                freeTree(root);
-                return 1;
-            }
-            if (searchNode(root, values[i]) != NULL)
-            {
-                printf("Код уже введён.\n");
-                i--;
-                continue;
-            }
-            addAVL(values[i], &root);
-        }
-    }
-    else
-    {
-        srand((unsigned)time(NULL));
-        generateNumbers(values, count);
-        for (int i = 0; i < count; i++)
-            addAVL(values[i], &root);
-    }
+    srand((unsigned)time(NULL));
+    generateNumbers(values, vertexCount);
+    for (int i = 0; i < vertexCount; i++)
+        addAVL(values[i], &root);
 
     printf("Исходное АВЛ-дерево, обход слева направо:\n");
     printTree(root);
     if (!saveDeleteStep(root, 0))
         fprintf(stderr, "Не удалось сохранить исходный рисунок дерева.\n");
-    showTreeImage(root);
+    showDeletePreview(deletedKeys, 0);
 
-    int deletes = manual ? count : (count < DELETE_N ? count : DELETE_N);
+    int deletes = vertexCount < DELETE_N ? vertexCount : DELETE_N;
     int removed = 0;
     while (removed < deletes)
     {
         int key;
-        if (manual)
-            key = values[removed];
-        else
-        {
-            printf("Ключ для удаления %d/%d: ", removed + 1, deletes);
-            fflush(stdout);
-            if (scanf("%d", &key) != 1)
-                break;
-        }
+        printf("Ключ для удаления %d/%d: ", removed + 1, deletes);
+        fflush(stdout);
+        if (scanf("%d", &key) != 1)
+            break;
 
         if (!deleteAVL(key, &root))
         {
@@ -92,9 +60,9 @@ int main(int argc, char *argv[])
         printTree(root);
         if (!saveDeleteStep(root, removed))
             fprintf(stderr, "Не удалось сохранить рисунок после удаления %d.\n", key);
+        showDeletePreview(deletedKeys, removed);
     }
 
-    showDeletePreview(deletedKeys, removed);
     freeTree(root);
     return 0;
 }

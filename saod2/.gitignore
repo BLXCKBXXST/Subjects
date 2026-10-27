@@ -6,3 +6,4 @@ sdp-*.svg
 avl.svg
 avl-delete-*.svg
 avl-delete-steps.js
+avl-delete-steps.tmp.js
