@@ -18,7 +18,8 @@ static void printTree(struct Node *root)
 int main(int argc, char *argv[])
 {
     int manual = argc > 1 && strcmp(argv[1], "--manual") == 0;
-    int vertexCount = manual ? 12 : 100; // Число вершин: 12 вручную, 100 случайно.
+    // Здесь меняйте число вершин исходного дерева: вручную / случайно.
+    int vertexCount = manual ? 12 : 100;
     if (vertexCount < 1 || vertexCount > 1000)
     {
         printf("Число вершин должно быть от 1 до 1000.\n");
@@ -62,6 +63,7 @@ int main(int argc, char *argv[])
     printTree(root);
     if (!saveDeleteStep(root, 0))
         fprintf(stderr, "Не удалось сохранить исходный рисунок дерева.\n");
+    showTreeImage(root);
 
     int deletes = manual ? count : (count < DELETE_N ? count : DELETE_N);
     int removed = 0;
