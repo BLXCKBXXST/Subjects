@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>АВЛ-дерево — удаление вершин</title>
+<style>
+  body { margin: 16px; font: 16px sans-serif; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; }
+</style>
+<h1>АВЛ-дерево — удаление вершин</h1>
+<p>Масштаб можно менять в браузере.</p>
+<p>
+  <button id="previous">← Назад</button>
+  <span id="caption"></span>
+  <button id="next">Вперёд →</button>
+</p>
+<img id="tree" alt="Изображение АВЛ-дерева">
+<script src="../../avl-delete-steps.js"></script>
+<script>
+  let step = 0;
+  function showStep() {
+    document.getElementById('caption').textContent = step === 0
+      ? 'Исходное дерево (шаг 0 из ' + deletedKeys.length + ')'
+      : 'Шаг ' + step + ' из ' + deletedKeys.length + ': удалён ключ ' + deletedKeys[step - 1];
+    document.getElementById('tree').src = '../../avl-delete-' + step + '.svg';
+    document.getElementById('previous').disabled = step === 0;
+    document.getElementById('next').disabled = step === deletedKeys.length;
+  }
+  document.getElementById('previous').onclick = function () { step--; showStep(); };
+  document.getElementById('next').onclick = function () { step++; showStep(); };
+  showStep();
+</script>
+</html>

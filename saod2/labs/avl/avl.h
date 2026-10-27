@@ -27,5 +27,7 @@ void searchMultiple(struct Node *root);
 
 int saveTreeSvg(const char *filename, struct Node *root);
 void showTreeImage(struct Node *root);
+int saveDeleteStep(struct Node *root, int step);
+void showDeletePreview(const int deletedKeys[], int count);
 
 #endif

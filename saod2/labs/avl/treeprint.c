@@ -146,7 +146,16 @@ static void svgNodes(FILE *file, struct Layout *p, int x, int level)
 int saveTreeSvg(const char *filename, struct Node *root)
 {
     if (root == NULL)
-        return 0;
+    {
+        FILE *file = fopen(filename, "w");
+        if (file == NULL)
+            return 0;
+        fputs("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 120\" width=\"400\" height=\"120\">\n"
+              "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>\n"
+              "<text x=\"200\" y=\"65\" fill=\"#2563eb\" text-anchor=\"middle\" "
+              "font-family=\"Arial,sans-serif\" font-size=\"20\">Дерево пусто</text>\n</svg>\n", file);
+        return fclose(file) == 0;
+    }
 
     struct Layout *p = makeLayout(root);
     int left = 0;

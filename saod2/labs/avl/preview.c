@@ -30,3 +30,39 @@ void showTreeImage(struct Node *root)
     else
         printf("Откройте labs/avl/preview.html в браузере.\n");
 }
+
+int saveDeleteStep(struct Node *root, int step)
+{
+    char filename[64];
+    snprintf(filename, sizeof(filename), "avl-delete-%d.svg", step);
+    return saveTreeSvg(filename, root);
+}
+
+void showDeletePreview(const int deletedKeys[], int count)
+{
+    FILE *file = fopen("avl-delete-steps.js", "w");
+    if (file == NULL)
+    {
+        perror("avl-delete-steps.js");
+        return;
+    }
+
+    fputs("const deletedKeys = [", file);
+    for (int i = 0; i < count; i++)
+        fprintf(file, "%s%d", i ? ", " : "", deletedKeys[i]);
+    fputs("];\n", file);
+    if (fclose(file) != 0)
+    {
+        perror("avl-delete-steps.js");
+        return;
+    }
+
+    printf("Рисунки всех шагов: avl-delete-0.svg ... avl-delete-%d.svg\n", count);
+    printf("Просмотр удаления: labs/avl/delete_preview.html\n");
+    fflush(stdout);
+    if (system("command -v xdg-open >/dev/null 2>&1") == 0)
+    {
+        if (system("xdg-open labs/avl/delete_preview.html >/dev/null 2>&1 &") != 0)
+            printf("Откройте labs/avl/delete_preview.html в браузере.\n");
+    }
+}

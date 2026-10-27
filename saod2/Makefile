@@ -112,7 +112,7 @@ run-avl: build/avl
 	./build/avl
 
 # 3.6 — удаление из АВЛ-дерева
-AVL_DELETE_SOURCES = labs/avl/main_delete.c labs/avl/avl.c labs/avl/common.c labs/avl/search.c
+AVL_DELETE_SOURCES = labs/avl/main_delete.c labs/avl/avl.c labs/avl/common.c labs/avl/search.c labs/avl/treeprint.c labs/avl/preview.c
 
 build/avl-delete: $(AVL_DELETE_SOURCES) labs/avl/avl.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_DELETE_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
