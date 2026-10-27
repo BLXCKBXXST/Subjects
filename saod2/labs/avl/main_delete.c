@@ -3,6 +3,7 @@
 #include <time.h>
 #include "avl.h"
 
+#define TREE_N 100
 #define DELETE_N 10
 
 static void printTree(struct Node *root)
@@ -16,20 +17,18 @@ static void printTree(struct Node *root)
 
 int main(void)
 {
-    // Здесь меняйте число вершин исходного дерева.
-    int vertexCount = 100;
-    if (vertexCount < 1 || vertexCount > 1000)
+    if (TREE_N < 1 || TREE_N > 1000)
     {
         printf("Число вершин должно быть от 1 до 1000.\n");
         return 1;
     }
-    int values[vertexCount];
+    int values[TREE_N];
     int deletedKeys[DELETE_N];
     struct Node *root = NULL;
 
     srand((unsigned)time(NULL));
-    generateNumbers(values, vertexCount);
-    for (int i = 0; i < vertexCount; i++)
+    generateNumbers(values, TREE_N);
+    for (int i = 0; i < TREE_N; i++)
         addAVL(values[i], &root);
 
     printf("Исходное АВЛ-дерево, обход слева направо:\n");
@@ -38,7 +37,7 @@ int main(void)
         fprintf(stderr, "Не удалось сохранить исходный рисунок дерева.\n");
     showDeletePreview(deletedKeys, 0);
 
-    int deletes = vertexCount < DELETE_N ? vertexCount : DELETE_N;
+    int deletes = TREE_N < DELETE_N ? TREE_N : DELETE_N;
     int removed = 0;
     while (removed < deletes)
     {
