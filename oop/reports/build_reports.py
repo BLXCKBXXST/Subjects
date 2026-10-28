@@ -289,7 +289,7 @@ LABS = {
                 'нет, вывести сообщение. В методичке нет варианта 24, '
                 'поэтому выбран последний доступный вариант 23.',
         'algorithm': [
-            'Ввести N и данные N людей. Проверить каждую дату рождения.',
+            'Ввести N и данные N людей.',
             'Добавить объекты Person в people с помощью push_back.',
             'Вывести исходный список и ввести знак зодиака для поиска.',
             'Пройти по people от begin до end. При совпадении знака '
@@ -301,8 +301,8 @@ LABS = {
             'В Person поля surname, name и zodiac имеют тип string. '
             'Дата хранится в birthday[3]: день, месяц и год. Метод input '
             'читает данные, show выводит одну запись.',
-            'Функция validDate проверяет месяц, количество дней и '
-            'високосный год. Знак зодиака вводится как готовая строка, '
+            'Дата вводится как три числа без проверки. '
+            'Знак зодиака вводится как готовая строка, '
             'его вычисление по дате не требуется. При поиске строки '
             'должны совпадать, включая регистр букв.',
             'Итератор it указывает на текущий объект. Запись it->show() '
@@ -317,9 +317,8 @@ LABS = {
                    ['Сидоров Петр', 'Овен', '9.4.2005']],
         'result': 'При поиске «Овен» новый список содержит Иванова Ивана '
                   'и Сидорова Петра. При поиске «Рыбы» совпадений нет, '
-                  'что показано отдельным запуском. Также проверены '
-                  'пустой список и даты 29.2.2003 и 29.2.2004: первая '
-                  'отклоняется, вторая принимается.',
+                  'что показано отдельным запуском. Также проверен '
+                  'пустой список.',
         'methods': [['Метод', 'Назначение'],
                     ['push_back', 'Добавить объект в конец списка'],
                     ['begin и end', 'Начало и конец прохода'],
@@ -536,7 +535,7 @@ def build(num, lab):
     if num == 3:
         story.append(paragraph('Исходный текстовый файл tea.txt', HEAD))
         story.append(Preformatted((ROOT / 'lab-03/variant-24/tea.txt').read_text(), CODE))
-    if 'methods' in lab:
+    if 'methods' in lab and num != 5:
         story.append(paragraph('Использованные методы и функции', HEAD))
         story.append(table(lab['methods'], compact=True))
     story.append(PageBreak())
@@ -562,6 +561,9 @@ def build(num, lab):
     for i, (question, answer) in enumerate(lab['questions'], 1):
         story.append(paragraph(f'{i}. {question}', QUESTION))
         story.append(paragraph(answer))
+    if num == 5:
+        story.append(paragraph('Использованные методы и функции', HEAD))
+        story.append(table(lab['methods'], compact=True))
     story.append(paragraph('Вывод', HEAD))
     story.append(paragraph(lab['conclusion']))
     output = ROOT / f'lab-{num:02d}' / f'Лаб№{num}_Язиков.pdf'
