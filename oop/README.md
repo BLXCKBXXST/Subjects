@@ -18,6 +18,7 @@ make run1     # запустить первую работу
 make run2     # вторую; аналогично run3, run4, run5
 make run-defense2  # собрать и запустить защиту второй лабы
 make run-defense4  # гостиница, защита четвёртой лабы
+make run-defense5  # вокзал, защита пятой лабы
 ```
 
 Для 2, 4 и 5 есть `example.txt`. Например: `./build/lab2 < lab-02/example.txt`.
