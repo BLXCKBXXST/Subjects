@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
 
@@ -7,11 +6,8 @@ int main(void) {
     int fd[2];
     pipe(fd);
 
-    int pid = fork();
-
-    if (pid > 0) {
-
-        int keyboard = isatty(STDIN_FILENO);
+    if (fork() > 0) {
+        int keyboard = isatty(0);
         if (keyboard) {
             printf("Введите текст: ");
             fflush(stdout);
@@ -29,38 +25,38 @@ int main(void) {
         close(fd[1]);
 
         wait(NULL);
-        char name[100];
+        char name[20];
         read(fd[0], name, sizeof(name));
-        printf("Родитель получил имя файла: %s\n", name);
+        printf("Файл результата: %s\n", name);
         close(fd[0]);
     } else {
-
-        char text[5000];
+        char text[5000], c;
         int len = 0;
-        char c;
         while (read(fd[0], &c, 1) == 1 && c != 26)
             text[len++] = c;
         text[len] = '\0';
         close(fd[0]);
 
-        char best[5000] = "";
-        int max = -1;
-        char *word = strtok(text, " \n");
-        while (word != NULL) {
-            int count = 0;
-            for (char *p = word; *p; p++) {
-                if (strncmp(p, "а", 2) == 0)
-                    count++;
+        int start = 0, best = 0, best_end = 0;
+        int count = 0, max = -1;
+        char a[] = "а";
+        for (int i = 0; i <= len; i++) {
+            if (text[i] == ' ' || text[i] == '\n' || text[i] == '\0') {
+                if (i > start && count > max) {
+                    max = count;
+                    best = start;
+                    best_end = i;
+                }
+                start = i + 1;
+                count = 0;
+            } else if (text[i] == a[0] && text[i + 1] == a[1]) {
+                count++;
             }
-            if (count > max) {
-                max = count;
-                strcpy(best, word);
-            }
-            word = strtok(NULL, " \n");
         }
 
+        text[best_end] = '\0';
         FILE *out = fopen("output.txt", "w");
-        fprintf(out, "Слово: %s\nКоличество букв 'а': %d\n", best, max);
+        fprintf(out, "Слово: %s\nКоличество букв 'а': %d\n", text + best, max);
         fclose(out);
 
         char name[] = "output.txt";
