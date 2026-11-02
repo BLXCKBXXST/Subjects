@@ -48,8 +48,11 @@ static void printRow(int n, int showN, const char *name, struct Node *root)
     printf("\n");
 }
 
-void printDBDComparison(struct Node *dbd, struct Node *avl, int n)
+void printDBDComparison(const int A[], int maxN)
 {
+    struct Node *dbd = NULL;
+    struct Node *avl = NULL;
+
     printf("Сравнение АВЛ и ДБД:\n");
     printf("┌─────┬───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
     printf("│");
@@ -61,7 +64,23 @@ void printDBDComparison(struct Node *dbd, struct Node *avl, int n)
     printCell("Средняя высота", 17);
     printf("\n");
     printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
-    printRow(n, 1, "АВЛ", avl);
-    printRow(n, 0, "ДБД", dbd);
+
+    for (int n = 100; n <= maxN; n += 100)
+    {
+        for (int i = n - 100; i < n; i++)
+        {
+            VR = HR = 0;
+            B2INSERT(A[i], &dbd);
+            addAVL(A[i], &avl);
+        }
+
+        printRow(n, 1, "АВЛ", avl);
+        printRow(n, 0, "ДБД", dbd);
+        if (n < maxN)
+            printf("├─────┼───────┼────────┼───────────────────┼────────┼─────────────────┤\n");
+    }
+
     printf("└─────┴───────┴────────┴───────────────────┴────────┴─────────────────┘\n");
+    freeTree(dbd);
+    freeTree(avl);
 }
