@@ -45,9 +45,9 @@ static struct Page *makePage(const struct Node *root)
         }
 
     if (count > 1)
-        total += (count - 1) * 24;
+        total += (count - 1) * 5;
 
-    int pageWidth = p->second ? 136 : 74;
+    int pageWidth = p->second ? 76 : 42;
     p->width = total > pageWidth ? total : pageWidth;
     return p;
 }
@@ -58,7 +58,7 @@ static void arrange(struct Page *p, int left, int level)
         return;
 
     p->x = left + p->width / 2;
-    p->y = 47 + level * 100;
+    p->y = 47 + level * 150;
 
     int count = 0;
     int total = 0;
@@ -70,14 +70,14 @@ static void arrange(struct Page *p, int left, int level)
         }
 
     if (count > 1)
-        total += (count - 1) * 24;
+        total += (count - 1) * 5;
 
     int childLeft = left + (p->width - total) / 2;
     for (int i = 0; i < 3; i++)
         if (p->child[i] != NULL)
         {
             arrange(p->child[i], childLeft, level + 1);
-            childLeft += p->child[i]->width + 24;
+            childLeft += p->child[i]->width + 5;
         }
 }
 
@@ -91,7 +91,7 @@ static void drawEdges(FILE *f, const struct Page *p)
         {
             const struct Page *q = p->child[i];
             fprintf(f, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#64748b\" stroke-width=\"2\"/>\n",
-                    p->x, p->y + 24, q->x, q->y - 24);
+                    p->x, p->y + 19, q->x, q->y - 19);
             drawEdges(f, q);
         }
 }
@@ -102,23 +102,23 @@ static void drawNodes(FILE *f, const struct Page *p)
         return;
 
     int x = p->x, y = p->y;
-    int half = p->second ? 68 : 37;
+    int half = p->second ? 38 : 21;
 
-    fprintf(f, "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"52\" rx=\"10\" stroke=\"#0d9488\" stroke-dasharray=\"5 4\" fill=\"#f0fdfa\"/>\n",
-            x - half, y - 26, 2 * half);
+    fprintf(f, "<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"38\" rx=\"8\" stroke=\"#0d9488\" stroke-dasharray=\"5 4\" fill=\"#f0fdfa\"/>\n",
+            x - half, y - 19, 2 * half);
 
     if (p->second != NULL)
     {
         fprintf(f, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke=\"#0d9488\" stroke-width=\"4\"/>\n",
-                x - 11, y, x + 11, y);
-        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"20\" fill=\"white\" stroke=\"#334155\"/>\n", x - 34, y);
-        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"20\" fill=\"white\" stroke=\"#334155\"/>\n", x + 34, y);
-        fprintf(f, "<text x=\"%d\" y=\"%d\">%d</text>\n", x - 34, y + 5, p->first->Data);
-        fprintf(f, "<text x=\"%d\" y=\"%d\">%d</text>\n", x + 34, y + 5, p->second->Data);
+                x - 4, y, x + 4, y);
+        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"14\" fill=\"white\" stroke=\"#334155\"/>\n", x - 18, y);
+        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"14\" fill=\"white\" stroke=\"#334155\"/>\n", x + 18, y);
+        fprintf(f, "<text x=\"%d\" y=\"%d\">%d</text>\n", x - 18, y + 5, p->first->Data);
+        fprintf(f, "<text x=\"%d\" y=\"%d\">%d</text>\n", x + 18, y + 5, p->second->Data);
     }
     else
     {
-        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"20\" fill=\"white\" stroke=\"#334155\"/>\n", x, y);
+        fprintf(f, "<circle cx=\"%d\" cy=\"%d\" r=\"14\" fill=\"white\" stroke=\"#334155\"/>\n", x, y);
         fprintf(f, "<text x=\"%d\" y=\"%d\">%d</text>\n", x, y + 5, p->first->Data);
     }
 
@@ -144,7 +144,7 @@ int saveDBDSvg(const char *filename, struct Node *root)
 
     arrange(layout, 30, 0);
     int width = layout->width + 60;
-    int height = pageLevels(root) * 100 + 20;
+    int height = pageLevels(root) * 150 + 15;
 
     FILE *f = fopen(filename, "w");
     if (f == NULL)
@@ -156,7 +156,7 @@ int saveDBDSvg(const char *filename, struct Node *root)
     fprintf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 %d %d\" width=\"%d\" height=\"%d\">\n", width, height, width, height);
     fprintf(f, "<rect width=\"100%%\" height=\"100%%\" fill=\"white\"/>\n");
-    fprintf(f, "<style>text{font:600 13px Arial,sans-serif;fill:#0f172a;text-anchor:middle}</style>\n");
+    fprintf(f, "<style>text{font:600 11px Arial,sans-serif;fill:#0f172a;text-anchor:middle}</style>\n");
     drawEdges(f, layout);
     drawNodes(f, layout);
     fputs("</svg>\n", f);
