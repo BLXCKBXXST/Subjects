@@ -48,7 +48,7 @@ static void printRow(int n, int showN, const char *name, struct Node *root)
     printf("\n");
 }
 
-void printComparison(struct Node *dbd, struct Node *avl, int n)
+void printDBDComparison(struct Node *dbd, struct Node *avl, int n)
 {
     printf("Сравнение АВЛ и ДБД:\n");
     printf("┌─────┬───────┬────────┬───────────────────┬────────┬─────────────────┐\n");
