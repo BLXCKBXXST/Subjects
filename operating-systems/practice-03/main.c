@@ -4,15 +4,12 @@
 #include <sys/wait.h>
 
 int main(void) {
-    int fd[2], back[2];
+    int fd[2];
     pipe(fd);
-    pipe(back);
 
     int pid = fork();
 
     if (pid > 0) {
-        close(fd[0]);
-        close(back[1]);
 
         int keyboard = isatty(STDIN_FILENO);
         if (keyboard) {
@@ -31,14 +28,12 @@ int main(void) {
         write(fd[1], &end, 1);
         close(fd[1]);
 
-        char name[100];
-        read(back[0], name, sizeof(name));
-        printf("Родитель получил имя файла: %s\n", name);
-        close(back[0]);
         wait(NULL);
+        char name[100];
+        read(fd[0], name, sizeof(name));
+        printf("Родитель получил имя файла: %s\n", name);
+        close(fd[0]);
     } else {
-        close(fd[1]);
-        close(back[0]);
 
         char text[5000];
         int len = 0;
@@ -69,8 +64,8 @@ int main(void) {
         fclose(out);
 
         char name[] = "output.txt";
-        write(back[1], name, sizeof(name));
-        close(back[1]);
+        write(fd[1], name, sizeof(name));
+        close(fd[1]);
     }
     return 0;
 }
