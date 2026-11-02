@@ -7,7 +7,7 @@ practice: main.c
 	$(CC) $(CFLAGS) main.c -o practice
 
 run: practice
-	./practice < input.txt
+	./practice
 
 clean:
 	rm -f practice output.txt
