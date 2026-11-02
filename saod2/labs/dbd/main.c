@@ -25,7 +25,7 @@ int main(void)
     inorder(dbd);
     printf("\n\n");
 
-    printComparison(dbd, avl, TREE_N);
+    printDBDComparison(dbd, avl, TREE_N);
     printf("Количество уровней страниц ДБД: %d\n", pageLevels(dbd));
     showDBDImage(dbd);
 
