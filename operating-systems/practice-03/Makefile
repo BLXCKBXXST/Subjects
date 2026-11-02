@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c11 -Wall -Wextra -pedantic
+CFLAGS = -std=c11 -Wall -Wextra
 
 all: practice
 
@@ -7,7 +7,7 @@ practice: main.c
 	$(CC) $(CFLAGS) main.c -o practice
 
 run: practice
-	./practice
+	./practice < input.txt
 
 clean:
 	rm -f practice output.txt
