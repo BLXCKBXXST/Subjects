@@ -119,3 +119,12 @@ build/avl-delete: $(AVL_DELETE_SOURCES) labs/avl/avl.h | build
 
 run-avl-delete: build/avl-delete
 	./build/avl-delete
+
+# 3.7 — двоичное Б-дерево (ДБД)
+DBD_SOURCES = labs/dbd/main.c labs/dbd/dbd.c labs/dbd/compare.c labs/dbd/svg.c labs/avl/avl.c labs/avl/common.c
+
+build/dbd: $(DBD_SOURCES) labs/dbd/dbd.h labs/avl/avl.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(DBD_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-dbd: build/dbd
+	./build/dbd
