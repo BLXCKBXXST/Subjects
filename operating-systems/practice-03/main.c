@@ -14,8 +14,16 @@ int main(void) {
         close(fd[0]);
         close(back[1]);
 
+        int keyboard = isatty(STDIN_FILENO);
+        if (keyboard) {
+            printf("Введите текст: ");
+            fflush(stdout);
+        }
+
         int c;
         while ((c = getchar()) != EOF) {
+            if (keyboard && c == '\n')
+                break;
             char ch = c;
             write(fd[1], &ch, 1);
         }
