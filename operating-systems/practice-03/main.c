@@ -46,7 +46,7 @@ int main(void) {
         while (word != NULL) {
             int count = 0;
             for (char *p = word; *p; p++) {
-                if (strncmp(p, "а", 2) == 0 || strncmp(p, "А", 2) == 0)
+                if (strncmp(p, "а", 2) == 0)
                     count++;
             }
             if (count > max) {
