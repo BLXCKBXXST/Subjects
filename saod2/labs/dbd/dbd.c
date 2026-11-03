@@ -75,26 +75,13 @@ void B2INSERT(int D, struct Node **p)
 
 int pageLevels(struct Node *p)
 {
-    if (p == NULL)
-        return 0;
+    int h = 0;
 
-    int left = pageLevels(p->Left);
-    int middle, right;
-
-    if (p->Bal == 1)
+    while (p != NULL)
     {
-        middle = pageLevels(p->Right->Left);
-        right = pageLevels(p->Right->Right);
-    }
-    else
-    {
-        middle = 0;
-        right = pageLevels(p->Right);
+        h++;
+        p = p->Left;
     }
 
-    int max = left > middle ? left : middle;
-    if (right > max)
-        max = right;
-
-    return max + 1;
+    return h;
 }
