@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete dop
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -128,3 +128,12 @@ build/dbd: $(DBD_SOURCES) labs/dbd/dbd.h labs/avl/avl.h | build
 
 run-dbd: build/dbd
 	./build/dbd
+
+# 3.8 — дерево оптимального поиска (точный алгоритм)
+DOP_SOURCES = labs/dop/main.c labs/dop/svg.c
+
+build/dop: $(DOP_SOURCES) labs/dop/dop.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(DOP_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-dop: build/dop
+	./build/dop
