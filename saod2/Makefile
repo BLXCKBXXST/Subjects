@@ -130,7 +130,7 @@ run-dbd: build/dbd
 	./build/dbd
 
 # 3.8 — дерево оптимального поиска (точный алгоритм)
-DOP_SOURCES = labs/dop/main.c labs/dop/svg.c
+DOP_SOURCES = labs/dop/main.c labs/dop/dop.c labs/dop/tree.c labs/dop/compare.c labs/dop/svg.c
 
 build/dop: $(DOP_SOURCES) labs/dop/dop.h | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(DOP_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
