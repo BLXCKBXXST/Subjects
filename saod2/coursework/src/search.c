@@ -117,12 +117,13 @@ void poisk_po_godu(struct Zapis **uk, int n, int god) {
         pokazat_derevo(root);
         if (sohranit_svg(root, "a2.svg")) {
             printf("SVG сохранён: coursework/src/a2.svg\n");
+            printf("Открываем страницу a2.html\n");
 #ifdef _WIN32
-            system("start \"\" \"a2.svg\"");
+            (void)system("start \"\" \"a2.html\"");
 #elif defined(__APPLE__)
-            system("open a2.svg");
+            (void)system("open a2.html");
 #else
-            system("xdg-open a2.svg >/dev/null 2>&1 &");
+            (void)system("xdg-open a2.html >/dev/null 2>&1 &");
 #endif
         }
 
