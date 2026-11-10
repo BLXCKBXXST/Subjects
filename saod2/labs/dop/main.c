@@ -2,6 +2,8 @@
 #include <time.h>
 #include "dop.h"
 
+Item A[N + 1];
+
 int main(int argc, char **argv)
 {
     int show = argc > 1 ? atoi(argv[1]) : 10;
