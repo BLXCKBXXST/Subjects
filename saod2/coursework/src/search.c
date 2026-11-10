@@ -125,7 +125,19 @@ void poisk_po_godu(struct Zapis **uk, int n, int god) {
             if (system("open a2.html") != 0)
                 printf("Откройте a2.html вручную.\n");
 #else
-            if (system("xdg-open a2.html >/dev/null 2>&1 &") != 0)
+            if (system("command -v firefox >/dev/null 2>&1") == 0) {
+                if (system("firefox a2.html >/dev/null 2>&1 &") != 0)
+                    printf("Откройте a2.html вручную.\n");
+            }
+            else if (system("command -v chromium >/dev/null 2>&1") == 0) {
+                if (system("chromium a2.html >/dev/null 2>&1 &") != 0)
+                    printf("Откройте a2.html вручную.\n");
+            }
+            else if (system("command -v google-chrome >/dev/null 2>&1") == 0) {
+                if (system("google-chrome a2.html >/dev/null 2>&1 &") != 0)
+                    printf("Откройте a2.html вручную.\n");
+            }
+            else if (system("xdg-open a2.html >/dev/null 2>&1 &") != 0)
                 printf("Откройте a2.html вручную.\n");
 #endif
         }
