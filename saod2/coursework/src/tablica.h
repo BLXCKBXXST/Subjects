@@ -45,6 +45,12 @@ static void yacheyka(const char *s, int w) {
     for (i = 0; i < right + 1; i++) printf(" ");
 }
 
+static void yacheyka_sleva(const char *s, int w) {
+    int d = w - shirina(s);
+    printf("│ %s", s);
+    for (int i = 0; i < d + 1; i++) printf(" ");
+}
+
 static void liniya(const char *l, const char *m, const char *r) {
     int w[6] = {W_NUM, W_AVT, W_ZAG, W_IZD, W_GOD, W_STR};
     int i, j;
@@ -84,9 +90,9 @@ static void tab_stroka(int nomer, struct Zapis *z) {
     sprintf(str, "%d", z->str);
 
     yacheyka(num, W_NUM);
-    yacheyka(avt, W_AVT);
-    yacheyka(zag, W_ZAG);
-    yacheyka(izd, W_IZD);
+    yacheyka_sleva(avt, W_AVT);
+    yacheyka_sleva(zag, W_ZAG);
+    yacheyka_sleva(izd, W_IZD);
     yacheyka(god, W_GOD);
     yacheyka(str, W_STR);
     printf("│\n");
