@@ -46,17 +46,19 @@ static void xml_text(FILE *f, const char *s) {
 
 static void wrapped_name(FILE *f, const char *name, int x, int y) {
     char lines[4][128] = {{0}};
-    int lengths[4] = {0}, line = 0, chars = 0;
+    int lengths[4] = {0};
+    int line = 0, chars = 0;
     const unsigned char *p = (const unsigned char *)name;
+
     while (*p && line < 4) {
         int bytes = (*p < 128) ? 1 : ((*p & 0xE0) == 0xC0 ? 2 : ((*p & 0xF0) == 0xE0 ? 3 : 4));
-        if (*p == ' ' && chars >= 16 && line < 3) {
+        if (*p == ' ' && chars >= 13 && line < 3) {
             line++;
             chars = 0;
             p++;
             continue;
         }
-        if (chars >= 23 && line < 3) {
+        if (chars >= 17 && line < 3) {
             line++;
             chars = 0;
         }
@@ -66,10 +68,11 @@ static void wrapped_name(FILE *f, const char *name, int x, int y) {
         chars++;
         p += bytes;
     }
+
     int count = line + 1;
     for (int i = 0; i < count; i++) {
-        int yy = y - 29 + i * 19;
-        fprintf(f, "<text class=\"name\" x=\"%d\" y=\"%d\" text-anchor=\"middle\" textLength=\"%d\" lengthAdjust=\"spacingAndGlyphs\">", x, yy, lengths[i] > 40 ? 230 : (lengths[i] > 25 ? 190 : (lengths[i] > 12 ? 120 : 65)));
+        int yy = y - 30 + i * 19;
+        fprintf(f, "<text class=\"name\" x=\"%d\" y=\"%d\" text-anchor=\"middle\">", x, yy);
         xml_text(f, lines[i]);
         fputs("</text>\n", f);
     }
