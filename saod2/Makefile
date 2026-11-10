@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete dop
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete dop a1a2
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -137,3 +137,12 @@ build/dop: $(DOP_SOURCES) labs/dop/dop.h | build
 
 run-dop: build/dop
 	./build/dop
+
+# 3.9 — почти оптимальные деревья поиска (А1 и А2)
+A1A2_SOURCES = labs/a1a2/main.c labs/a1a2/a1a2.c labs/a1a2/compare.c labs/dop/dop.c labs/dop/common.c labs/dop/tree.c labs/dop/svg.c
+
+build/a1a2: $(A1A2_SOURCES) labs/a1a2/a1a2.h labs/dop/dop.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(A1A2_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+
+run-a1a2: build/a1a2
+	./build/a1a2
