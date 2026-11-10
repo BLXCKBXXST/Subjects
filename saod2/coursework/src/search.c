@@ -119,11 +119,14 @@ void poisk_po_godu(struct Zapis **uk, int n, int god) {
             printf("SVG сохранён: coursework/src/a2.svg\n");
             printf("Открываем страницу a2.html\n");
 #ifdef _WIN32
-            (void)system("start \"\" \"a2.html\"");
+            if (system("start \"\" \"a2.html\"") != 0)
+                printf("Откройте a2.html вручную.\n");
 #elif defined(__APPLE__)
-            (void)system("open a2.html");
+            if (system("open a2.html") != 0)
+                printf("Откройте a2.html вручную.\n");
 #else
-            (void)system("xdg-open a2.html >/dev/null 2>&1 &");
+            if (system("xdg-open a2.html >/dev/null 2>&1 &") != 0)
+                printf("Откройте a2.html вручную.\n");
 #endif
         }
 
