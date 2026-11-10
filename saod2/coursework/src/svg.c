@@ -71,7 +71,7 @@ static void wrapped_name(FILE *f, const char *name, int x, int y) {
         int yy = y - 29 + i * 19;
         fprintf(f, "<text class=\\"name\\" x=\\"%d\\" y=\\"%d\\" text-anchor=\\"middle\\" textLength=\\"%d\\" lengthAdjust=\\"spacingAndGlyphs\\">", x, yy, lengths[i] > 40 ? 230 : (lengths[i] > 25 ? 190 : (lengths[i] > 12 ? 120 : 65)));
         xml_text(f, lines[i]);
-        fputs("</text>\\n", f);
+        fputs("</text>\n", f);
     }
 }
 
@@ -99,7 +99,7 @@ int sohranit_svg(struct Derevo *root, const char *filename) {
         }
     }
     for (int i = 0; i < n; i++) {
-        fprintf(f, "<rect class=\\"node\\" x=\\"%d\\" y=\\"%d\\" width=\\"260\\" height=\\"110\\" rx=\\"15\\"/>\\n", a[i].x - 130, a[i].y - 55);
+        fprintf(f, "<rect class=\\"node\\" x=\\"%d\\" y=\\"%d\\" width=\\"260\\" height=\\"110\\" rx=\\"15\\"/>\n", a[i].x - 130, a[i].y - 55);
         wrapped_name(f, a[i].node->key, a[i].x, a[i].y);
         fprintf(f, "<text class=\"weight\" x=\"%d\" y=\"%d\" text-anchor=\"middle\">Вес: %d</text>\n", a[i].x, a[i].y + 43, a[i].node->weight);
     }
