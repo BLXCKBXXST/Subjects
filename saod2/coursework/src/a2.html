@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дерево А2 — Курсовая САОД</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Arial,sans-serif;background:#0b1220;color:#e2e8f0}
+*{box-sizing:border-box}body{margin:0}header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:19px 26px;border-bottom:1px solid #243247;background:#111c30}
+h1{font-size:22px;margin:0 0 5px}p{margin:0;color:#94a3b8;font-size:13px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}button{background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:9px;padding:10px 14px;cursor:pointer;font-size:14px}button:hover{background:#334155}
+#view{height:calc(100vh - 100px);min-height:420px;overflow:hidden;cursor:grab;position:relative;background-image:radial-gradient(#263449 1px,transparent 1px);background-size:25px 25px}
+#view:active{cursor:grabbing}#stage{position:absolute;top:0;left:0;transform-origin:0 0;will-change:transform}#stage img{display:block;max-width:none;pointer-events:none}
+.hint{position:absolute;bottom:16px;left:20px;padding:9px 12px;border-radius:9px;background:#111c30d9;color:#94a3b8;font-size:12px;pointer-events:none}
+</style>
+</head>
+<body>
+<header><div><h1>Дерево поиска А2</h1><p>Курсовая работа · заглавия книг · вес каждой вершины</p></div><div class="controls"><button id="minus">−</button><button id="plus">+</button><button id="fit">Вместить</button><button id="reset">100%</button></div></header>
+<main id="view"><div id="stage"><img id="tree" src="a2.svg" alt="Дерево А2"></div><div class="hint">Колесо мыши — масштаб · перетаскивание — перемещение</div></main>
+<script>
+const view=document.getElementById('view'),stage=document.getElementById('stage'),img=document.getElementById('tree');
+let scale=1,x=0,y=0,drag=false,lastX=0,lastY=0;
+function draw(){stage.style.transform='translate('+x+'px,'+y+'px) scale('+scale+')'}
+function fit(){const w=img.naturalWidth||1000,h=img.naturalHeight||700;scale=Math.min(view.clientWidth/w,view.clientHeight/h,1)*.92;x=(view.clientWidth-w*scale)/2;y=(view.clientHeight-h*scale)/2;draw()}
+function zoom(f,cx=view.clientWidth/2,cy=view.clientHeight/2){let next=Math.max(.05,Math.min(4,scale*f));x=cx-(cx-x)*next/scale;y=cy-(cy-y)*next/scale;scale=next;draw()}
+img.addEventListener('load',fit);if(img.complete&&img.naturalWidth)fit();
+document.getElementById('plus').onclick=()=>zoom(1.25);
+document.getElementById('minus').onclick=()=>zoom(.8);
+document.getElementById('fit').onclick=fit;
+document.getElementById('reset').onclick=()=>{scale=1;x=24;y=24;draw()};
+view.addEventListener('wheel',e=>{e.preventDefault();const r=view.getBoundingClientRect();zoom(e.deltaY<0?1.12:.89,e.clientX-r.left,e.clientY-r.top)},{passive:false});
+view.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastY=e.clientY;view.setPointerCapture(e.pointerId)});
+view.addEventListener('pointermove',e=>{if(!drag)return;x+=e.clientX-lastX;y+=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;draw()});
+view.addEventListener('pointerup',()=>drag=false);view.addEventListener('pointercancel',()=>drag=false);
+window.addEventListener('resize',fit);
+</script>
+</body></html>
