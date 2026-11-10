@@ -88,17 +88,11 @@ struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
     return root;
 }
 
-static void pechat(struct Derevo *p, int level) {
-    int i;
-    if (p == NULL) return;
-    pechat(p->right, level + 1);
-    for (i = 0; i < level; i++) printf("    ");
-    printf("%s (вес %d)\n", p->key, p->weight);
-    pechat(p->left, level + 1);
-}
-
 void pokazat_derevo(struct Derevo *root) {
-    pechat(root, 0);
+    if (root == NULL) return;
+    pokazat_derevo(root->left);
+    printf("%s (вес %d)\n", root->key, root->weight);
+    pokazat_derevo(root->right);
 }
 
 void poisk_derevo(struct Derevo *root, const char *key) {
