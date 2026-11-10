@@ -4,12 +4,33 @@
 <title>Дерево А2 — курсовая</title>
 <style>
   body { margin: 16px; font: 16px sans-serif; }
-  img { display: block; max-width: 100%; }
+  img { display: none; max-width: 100%; }
 </style>
 <h1>Дерево А2 — курсовая</h1>
 <p>Дерево строится по заглавиям книг. Вес вершины — количество записей с одинаковым заглавием. Масштаб можно менять в браузере.</p>
-<img id="tree" src="a2.svg" alt="Изображение дерева А2">
+<p id="status">Дерево ещё не построено. Выполните сортировку и поиск по году в программе.</p>
+<img id="tree" alt="Изображение дерева А2">
 <script>
-  document.getElementById('tree').src = 'a2.svg?' + Date.now();
+  const tree = document.getElementById('tree');
+  const status = document.getElementById('status');
+  let last = '';
+  function refresh() {
+    const test = new Image();
+    const url = 'a2.svg?' + Date.now();
+    test.onload = function () {
+      tree.src = url;
+      tree.style.display = 'block';
+      status.style.display = 'none';
+    };
+    test.onerror = function () {
+      if (!tree.getAttribute('src')) {
+        tree.style.display = 'none';
+        status.style.display = 'block';
+      }
+    };
+    test.src = url;
+  }
+  refresh();
+  setInterval(refresh, 1500);
 </script>
 </html>
