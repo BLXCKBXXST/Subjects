@@ -54,6 +54,23 @@ void pokazat(struct Zapis **uk, int n) {
     }
 }
 
+void otkrit_prosmotr(void) {
+    remove("a2.svg");
+#ifdef _WIN32
+    if (system("start \"\" \"a2.html\"") != 0)
+        printf("Откройте coursework/src/a2.html вручную.\n");
+#elif defined(__APPLE__)
+    if (system("open a2.html") != 0)
+        printf("Откройте coursework/src/a2.html вручную.\n");
+#else
+    if (system("command -v xdg-open >/dev/null 2>&1") == 0) {
+        if (system("xdg-open a2.html >/dev/null 2>&1 &") != 0)
+            printf("Откройте coursework/src/a2.html вручную.\n");
+    } else
+        printf("Откройте coursework/src/a2.html вручную.\n");
+#endif
+}
+
 int main(void) {
     struct Zapis *baza;
     struct Zapis **uk;
@@ -79,6 +96,7 @@ int main(void) {
     }
 
     printf("Загружено записей: %d\n", n);
+    otkrit_prosmotr();
 
     while (vibor != 0) {
         printf("\n1 - показать базу\n");
