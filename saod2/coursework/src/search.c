@@ -115,8 +115,16 @@ void poisk_po_godu(struct Zapis **uk, int n, int god) {
     if (root != NULL) {
         printf("\nДерево А2 по заглавиям (ФИО героев):\n");
         pokazat_derevo(root);
-        if (sohranit_svg(root, "a2.svg"))
+        if (sohranit_svg(root, "a2.svg")) {
             printf("SVG сохранён: coursework/src/a2.svg\n");
+#ifdef _WIN32
+            system("start \"\" \"a2.svg\"");
+#elif defined(__APPLE__)
+            system("open a2.svg");
+#else
+            system("xdg-open a2.svg >/dev/null 2>&1 &");
+#endif
+        }
 
         while (1) {
             printf("\nВведите ФИО героя для поиска (Enter - назад): ");
