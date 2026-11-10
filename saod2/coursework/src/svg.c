@@ -69,7 +69,7 @@ int sohranit_svg(struct Derevo *root, const char *filename) {
     }
     for (int i = 0; i < n; i++) {
         fprintf(f, "<rect class=\"node\" x=\"%d\" y=\"%d\" width=\"210\" height=\"70\" rx=\"15\"/>\n", a[i].x - 105, a[i].y - 35);
-        fprintf(f, "<text class=\"name\" x=\"%d\" y=\"%d\" text-anchor=\"middle\" textLength=\"190\" lengthAdjust=\"spacingAndGlyphs\">", a[i].x, a[i].y - 5);
+        fprintf(f, "<text class=\"name\" x=\"%d\" y=\"%d\" text-anchor=\"middle\" font-size=\"13\">", a[i].x, a[i].y - 5);
         xml_text(f, a[i].node->key);
         fputs("</text>\n", f);
         fprintf(f, "<text class=\"weight\" x=\"%d\" y=\"%d\" text-anchor=\"middle\">Вес: %d</text>\n", a[i].x, a[i].y + 21, a[i].node->weight);
