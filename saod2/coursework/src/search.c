@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "zapis.h"
 #include "tablica.h"
+#include "tree.h"
 
 struct Ochered {
     struct Zapis *zapis;
@@ -90,7 +91,42 @@ void ochistit_ochered(struct Ochered *first) {
 
 void poisk_po_godu(struct Zapis **uk, int n, int god) {
     struct Ochered *ochered = sozdat_ochered(uk, n, god);
+    struct Ochered *p;
+    struct Zapis **massiv;
+    struct Derevo *root;
+    char key[100];
+    int count = 0, i = 0;
 
     pokazat_ochered(ochered);
+
+    for (p = ochered; p != NULL; p = p->next) count++;
+    if (count == 0) return;
+
+    massiv = malloc(count * sizeof(struct Zapis *));
+    if (massiv == NULL) {
+        ochistit_ochered(ochered);
+        return;
+    }
+    for (p = ochered; p != NULL; p = p->next) massiv[i++] = p->zapis;
+
+    root = postroit_a2(massiv, count);
+    free(massiv);
+
+    if (root != NULL) {
+        printf("\nДерево А2 по заглавиям (ФИО героев):\n");
+        pokazat_derevo(root);
+
+        while (1) {
+            printf("\nВведите ФИО героя для поиска (Enter - назад): ");
+            if (fgets(key, sizeof(key), stdin) == NULL) break;
+            i = 0;
+            while (key[i] != '\0' && key[i] != '\n') i++;
+            key[i] = '\0';
+            if (i == 0) break;
+            poisk_derevo(root, key);
+        }
+    }
+
+    ochistit_derevo(root);
     ochistit_ochered(ochered);
 }
