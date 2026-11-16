@@ -20,4 +20,4 @@ run-client: client
 	./client
 
 clean:
-	rm -f server client request.fifo response.fifo output.txt
+	rm -f server client fifo.1 output.txt

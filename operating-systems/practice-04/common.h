@@ -8,14 +8,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#define REQUEST_FIFO "request.fifo"
-#define RESPONSE_FIFO "response.fifo"
+#define FIFO "fifo.1"
+#define MAXBUFF 5000
 #define RESULT_FILE "output.txt"
-#define ERROR_REPLY "ERROR"
-#define REQUEST_START "«"
-#define REQUEST_END "»"
-#define NAME_SIZE 512
-#define MESSAGE_SIZE 1024
-#define TEXT_SIZE 5000
 
 #endif

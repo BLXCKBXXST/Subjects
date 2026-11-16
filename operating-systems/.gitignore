@@ -3,6 +3,5 @@
 /practice-03/output.txt
 /practice-04/server
 /practice-04/client
-/practice-04/request.fifo
-/practice-04/response.fifo
+/practice-04/fifo.1
 /practice-04/output.txt
