@@ -6,17 +6,31 @@ import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[1]
 env = dict(os.environ, SAOD_NO_BROWSER="1")
-programs = ["3.5-avl", "3.6-avl-delete", "3.7-dbd", "3.8-dop", "3.9-a1-a2"]
+early = ["3.1-trees","3.1-trees-100","3.2-isdp","3.2-isdp-iterative","3.3-sdp","3.3-sdp-iterative","3.3-sdp-repeat","3.3-sdp-repeat-iterative","3.4-sdp-delete"]
+programs = early + ["3.5-avl", "3.6-avl-delete", "3.7-dbd", "3.8-dop", "3.9-a1-a2"]
 
 def run(name, *args, env_override=None):
     return subprocess.run([str(root / "build" / name), *args],
-                          cwd=tempfile.gettempdir(), input="0\n", text=True,
+                          cwd=tempfile.gettempdir(),
+                          input=("10\n10\n" + "\n".join(map(str, range(1, 1001))) + "\n")
+                          if name == "3.4-sdp-delete" else "0\n", text=True,
                           capture_output=True, timeout=30, env=env_override or env)
 
 for name in programs:
     result = run(name)
     assert result.returncode == 0, (name, result.stderr)
     assert "Страница дерева:" in result.stdout, (name, result.stdout)
+fixed = run("3.1-trees")
+assert "Размер дерева: 7" in fixed.stdout and "Контрольная сумма: 52" in fixed.stdout
+assert "Высота дерева: 4" in fixed.stdout and "Средняя высота: 2.57" in fixed.stdout
+for file in ["3.1-trees.svg", "3.1-trees-100.svg", "3.2-isdp.svg",
+             "3.3-isdp.svg", "3.3-sdp-recursive.svg", "3.3-sdp-double.svg", "3.4-sdp-delete-0.svg"]:
+    assert (root / file).is_file(), file
+# All saved deletion steps must show one fewer node, down to the empty tree.
+for step in range(11):
+    svg = ET.parse(root / ("3.4-sdp-delete-%d.svg" % step)).getroot()
+    assert len(svg.findall(".//{http://www.w3.org/2000/svg}circle")) == 10 - step
+
 for path in root.glob("3.*.svg"):
     ET.parse(path)
 
@@ -67,11 +81,15 @@ from playwright.sync_api import sync_playwright
 with sync_playwright() as p:
     browser = p.chromium.launch()
     for name in programs:
-        folder = root / "labs" / name
+        folder_name = ("3.1-trees" if name.startswith("3.1-") else
+                       "3.2-isdp" if name.startswith("3.2-") else
+                       "3.3-sdp" if name.startswith("3.3-") else name)
+        folder = root / "labs" / folder_name
         page = browser.new_page(viewport={"width": 1280, "height": 800})
         errors = []
         page.on("pageerror", lambda error: errors.append(str(error)))
-        page.goto((folder / (name[:3] + "-view.html")).as_uri())
+        view = "3.1-view-100.html" if name == "3.1-trees-100" else name[:3] + "-view.html"
+        page.goto((folder / view).as_uri())
         page.wait_for_function("""() => [...document.querySelectorAll('.viewport img')]
             .every(img => img.complete && img.naturalWidth > 0)""")
         assert not errors, (name, errors)
@@ -82,9 +100,9 @@ with sync_playwright() as p:
         page.get_by_role("button", name="100%", exact=True).first.click()
         assert label.inner_text() == "100%"
         page.get_by_role("button", name="Вписать", exact=True).first.click()
-        if name == "3.6-avl-delete":
-            steps = root / "3.6-avl-delete-steps.js"
-            (root / "3.6-avl-delete-1.svg").write_bytes((root / "3.6-avl-delete-0.svg").read_bytes())
+        if name in ("3.4-sdp-delete", "3.6-avl-delete"):
+            steps = root / (name + "-steps.js")
+            (root / (name + "-1.svg")).write_bytes((root / (name + "-0.svg")).read_bytes())
             steps.write_text("window.treeSession='test'; window.deletedKeys=[123];")
             page.wait_for_function("() => document.getElementById('caption').textContent.includes('123')")
             page.get_by_role("button", name="← Назад").click()
@@ -93,4 +111,5 @@ with sync_playwright() as p:
             page.wait_for_function("() => document.getElementById('caption').textContent.includes('0 из 0')")
         page.close()
     browser.close()
-print("All five labs: build, SVG, paths, browser controls and algorithms passed.")
+assert "Дерево пусто" in (root / "3.4-sdp-delete-10.svg").read_text()
+print("Labs 3.1-3.9 and all early variants: build, SVG, paths and browser controls passed.")

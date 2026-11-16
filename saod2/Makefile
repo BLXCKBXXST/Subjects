@@ -1,8 +1,12 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete 3.5-avl 3.6-avl-delete 3.7-dbd 3.8-dop 3.9-a1-a2
-ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
+PROGRAMS = coursework records search search-old 3.1-trees 3.1-trees-100 3.2-isdp 3.2-isdp-iterative 3.3-sdp 3.3-sdp-iterative 3.3-sdp-repeat 3.3-sdp-repeat-iterative 3.4-sdp-delete 3.5-avl 3.6-avl-delete 3.7-dbd 3.8-dop 3.9-a1-a2
+VIEWER = labs/lab-viewer.c
+VIEWER_LIBS =
+ifeq ($(OS),Windows_NT)
+VIEWER_LIBS = -lshell32
+endif
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
 all: $(addprefix build/,$(PROGRAMS))
@@ -18,18 +22,6 @@ build/coursework: $(COURSEWORK_SOURCES) $(wildcard coursework/src/*.h) | build
 build/records: labs/records/main.c | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) $(LDLIBS) -o $@
 
-build/tree: labs/trees/derevya.c | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) $(LDLIBS) -o $@
-
-build/tree100: labs/trees/derevya100.c labs/trees/treeprint.c labs/trees/treeprint.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
-
-build/isdp: $(ISDP_COMMON) labs/isdp/search.c $(wildcard labs/isdp/*.h) | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
-
-build/isdp-iterative: $(ISDP_COMMON) labs/isdp/search_iterative.c $(wildcard labs/isdp/*.h) | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
-
 build/search: labs/substring-search/saod.c | build
 	$(CC) $(CPPFLAGS) $(CFLAGS) $< $(LDFLAGS) $(LDLIBS) -o $@
 
@@ -42,18 +34,6 @@ run-coursework: build/coursework
 run-records: build/records
 	./build/records
 
-run-tree: build/tree
-	./build/tree
-
-run-tree100: build/tree100
-	./build/tree100
-
-run-isdp: build/isdp
-	./build/isdp
-
-run-isdp-iterative: build/isdp-iterative
-	./build/isdp-iterative
-
 run-search: build/search
 	cd labs/substring-search && ../../build/search
 
@@ -63,52 +43,70 @@ run-search-old: build/search-old
 clean:
 	rm -rf build
 
-# СДП: как в 3.2, поиск выбирается при компиляции
-SDP_COMMON = labs/sdp/main.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
+LAB_3_1_TREES = labs/3.1-trees/3.1-main.c labs/3.1-trees/3.1-trees.c labs/3.1-trees/3.1-svg.c labs/3.1-trees/3.1-preview.c $(VIEWER)
+build/3.1-trees: $(LAB_3_1_TREES) $(wildcard labs/3.1-trees/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_1_TREES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-build/sdp: $(SDP_COMMON) labs/sdp/search.c labs/sdp/sdp.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+run-3.1-trees: build/3.1-trees
+	./build/3.1-trees
 
-build/sdp-iterative: $(SDP_COMMON) labs/sdp/search_iterative.c labs/sdp/sdp.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+LAB_3_1_TREES_100 = labs/3.1-trees/3.1-main-100.c labs/3.1-trees/3.1-insert.c labs/3.1-trees/3.1-trees.c labs/3.1-trees/3.1-svg.c labs/3.1-trees/3.1-preview.c $(VIEWER)
+build/3.1-trees-100: $(LAB_3_1_TREES_100) $(wildcard labs/3.1-trees/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_1_TREES_100) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-run-sdp: build/sdp
-	./build/sdp
+run-3.1-trees-100: build/3.1-trees-100
+	./build/3.1-trees-100
 
-run-sdp-iterative: build/sdp-iterative
-	./build/sdp-iterative
+LAB_3_2_ISDP = labs/3.2-isdp/3.2-main.c labs/3.2-isdp/3.2-isdp.c labs/3.2-isdp/3.2-common.c labs/3.2-isdp/3.2-compare.c labs/3.2-isdp/3.2-svg.c labs/3.2-isdp/3.2-search.c $(VIEWER)
+build/3.2-isdp: $(LAB_3_2_ISDP) $(wildcard labs/3.2-isdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_2_ISDP) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
+run-3.2-isdp: build/3.2-isdp
+	./build/3.2-isdp
 
-# СДП с повторяющимися ключами: равные элементы идут вправо
-SDP_REPEAT_COMMON = labs/sdp/main_repeat.c labs/sdp/common.c labs/sdp/compare.c labs/sdp/treeprint.c
+LAB_3_2_ISDP_ITERATIVE = labs/3.2-isdp/3.2-main.c labs/3.2-isdp/3.2-isdp.c labs/3.2-isdp/3.2-common.c labs/3.2-isdp/3.2-compare.c labs/3.2-isdp/3.2-svg.c labs/3.2-isdp/3.2-search-iterative.c $(VIEWER)
+build/3.2-isdp-iterative: $(LAB_3_2_ISDP_ITERATIVE) $(wildcard labs/3.2-isdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_2_ISDP_ITERATIVE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-build/sdp-repeat: $(SDP_REPEAT_COMMON) labs/sdp/search.c labs/sdp/sdp.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+run-3.2-isdp-iterative: build/3.2-isdp-iterative
+	./build/3.2-isdp-iterative
 
-build/sdp-repeat-iterative: $(SDP_REPEAT_COMMON) labs/sdp/search_iterative.c labs/sdp/sdp.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+LAB_3_3_SDP = labs/3.3-sdp/3.3-main.c labs/3.3-sdp/3.3-sdp.c labs/3.3-sdp/3.3-common.c labs/3.3-sdp/3.3-compare.c labs/3.3-sdp/3.3-svg.c labs/3.3-sdp/3.3-search.c $(VIEWER)
+build/3.3-sdp: $(LAB_3_3_SDP) $(wildcard labs/3.3-sdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_3_SDP) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-run-sdp-repeat: build/sdp-repeat
-	./build/sdp-repeat
+run-3.3-sdp: build/3.3-sdp
+	./build/3.3-sdp
 
-run-sdp-repeat-iterative: build/sdp-repeat-iterative
-	./build/sdp-repeat-iterative
+LAB_3_3_SDP_ITERATIVE = labs/3.3-sdp/3.3-main.c labs/3.3-sdp/3.3-sdp.c labs/3.3-sdp/3.3-common.c labs/3.3-sdp/3.3-compare.c labs/3.3-sdp/3.3-svg.c labs/3.3-sdp/3.3-search-iterative.c $(VIEWER)
+build/3.3-sdp-iterative: $(LAB_3_3_SDP_ITERATIVE) $(wildcard labs/3.3-sdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_3_SDP_ITERATIVE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-# 3.4 — удаление введённых ключей из СДП
-build/sdp-delete: labs/sdp/main_delete.c labs/sdp/delete.c labs/sdp/delete_input.c labs/sdp/delete_preview.c labs/sdp/common.c labs/sdp/treeprint.c $(wildcard labs/sdp/*.h) | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(filter %.c,$^) $(LDFLAGS) $(LDLIBS) -o $@
+run-3.3-sdp-iterative: build/3.3-sdp-iterative
+	./build/3.3-sdp-iterative
 
-run-sdp-delete: build/sdp-delete
-	./build/sdp-delete
+LAB_3_3_SDP_REPEAT = labs/3.3-sdp/3.3-main-repeat.c labs/3.3-sdp/3.3-sdp-repeat.c labs/3.3-sdp/3.3-common.c labs/3.3-sdp/3.3-compare.c labs/3.3-sdp/3.3-svg.c labs/3.3-sdp/3.3-search.c $(VIEWER)
+build/3.3-sdp-repeat: $(LAB_3_3_SDP_REPEAT) $(wildcard labs/3.3-sdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_3_SDP_REPEAT) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
+run-3.3-sdp-repeat: build/3.3-sdp-repeat
+	./build/3.3-sdp-repeat
+
+LAB_3_3_SDP_REPEAT_ITERATIVE = labs/3.3-sdp/3.3-main-repeat.c labs/3.3-sdp/3.3-sdp-repeat.c labs/3.3-sdp/3.3-common.c labs/3.3-sdp/3.3-compare.c labs/3.3-sdp/3.3-svg.c labs/3.3-sdp/3.3-search-iterative.c $(VIEWER)
+build/3.3-sdp-repeat-iterative: $(LAB_3_3_SDP_REPEAT_ITERATIVE) $(wildcard labs/3.3-sdp/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_3_SDP_REPEAT_ITERATIVE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
+
+run-3.3-sdp-repeat-iterative: build/3.3-sdp-repeat-iterative
+	./build/3.3-sdp-repeat-iterative
+
+LAB_3_4_SDP_DELETE = labs/3.4-sdp-delete/3.4-main.c labs/3.4-sdp-delete/3.4-sdp-delete.c labs/3.4-sdp-delete/3.4-input.c labs/3.4-sdp-delete/3.4-preview.c labs/3.3-sdp/3.3-sdp.c labs/3.3-sdp/3.3-common.c labs/3.3-sdp/3.3-svg.c $(VIEWER)
+build/3.4-sdp-delete: $(LAB_3_4_SDP_DELETE) $(wildcard labs/3.4-sdp-delete/*.h) $(wildcard labs/3.3-sdp/*.h) labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LAB_3_4_SDP_DELETE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
+
+run-3.4-sdp-delete: build/3.4-sdp-delete
+	./build/3.4-sdp-delete
 
 # 3.5 — АВЛ: включение вершины
-VIEWER = labs/lab-viewer.c
-VIEWER_LIBS =
-ifeq ($(OS),Windows_NT)
-VIEWER_LIBS = -lshell32
-endif
-
 AVL_CORE = labs/3.5-avl/3.5-avl.c labs/3.5-avl/3.5-common.c
 AVL_SVG = labs/3.5-avl/3.5-svg.c
 AVL_SOURCES = labs/3.5-avl/3.5-main.c $(AVL_CORE) labs/3.5-avl/3.5-compare.c labs/3.5-avl/3.5-search.c $(AVL_SVG) labs/3.5-avl/3.5-preview.c $(VIEWER)
