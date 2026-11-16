@@ -10,15 +10,22 @@ env = dict(os.environ, SAOD_NO_BROWSER="1")
 early = ["3.1-trees","3.1-trees-100","3.2-isdp","3.2-isdp-iterative","3.3-sdp","3.3-sdp-iterative","3.3-sdp-repeat","3.3-sdp-repeat-iterative","3.4-sdp-delete"]
 programs = early + ["3.5-avl", "3.6-avl-delete", "3.7-dbd", "3.8-dop", "3.9-a1-a2"]
 
-def run(name, *args, env_override=None, input_text=None):
-    return subprocess.run([str(root / "build" / name), *args],
+make_targets = {"3.1-trees":["labs/3.1-trees","run"],"3.1-trees-100":["labs/3.1-trees","run-100"],"3.2-isdp":["labs/3.2-isdp","run"],"3.2-isdp-iterative":["labs/3.2-isdp","run-iterative"],"3.3-sdp":["labs/3.3-sdp","run"],"3.3-sdp-iterative":["labs/3.3-sdp","run-iterative"],"3.3-sdp-repeat":["labs/3.3-sdp","run-repeat"],"3.3-sdp-repeat-iterative":["labs/3.3-sdp","run-repeat-iterative"],"3.4-sdp-delete":["labs/3.4-sdp-delete","run"],"3.5-avl":["labs/3.5-avl","run"],"3.6-avl-delete":["labs/3.6-avl-delete","run"],"3.7-dbd":["labs/3.7-dbd","run"],"3.8-dop":["labs/3.8-dop","run"],"3.9-a1-a2":["labs/3.9-a1-a2","run"]}
+
+def run(name, *args, env_override=None, input_text=None, via_make=False):
+    if via_make:
+        folder, target = make_targets[name]
+        command = ["make", "-C", str(root / folder), target]
+    else:
+        command = [str(root / "build" / name), *args]
+    return subprocess.run(command,
                           cwd=tempfile.gettempdir(),
                           input=input_text if input_text is not None else (("10\n10\n" + "\n".join(map(str, range(1, 1001))) + "\n")
                           if name == "3.4-sdp-delete" else "0\n"), text=True,
                           capture_output=True, timeout=30, env=env_override or env)
 
 for name in programs:
-    result = run(name)
+    result = run(name, via_make=True)
     assert result.returncode == 0, (name, result.stderr)
     assert "Страница дерева:" in result.stdout, (name, result.stdout)
 fixed = run("3.1-trees")
