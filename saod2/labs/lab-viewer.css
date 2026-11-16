@@ -1,0 +1,7 @@
+body{margin:0;background:#f1f5f9;color:#0f172a;font:16px Arial,sans-serif}
+header{padding:18px 24px;background:white;border-bottom:1px solid #cbd5e1}
+section{margin:20px;padding:16px;background:white;border-radius:10px}
+h1{margin:0;font-size:24px}h2{font-size:19px}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
+button{font:inherit;padding:6px 12px;cursor:pointer}button:disabled{cursor:default}
+.viewport{height:70vh;min-height:220px;overflow:auto;border:1px solid #cbd5e1;background:#f8fafc}
+.viewport img{display:block;max-width:none;height:auto;background:white}.status{color:#475569}.error{color:#b91c1c}

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3.6 — Удаление из АВЛ</title>
+<link rel="stylesheet" href="../lab-viewer.css">
+<header><h1>3.6 — Удаление из АВЛ</h1></header>
+<section class="tree-view"><h2>Просмотр шагов удаления</h2><div class="viewport"><img id="tree" alt="Просмотр шагов удаления"></div></section>
+<script src="../lab-viewer.js"></script>
+<script>
+const section = document.querySelector('section');
+const navigation = document.createElement('div');
+navigation.className = 'controls';
+navigation.innerHTML = '<button id="previous">← Назад</button><span id="caption"></span><button id="next">Вперёд →</button>';
+section.querySelector('h2').after(navigation);
+let step = 0, knownCount = 0, session = null;
+function showStep() {
+    document.getElementById('caption').textContent = step === 0
+        ? 'Исходное дерево (0 из ' + knownCount + ')'
+        : 'Шаг ' + step + ' из ' + knownCount + ': удалён ' + window.deletedKeys[step - 1];
+    document.getElementById('tree').src = '../../3.6-avl-delete-' + step + '.svg?v=' + Date.now();
+    document.getElementById('previous').disabled = step === 0;
+    document.getElementById('next').disabled = step === knownCount;
+}
+document.getElementById('previous').onclick = () => { if (step > 0) { step--; showStep(); } };
+document.getElementById('next').onclick = () => { if (step < knownCount) { step++; showStep(); } };
+let loading = false;
+function refresh() {
+    if (loading) return;
+    loading = true;
+    const script = document.createElement('script');
+    script.src = '../../3.6-avl-delete-steps.js?v=' + Date.now();
+    script.onload = () => {
+        script.remove(); loading = false;
+        if (!Array.isArray(window.deletedKeys)) return;
+        const reset = session !== window.treeSession;
+        const wasLatest = step === knownCount;
+        const count = window.deletedKeys.length;
+        if (reset || count !== knownCount) {
+            session = window.treeSession; knownCount = count;
+            if (reset || wasLatest || step > count) step = count;
+            showStep();
+        }
+    };
+    script.onerror = () => {
+        script.remove(); loading = false;
+        if (session === null)
+            document.getElementById('caption').textContent = 'Нет списка шагов. Запустите работу 3.6.';
+    };
+    document.head.appendChild(script);
+}
+refresh();
+setInterval(refresh, 1000);
+</script>
+</html>

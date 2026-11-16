@@ -10,3 +10,11 @@ avl-delete-steps.tmp.js
 dbd.svg
 dop.svg
 dop10.svg
+
+/build/
+/3.5-*.svg
+/3.6-*.svg
+/3.6-avl-delete-steps.js
+/3.7-*.svg
+/3.8-*.svg
+/3.9-*.svg

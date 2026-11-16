@@ -1,0 +1,33 @@
+name: SAOD 3.5-3.9
+on:
+  push:
+    paths:
+      - 'saod2/**'
+      - '.github/workflows/saod2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  labs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: saod2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build all programs
+        run: make all
+      - name: Strict build of labs 3.5-3.9
+        run: make -B CFLAGS="-std=c11 -O2 -Wall -Wextra -Werror" build/3.5-avl build/3.6-avl-delete build/3.7-dbd build/3.8-dop build/3.9-a1-a2
+      - name: AVL and weighted tree invariants
+        run: |
+          gcc -std=c11 -O2 -Wall -Wextra -Werror tests/check-avl.c labs/3.5-avl/3.5-avl.c labs/3.5-avl/3.5-common.c labs/3.6-avl-delete/3.6-avl-delete.c -o build/check-avl
+          ./build/check-avl
+          gcc -std=c11 -O2 -Wall -Wextra -Werror tests/check-weighted.c labs/3.9-a1-a2/3.9-a1-a2.c labs/3.9-a1-a2/3.9-compare.c labs/3.8-dop/3.8-dop.c labs/3.8-dop/3.8-common.c labs/3.8-dop/3.8-tree.c labs/3.8-dop/3.8-svg.c -o build/check-weighted
+          ./build/check-weighted
+      - name: Browser test dependency
+        run: |
+          python3 -m pip install playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Launch paths, SVG failures, and real browser previews
+        run: python3 tests/check-labs.py

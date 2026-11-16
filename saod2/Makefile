@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS ?= -std=c11 -O2
 
-PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete avl avl-delete dop a1a2
+PROGRAMS = coursework records tree tree100 isdp isdp-iterative search search-old sdp sdp-iterative sdp-repeat sdp-repeat-iterative sdp-delete 3.5-avl 3.6-avl-delete 3.7-dbd 3.8-dop 3.9-a1-a2
 ISDP_COMMON = labs/isdp/main.c labs/isdp/compare.c labs/isdp/treeprint.c
 
 .PHONY: all clean $(addprefix run-,$(PROGRAMS))
@@ -102,47 +102,56 @@ run-sdp-delete: build/sdp-delete
 	./build/sdp-delete
 
 
-# 3.5 — АВЛ-дерево
-AVL_SOURCES = labs/avl/main.c labs/avl/avl.c labs/avl/common.c labs/avl/compare.c labs/avl/search.c labs/avl/treeprint.c labs/avl/preview.c
+# 3.5 — АВЛ: включение вершины
+VIEWER = labs/lab-viewer.c
+VIEWER_LIBS =
+ifeq ($(OS),Windows_NT)
+VIEWER_LIBS = -lshell32
+endif
 
-build/avl: $(AVL_SOURCES) labs/avl/avl.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+AVL_CORE = labs/3.5-avl/3.5-avl.c labs/3.5-avl/3.5-common.c
+AVL_SVG = labs/3.5-avl/3.5-svg.c
+AVL_SOURCES = labs/3.5-avl/3.5-main.c $(AVL_CORE) labs/3.5-avl/3.5-compare.c labs/3.5-avl/3.5-search.c $(AVL_SVG) labs/3.5-avl/3.5-preview.c $(VIEWER)
 
-run-avl: build/avl
-	./build/avl
+build/3.5-avl: $(AVL_SOURCES) labs/3.5-avl/3.5-avl.h labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_SOURCES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-# 3.6 — удаление из АВЛ-дерева
-AVL_DELETE_SOURCES = labs/avl/main_delete.c labs/avl/avl.c labs/avl/common.c labs/avl/treeprint.c labs/avl/preview.c
+run-3.5-avl: build/3.5-avl
+	./build/3.5-avl
 
-build/avl-delete: $(AVL_DELETE_SOURCES) labs/avl/avl.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_DELETE_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+# 3.6 — удаление из АВЛ
+AVL_DELETE_SOURCES = labs/3.6-avl-delete/3.6-main.c labs/3.6-avl-delete/3.6-avl-delete.c labs/3.6-avl-delete/3.6-preview.c $(AVL_CORE) $(AVL_SVG) $(VIEWER)
 
-run-avl-delete: build/avl-delete
-	./build/avl-delete
+build/3.6-avl-delete: $(AVL_DELETE_SOURCES) labs/3.6-avl-delete/3.6-avl-delete.h labs/3.5-avl/3.5-avl.h labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(AVL_DELETE_SOURCES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-# 3.7 — двоичное Б-дерево (ДБД)
-DBD_SOURCES = labs/dbd/main.c labs/dbd/dbd.c labs/dbd/compare.c labs/dbd/svg.c labs/avl/avl.c labs/avl/common.c
+run-3.6-avl-delete: build/3.6-avl-delete
+	./build/3.6-avl-delete
 
-build/dbd: $(DBD_SOURCES) labs/dbd/dbd.h labs/avl/avl.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(DBD_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+# 3.7 — двоичное Б-дерево
+DBD_SOURCES = labs/3.7-dbd/3.7-main.c labs/3.7-dbd/3.7-dbd.c labs/3.7-dbd/3.7-compare.c labs/3.7-dbd/3.7-svg.c $(AVL_CORE) $(VIEWER)
 
-run-dbd: build/dbd
-	./build/dbd
+build/3.7-dbd: $(DBD_SOURCES) labs/3.7-dbd/3.7-dbd.h labs/3.5-avl/3.5-avl.h labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(DBD_SOURCES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-# 3.8 — дерево оптимального поиска (точный алгоритм)
-DOP_SOURCES = labs/dop/main.c labs/dop/dop.c labs/dop/common.c labs/dop/tree.c labs/dop/compare.c labs/dop/svg.c
+run-3.7-dbd: build/3.7-dbd
+	./build/3.7-dbd
 
-build/dop: $(DOP_SOURCES) labs/dop/dop.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(DOP_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+# 3.8 — точный ДОП
+DOP_CORE = labs/3.8-dop/3.8-dop.c labs/3.8-dop/3.8-common.c labs/3.8-dop/3.8-tree.c labs/3.8-dop/3.8-svg.c
+DOP_SOURCES = labs/3.8-dop/3.8-main.c labs/3.8-dop/3.8-compare.c $(DOP_CORE) $(VIEWER)
 
-run-dop: build/dop
-	./build/dop
+build/3.8-dop: $(DOP_SOURCES) labs/3.8-dop/3.8-dop.h labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(DOP_SOURCES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
 
-# 3.9 — почти оптимальные деревья поиска (А1 и А2)
-A1A2_SOURCES = labs/a1a2/main.c labs/a1a2/a1a2.c labs/a1a2/compare.c labs/dop/dop.c labs/dop/common.c labs/dop/tree.c labs/dop/svg.c
+run-3.8-dop: build/3.8-dop
+	./build/3.8-dop
 
-build/a1a2: $(A1A2_SOURCES) labs/a1a2/a1a2.h labs/dop/dop.h | build
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(A1A2_SOURCES) $(LDFLAGS) $(LDLIBS) -o $@
+# 3.9 — приближённые А1 и А2
+A1A2_SOURCES = labs/3.9-a1-a2/3.9-main.c labs/3.9-a1-a2/3.9-a1-a2.c labs/3.9-a1-a2/3.9-compare.c $(DOP_CORE) $(VIEWER)
 
-run-a1a2: build/a1a2
-	./build/a1a2
+build/3.9-a1-a2: $(A1A2_SOURCES) labs/3.9-a1-a2/3.9-a1-a2.h labs/3.8-dop/3.8-dop.h labs/lab-viewer.h | build
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(A1A2_SOURCES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o $@
+
+run-3.9-a1-a2: build/3.9-a1-a2
+	./build/3.9-a1-a2
