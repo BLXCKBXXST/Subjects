@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include "3.1-trees.h"
 
 struct Node* insert(struct Node* root, int data) {

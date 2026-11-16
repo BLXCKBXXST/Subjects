@@ -1,4 +1,5 @@
 import os
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -9,11 +10,11 @@ env = dict(os.environ, SAOD_NO_BROWSER="1")
 early = ["3.1-trees","3.1-trees-100","3.2-isdp","3.2-isdp-iterative","3.3-sdp","3.3-sdp-iterative","3.3-sdp-repeat","3.3-sdp-repeat-iterative","3.4-sdp-delete"]
 programs = early + ["3.5-avl", "3.6-avl-delete", "3.7-dbd", "3.8-dop", "3.9-a1-a2"]
 
-def run(name, *args, env_override=None):
+def run(name, *args, env_override=None, input_text=None):
     return subprocess.run([str(root / "build" / name), *args],
                           cwd=tempfile.gettempdir(),
-                          input=("10\n10\n" + "\n".join(map(str, range(1, 1001))) + "\n")
-                          if name == "3.4-sdp-delete" else "0\n", text=True,
+                          input=input_text if input_text is not None else (("10\n10\n" + "\n".join(map(str, range(1, 1001))) + "\n")
+                          if name == "3.4-sdp-delete" else "0\n"), text=True,
                           capture_output=True, timeout=30, env=env_override or env)
 
 for name in programs:
@@ -57,6 +58,30 @@ assert "Не удалось сохранить" in result.stderr
 assert "Страница дерева:" not in result.stdout
 blocked.rmdir()
 assert run("3.8-dop").returncode == 0
+
+# Check every recursive/iterative search variant on all possible generated keys.
+for name in early:
+    if not name.startswith(("3.2-", "3.3-")):
+        continue
+    result = run(name, input_text="1002\n" + "\n".join(map(str, range(1002))) + "\n")
+    assert result.returncode == 0
+    hits = re.findall(r"(?:Ключ|Элемент) (\d+) найден", result.stdout)
+    file = "3.2-isdp.svg" if name.startswith("3.2-") else "3.3-sdp-recursive.svg"
+    tree = ET.parse(root / file).getroot()
+    keys = {node.text for node in tree.findall(".//{http://www.w3.org/2000/svg}title")}
+    assert set(hits) == keys, (name, len(hits), len(keys))
+
+for name, filename in [("3.1-trees", "3.1-trees.svg"), ("3.2-isdp", "3.2-isdp.svg"),
+                       ("3.3-sdp", "3.3-isdp.svg"), ("3.4-sdp-delete", "3.4-sdp-delete-0.svg")]:
+    blocked = root / filename
+    blocked.unlink()
+    blocked.mkdir()
+    result = run(name)
+    assert result.returncode != 0, name
+    assert filename in result.stderr, (name, result.stderr)
+    assert "Страница дерева:" not in result.stdout, name
+    blocked.rmdir()
+    assert run(name).returncode == 0
 
 # Check both successful and failed desktop opener statuses.
 with tempfile.TemporaryDirectory() as directory:
