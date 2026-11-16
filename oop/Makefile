@@ -1,9 +1,9 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -pedantic
 
-.PHONY: all lab1 lab2 lab3 lab4 lab5 defense2 defense3 defense4 defense5 run1 run2 run3 run4 run5 run-defense2 run-defense3 run-defense4 run-defense5 clean
+.PHONY: all lab1 lab2 lab3 lab4 lab5 lab6 defense2 defense3 defense4 defense5 run1 run2 run3 run4 run5 run6 run-defense2 run-defense3 run-defense4 run-defense5 clean
 
-all: lab1 lab2 lab3 lab4 lab5 defense2 defense3 defense4 defense5
+all: lab1 lab2 lab3 lab4 lab5 lab6 defense2 defense3 defense4 defense5
 
 build:
 	mkdir -p build
@@ -36,6 +36,9 @@ lab4: build
 lab5: build
 	$(CXX) $(CXXFLAGS) lab-05/variant-23/main.cpp -o build/lab5
 
+lab6: build
+	$(CXX) $(CXXFLAGS) lab-06/variant-18/main.cpp -o build/lab6
+
 run1: lab1
 	./build/lab1
 
@@ -62,6 +65,9 @@ run4: lab4
 
 run5: lab5
 	./build/lab5
+
+run6: lab6
+	./build/lab6
 
 clean:
 	rm -rf build
