@@ -54,21 +54,5 @@ int main() {
         if (people[i].birthday[0] == day)
             people[i].show();
     }
-
-    string answer;
-    cout << "\nХотите добавить нового абонента? (да/нет): ";
-    cin >> answer;
-    if (answer == "да") {
-        Subscriber person;
-        person.input();
-        deque<Subscriber>::iterator position = lower_bound(
-            people.begin(), people.end(), person, newerYear);
-        people.insert(position, person);
-        n++;
-
-        cout << "\nОчередь после добавления:" << endl;
-        for (int i = 0; i < n; i++)
-            people[i].show();
-    }
     return 0;
 }
