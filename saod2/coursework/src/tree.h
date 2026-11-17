@@ -20,6 +20,16 @@ struct Derevo {
     struct Derevo *left, *right;
 };
 
+struct RecordVertex {
+    char key[65];
+    int weight;
+    struct Zapis *zapis;
+    struct RecordVertex *left, *right;
+};
+
+struct RecordVertex *postroit_zapisi_a2(struct Derevo *root);
+void ochistit_zapisi_a2(struct RecordVertex *root);
+
 void kopirovat(char *a, const char *b);
 int sravnit(const char *a, const char *b);
 void Add(struct Derevo **p, Group D, Element *a);

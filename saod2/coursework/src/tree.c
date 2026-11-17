@@ -148,3 +148,65 @@ void ochistit_derevo(struct Derevo *root) {
     free(root->zapisi);
     free(root);
 }
+
+struct RecordItem {
+    const char *key;
+    int weight;
+    struct Zapis *zapis;
+};
+
+static int chislo_zapisey(struct Derevo *root) {
+    if (root == NULL) return 0;
+    return root->weight + chislo_zapisey(root->left) + chislo_zapisey(root->right);
+}
+
+static void massiv_zapisey(struct Derevo *root, struct RecordItem V[], int *n) {
+    if (root == NULL) return;
+    massiv_zapisey(root->left, V, n);
+    for (int i = 0; i < root->weight; i++) {
+        V[*n].key = root->key;
+        V[*n].weight = root->weight;
+        V[*n].zapis = root->zapisi[i];
+        (*n)++;
+    }
+    massiv_zapisey(root->right, V, n);
+}
+
+static struct RecordVertex *A2_zapisi(struct RecordItem V[], int L, int R) {
+    if (L > R) return NULL;
+    int wes = 0, sum = 0, i;
+    for (i = L; i <= R; i++)
+        wes += V[i].weight;
+    for (i = L; i <= R; i++) {
+        if (2 * sum < wes && 2 * (sum + V[i].weight) >= wes)
+            break;
+        sum += V[i].weight;
+    }
+
+    struct RecordVertex *p = malloc(sizeof(*p));
+    if (p == NULL) { perror("А2 записей"); exit(EXIT_FAILURE); }
+    kopirovat(p->key, V[i].key);
+    p->weight = V[i].weight;
+    p->zapis = V[i].zapis;
+    p->left = A2_zapisi(V, L, i - 1);
+    p->right = A2_zapisi(V, i + 1, R);
+    return p;
+}
+
+struct RecordVertex *postroit_zapisi_a2(struct Derevo *root) {
+    int n = chislo_zapisey(root), count = 0;
+    if (n == 0) return NULL;
+    struct RecordItem *V = malloc(n * sizeof(*V));
+    if (V == NULL) { perror("Массив А2 записей"); exit(EXIT_FAILURE); }
+    massiv_zapisey(root, V, &count);
+    struct RecordVertex *result = A2_zapisi(V, 0, count - 1);
+    free(V);
+    return result;
+}
+
+void ochistit_zapisi_a2(struct RecordVertex *root) {
+    if (root == NULL) return;
+    ochistit_zapisi_a2(root->left);
+    ochistit_zapisi_a2(root->right);
+    free(root);
+}

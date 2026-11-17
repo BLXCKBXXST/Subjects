@@ -5,9 +5,10 @@
 
 struct Layout
 {
-    struct Derevo *node;
+    const char *key;
+    int weight;
+    struct Zapis *record;
     int details;
-    int record;
     struct Layout *left;
     struct Layout *right;
     int leftX;
@@ -17,24 +18,26 @@ struct Layout
     int *maxX;
 };
 
-static struct Layout *makeLayout(struct Derevo *node, int details, int record)
+static struct Layout *makeLayout(struct Derevo *node, struct RecordVertex *records, int details)
 {
-    if (node == NULL)
+    if ((details && records == NULL) || (!details && node == NULL))
         return NULL;
 
     struct Layout *p = calloc(1, sizeof(*p));
-    if (p == NULL)
-        exit(1);
-
-    p->node = node;
+    if (p == NULL) exit(EXIT_FAILURE);
     p->details = details;
-    p->record = record;
-    if (record == 0)
-        p->left = makeLayout(node->left, details, 0);
-    if (details && record + 1 < node->weight)
-        p->right = makeLayout(node, details, record + 1);
-    else
-        p->right = makeLayout(node->right, details, 0);
+    if (details) {
+        p->key = records->key;
+        p->weight = records->weight;
+        p->record = records->zapis;
+        p->left = makeLayout(NULL, records->left, 1);
+        p->right = makeLayout(NULL, records->right, 1);
+    } else {
+        p->key = node->key;
+        p->weight = node->weight;
+        p->left = makeLayout(node->left, NULL, 0);
+        p->right = makeLayout(node->right, NULL, 0);
+    }
 
     int a = p->left ? p->left->depth : 0;
     int b = p->right ? p->right->depth : 0;
@@ -174,15 +177,15 @@ static void svgNodes(FILE *file, struct Layout *p, int x, int level)
     if (p == NULL) return;
     int px = 20 * x;
     int py = (p->details ? 100 : 80) + (p->details ? 240 : 200) * level;
-    fputs("<g><title>", file);
-    xmlText(file, p->node->key);
+    fprintf(file, "<g data-weight=\"%d\"><title>", p->weight);
+    xmlText(file, p->key);
     if (p->details) {
-        struct Zapis *z = p->node->zapisi[p->record];
+        struct Zapis *z = p->record;
         char author[32], publisher[40];
         cp866_to_utf8(z->avtor, 12, author);
         cp866_to_utf8(z->izd, 16, publisher);
         fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"176\" rx=\"10\"/>\n", px - 160, py - 88);
-        titleLines(file, p->node->key, px, py - 40);
+        titleLines(file, p->key, px, py - 40);
         fprintf(file, "<text class=\"detail author\" x=\"%d\" y=\"%d\">Автор: ", px, py - 5);
         xmlText(file, author);
         fprintf(file, "</text><text class=\"detail publisher\" x=\"%d\" y=\"%d\">Издательство: ", px, py + 20);
@@ -190,16 +193,16 @@ static void svgNodes(FILE *file, struct Layout *p, int x, int level)
         fprintf(file, "</text><text class=\"detail\" x=\"%d\" y=\"%d\">Год: %d · Страниц: %d</text></g>\n", px, py + 48, z->god, z->str);
     } else {
         fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"116\" rx=\"10\"/>\n", px - 160, py - 58);
-        titleLines(file, p->node->key, px, py);
-        fprintf(file, "<text class=\"weight\" x=\"%d\" y=\"%d\">Вес: %d</text></g>\n", px, py + 38, p->node->weight);
+        titleLines(file, p->key, px, py);
+        fprintf(file, "<text class=\"weight\" x=\"%d\" y=\"%d\">Вес: %d</text></g>\n", px, py + 38, p->weight);
     }
     svgNodes(file, p->left, x + p->leftX, level + 1);
     svgNodes(file, p->right, x + p->rightX, level + 1);
 }
 
-static int saveTree(struct Derevo *root, const char *filename, int details)
+static int saveTree(struct Derevo *root, struct RecordVertex *records, const char *filename, int details)
 {
-    if (root == NULL)
+    if (root == NULL && records == NULL)
     {
         FILE *file = fopen(filename, "w");
         if (file == NULL)
@@ -211,7 +214,7 @@ static int saveTree(struct Derevo *root, const char *filename, int details)
         return fclose(file) == 0;
     }
 
-    struct Layout *p = makeLayout(root, details, 0);
+    struct Layout *p = makeLayout(root, records, details);
     int left = 0;
     int right = 0;
 
@@ -264,9 +267,12 @@ static int saveTree(struct Derevo *root, const char *filename, int details)
 }
 
 int sohranit_svg(struct Derevo *root, const char *filename) {
-    return saveTree(root, filename, 0);
+    return saveTree(root, NULL, filename, 0);
 }
 
 int sohranit_zapisi_svg(struct Derevo *root, const char *filename) {
-    return saveTree(root, filename, 1);
+    struct RecordVertex *records = postroit_zapisi_a2(root);
+    int ok = saveTree(NULL, records, filename, 1);
+    ochistit_zapisi_a2(records);
+    return ok;
 }

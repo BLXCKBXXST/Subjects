@@ -39,6 +39,25 @@ static int verify(struct Derevo *p, const char *low, const char *high,
     return total;
 }
 
+static int verify_records(struct RecordVertex *p, const char *low,
+                          const char *high, struct Derevo *groups, int *count) {
+    if (p == NULL) return 0;
+    assert(!low || sravnit(low, p->key) <= 0);
+    assert(!high || sravnit(p->key, high) <= 0);
+    struct Zapis *z = p->zapis;
+    assert(z >= records && z < records + N);
+    assert(seen[z - records]++ == 0);
+    char key[65]; key_of(z, key);
+    assert(sravnit(key, p->key) == 0);
+    assert(p->weight == nayti_v_dereve(groups, key)->weight);
+    (*count)++;
+    int left = verify_records(p->left, low, p->key, groups, count);
+    int right = verify_records(p->right, p->key, high, groups, count);
+    int total = left + p->weight + right;
+    assert(2 * left < total && total <= 2 * (left + p->weight));
+    return total;
+}
+
 int main(void) {
     FILE *file = fopen(BASE_FILE, "rb");
     assert(file);
@@ -66,6 +85,12 @@ int main(void) {
         memset(seen, 0, sizeof(seen));
         struct Derevo *root = postroit_a2(copy, last - first);
         assert(verify(root, NULL, NULL, year, root) == last - first);
+        struct RecordVertex *individual = postroit_zapisi_a2(root);
+        int count = 0;
+        memset(seen, 0, sizeof(seen));
+        verify_records(individual, NULL, NULL, root, &count);
+        assert(count == last - first);
+        ochistit_zapisi_a2(individual);
         assert(!nayti_v_dereve(root, "несуществующий ключ ~~~~~"));
         ochistit_derevo(root);
         first = last;
@@ -88,6 +113,22 @@ int main(void) {
     assert(nayti_v_dereve(root, titles[0])->weight == 2);
     assert(sohranit_svg(root, "build/coursework-long.svg"));
     assert(sohranit_zapisi_svg(root, "build/coursework-long-records.svg"));
+    ochistit_derevo(root);
+    for (int i = 0; i < 5; i++) {
+        memset(records[i].zagl, ' ', 32);
+        memcpy(records[i].zagl, "Same", 4);
+        a[i] = &records[i];
+    }
+    root = postroit_a2(a, 5);
+    struct RecordVertex *individual = postroit_zapisi_a2(root);
+    assert(individual->left && individual->right);
+    assert(sravnit(individual->key, individual->left->key) == 0);
+    assert(sravnit(individual->key, individual->right->key) == 0);
+    int count = 0;
+    memset(seen, 0, sizeof(seen));
+    assert(verify_records(individual, NULL, NULL, root, &count) == 25);
+    assert(count == 5);
+    ochistit_zapisi_a2(individual);
     ochistit_derevo(root);
     puts("Coursework: actual 4000 records, year search, FIFO, A2 medians and duplicates passed.");
 }

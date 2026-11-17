@@ -114,14 +114,29 @@ for group in groups:
     positions[point] = group.find(ns + "title").text
 edges = expanded.find(ns + "g[@stroke-width='2']").findall(ns + "line")
 assert len(edges) == len(groups) - 1
-repeated_edges = 0
+children = collections.defaultdict(dict)
 for edge in edges:
     start = (int(edge.get("x1")), int(edge.get("y1")))
     end = (int(edge.get("x2")), int(edge.get("y2")))
-    if positions[start] == positions[end]:
-        assert end[0] > start[0]
-        repeated_edges += 1
-assert repeated_edges == sum(weight - 1 for weight in weights.values())
+    children[start]["left" if end[0] < start[0] else "right"] = end
+for group in groups:
+    key = group.find(ns + "title").text
+    assert int(group.get("data-weight")) == weights[key]
+
+def verify_records_tree(point, low=None, high=None):
+    if point is None:
+        return 0
+    key = positions[point]
+    assert low is None or low <= key
+    assert high is None or key <= high
+    left = verify_records_tree(children[point].get("left"), low, key)
+    right = verify_records_tree(children[point].get("right"), key, high)
+    weight = weights[key]
+    total = left + weight + right
+    assert 2 * left < total <= 2 * (left + weight)
+    return total
+
+assert verify_records_tree(min(positions, key=lambda point: point[1])) == sum(w * w for w in weights.values())
 
 invalid = run("abc\n99999999999999999999999\n2\nq\n3\nwrong\n-1\n0\n")
 assert invalid.returncode == 0 and "Введите целое число." in invalid.stdout
