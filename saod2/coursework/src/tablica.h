@@ -51,30 +51,32 @@ static void yacheyka_sleva(const char *s, int w) {
     for (int i = 0; i < d + 1; i++) printf(" ");
 }
 
-static void liniya(const char *l, const char *m, const char *r) {
-    int w[6] = {W_NUM, W_AVT, W_ZAG, W_IZD, W_GOD, W_STR};
+static void liniya_ves(const char *l, const char *m, const char *r, int s_vesom) {
+    int w[7] = {W_NUM, W_AVT, W_ZAG, W_IZD, W_GOD, W_STR, 4};
+    int count = 6 + s_vesom;
     int i, j;
     printf("%s", l);
-    for (i = 0; i < 6; i++) {
+    for (i = 0; i < count; i++) {
         for (j = 0; j < w[i] + 2; j++) printf("─");
-        printf("%s", i < 5 ? m : r);
+        printf("%s", i < count - 1 ? m : r);
     }
     printf("\n");
 }
 
-static void tab_shapka(void) {
-    liniya("┌", "┬", "┐");
+static inline void tab_shapka_ves(int s_vesom) {
+    liniya_ves("┌", "┬", "┐", s_vesom);
     yacheyka("N", W_NUM);
     yacheyka("Автор", W_AVT);
     yacheyka("Заглавие", W_ZAG);
     yacheyka("Издательство", W_IZD);
     yacheyka("Год", W_GOD);
     yacheyka("Стр.", W_STR);
+    if (s_vesom) yacheyka("Вес", 4);
     printf("│\n");
-    liniya("├", "┼", "┤");
+    liniya_ves("├", "┼", "┤", s_vesom);
 }
 
-static void tab_stroka(int nomer, struct Zapis *z) {
+static inline void tab_stroka_ves(int nomer, struct Zapis *z, int ves) {
     char avt[32], zag[80], izd[40], num[12], god[12], str[12];
 
     cp866_to_utf8(z->avtor, 12, avt);
@@ -95,11 +97,28 @@ static void tab_stroka(int nomer, struct Zapis *z) {
     yacheyka_sleva(izd, W_IZD);
     yacheyka(god, W_GOD);
     yacheyka(str, W_STR);
+    if (ves > 0) {
+        char weight[12];
+        sprintf(weight, "%d", ves);
+        yacheyka(weight, 4);
+    }
     printf("│\n");
 }
 
+static inline void tab_niz_ves(int s_vesom) {
+    liniya_ves("└", "┴", "┘", s_vesom);
+}
+
+static void tab_shapka(void) {
+    tab_shapka_ves(0);
+}
+
+static void tab_stroka(int nomer, struct Zapis *z) {
+    tab_stroka_ves(nomer, z, 0);
+}
+
 static void tab_niz(void) {
-    liniya("└", "┴", "┘");
+    tab_niz_ves(0);
 }
 
 #endif

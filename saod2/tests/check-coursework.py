@@ -35,11 +35,11 @@ def run(input_text, desktop=None, make=False):
                           capture_output=True, text=True, encoding="utf-8",
                           errors="strict", timeout=30, env=desktop or env)
 
-def table_rows(output):
+def table_rows(output, columns=6):
     result = []
     for line in output.splitlines():
         cells = [value.strip() for value in line.split("│")[1:-1]]
-        if len(cells) == 6 and cells[0].isdigit():
+        if len(cells) == columns and cells[0].isdigit():
             result.append(cells)
     return result
 
@@ -81,12 +81,13 @@ assert "Записей с таким заглавием нет." in result.stdou
 found = list(map(int, re.findall(r"Найдено записей: (\d+)", result.stdout)))
 assert found == [years[year], weights[title]], found
 traversal_output = result.stdout.split("Обход дерева А2 слева направо:\n", 1)[1]
-traversal = table_rows(traversal_output.split("Введите заглавие книги", 1)[0])
+traversal = table_rows(traversal_output.split("Введите заглавие книги", 1)[0], columns=7)
 assert len(traversal) == years[year]
 assert [int(row[0]) for row in traversal] == list(range(1, years[year] + 1))
 assert [row[2] for row in traversal] == sorted(
     key for key, weight in weights.items() for _ in range(weight))
-actual_records = collections.Counter(tuple(row[1:]) for row in traversal)
+assert all(int(row[6]) == weights[row[2]] for row in traversal)
+actual_records = collections.Counter(tuple(row[1:6]) for row in traversal)
 expected_records = collections.Counter(
     (text_field(row[0]), text_field(row[1]), text_field(row[2]), str(row[3]), str(row[4]))
     for row in rows if row[3] == year)

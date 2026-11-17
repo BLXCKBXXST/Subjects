@@ -116,15 +116,15 @@ static void obhod_tablicey(struct Derevo *root, int *nomer) {
     if (root == NULL) return;
     obhod_tablicey(root->left, nomer);
     for (int i = 0; i < root->weight; i++)
-        tab_stroka((*nomer)++, root->zapisi[i]);
+        tab_stroka_ves((*nomer)++, root->zapisi[i], root->weight);
     obhod_tablicey(root->right, nomer);
 }
 
 void pokazat_derevo(struct Derevo *root) {
     int nomer = 1;
-    tab_shapka();
+    tab_shapka_ves(1);
     obhod_tablicey(root, &nomer);
-    tab_niz();
+    tab_niz_ves(1);
 }
 
 void poisk_derevo(struct Derevo *root, const char *key) {
