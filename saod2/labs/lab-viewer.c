@@ -89,6 +89,21 @@ int openLabPage(const char *page)
             (long)result, full);
     return 0;
 #else
+    char logPath[4600];
+    snprintf(logPath, sizeof(logPath), "%s/build/browser.log", root);
+    FILE *log = fopen(logPath, "a");
+    if (log == NULL)
+    {
+        perror(logPath);
+        fprintf(stderr, "Откройте вручную: %s\n", full);
+        return 0;
+    }
+    fprintf(log, "\nОткрытие страницы: %s\n", full);
+    if (fclose(log) != 0)
+    {
+        perror(logPath);
+        return 0;
+    }
     pid_t pid = fork();
     if (pid < 0)
     {
@@ -97,6 +112,13 @@ int openLabPage(const char *page)
     }
     if (pid == 0)
     {
+        if (freopen(logPath, "a", stderr) == NULL) _exit(126);
+        if (freopen(logPath, "a", stdout) == NULL ||
+            freopen("/dev/null", "r", stdin) == NULL)
+        {
+            perror("Подготовка запуска браузера");
+            _exit(126);
+        }
 #ifdef __APPLE__
         execlp("open", "open", full, (char *)NULL);
 #else
@@ -113,7 +135,8 @@ int openLabPage(const char *page)
         return 0;
     }
     if (WIFEXITED(status) && WEXITSTATUS(status) == 0) return 1;
-    fprintf(stderr, "Не удалось открыть браузер. Откройте вручную: %s\n", full);
+    fprintf(stderr, "Не удалось открыть браузер. Откройте вручную: %s\n"
+                    "Сообщения браузера: %s\n", full, logPath);
     return 0;
 #endif
 }

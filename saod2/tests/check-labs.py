@@ -104,9 +104,36 @@ with tempfile.TemporaryDirectory() as directory:
         assert result.returncode == 0, (name, result.stderr)
         target = Path(marker.read_text())
         assert target.is_absolute() and target.is_file(), target
-    opener.write_text("#!/bin/sh\nexit 3\n")
+    # Browser output and late child messages must go to a regular log file.
+    log = root / "build" / "browser.log"
+    log.unlink(missing_ok=True)
+    opener.write_text('#!/bin/sh\n'
+                      'if IFS= read -r value; then echo "INPUT_STOLEN:$value" >&2; exit 9; fi\n'
+                      'echo "Browser opens in existing session"\n'
+                      'echo "Failed sending zygote boot message" >&2\n'
+                      '(sleep 0.2; echo "late browser message" >&2) &\n'
+                      'exit 0\n')
+    result = run("3.2-isdp", env_override=desktop, input_text="1\n0\n")
+    assert result.returncode == 0, result.stderr
+    assert "Ключ 0 не найден" in result.stdout
+    assert "Browser opens" not in result.stdout
+    assert "zygote" not in result.stderr
+    assert "INPUT_STOLEN" not in log.read_text()
+    assert "Browser opens in existing session" in log.read_text()
+    assert "Failed sending zygote boot message" in log.read_text()
+    opener.write_text("#!/bin/sh\necho 'browser rejected request' >&2\nexit 3\n")
     result = run("3.7-dbd", env_override=desktop)
     assert "Не удалось открыть браузер" in result.stderr
+    assert str(log) in result.stderr
+    assert "browser rejected request" in log.read_text()
+    assert "browser rejected request" not in result.stderr
+
+    # Failed exec remains visible, including the diagnostic file.
+    opener.unlink()
+    no_opener = dict(desktop, PATH=directory)
+    result = run("3.7-dbd", env_override=no_opener)
+    assert "Не удалось открыть браузер" in result.stderr
+    assert "Открытие браузера" in log.read_text()
 
 # Exercise local-file previews, zoom controls, and deletion step navigation.
 from playwright.sync_api import sync_playwright
@@ -144,4 +171,5 @@ with sync_playwright() as p:
         page.close()
     browser.close()
 assert "Дерево пусто" in (root / "3.4-sdp-delete-10.svg").read_text()
+assert "late browser message" in (root / "build" / "browser.log").read_text()
 print("Labs 3.1-3.9 and all early variants: build, SVG, paths and browser controls passed.")
