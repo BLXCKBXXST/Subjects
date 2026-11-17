@@ -9,6 +9,6 @@ struct Zapis {
     short str;
 };
 
-_Static_assert(sizeof(struct Zapis) == 64);
+_Static_assert(sizeof(struct Zapis) == 64, "Размер записи базы должен быть 64 байта");
 
 #endif

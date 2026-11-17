@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "tree.h"
 
@@ -13,9 +14,11 @@ struct Derevo *a2(Group *g, Element *a, int L, int R) {
     }
 
     struct Derevo *p = malloc(sizeof(struct Derevo));
+    if (p == NULL) { perror("А2"); exit(EXIT_FAILURE); }
     kopirovat(p->key, g[i].key);
     p->weight = g[i].weight;
     p->zapisi = malloc(p->weight * sizeof(struct Zapis *));
+    if (p->zapisi == NULL) { perror("Записи А2"); free(p); exit(EXIT_FAILURE); }
     for (j = 0; j < p->weight; j++)
         p->zapisi[j] = a[g[i].start + j].zapis;
 

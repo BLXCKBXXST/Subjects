@@ -5,7 +5,7 @@ static void cp866_to_utf8(const char *src, int dlina, char *dst) {
     int i;
     unsigned char c;
 
-    for (i = 0; i < dlina; i++) {
+    for (i = 0; i < dlina && src[i] != '\0'; i++) {
         c = (unsigned char)src[i];
 
         if (c >= 0x80 && c <= 0x9F) {

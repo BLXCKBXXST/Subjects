@@ -33,6 +33,7 @@ static void zaglavie(struct Zapis *z, char *key) {
 }
 
 static void hoar_zaglavie(Element *a, int L, int R) {
+    if (L >= R) return;
     int i = L, j = R;
     char opora[65];
     Element temp;
@@ -54,7 +55,7 @@ static void hoar_zaglavie(Element *a, int L, int R) {
 }
 
 struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
-    if (n == 0) return NULL;
+    if (n <= 0) return NULL;
 
     Element *a = malloc(n * sizeof(Element));
     Group *g = malloc(n * sizeof(Group));
@@ -96,20 +97,15 @@ void pokazat_derevo(struct Derevo *root) {
 }
 
 void poisk_derevo(struct Derevo *root, const char *key) {
-    while (root != NULL) {
-        int c = sravnit(key, root->key);
-        if (c == 0) {
-            tab_shapka();
-            for (int i = 0; i < root->weight; i++)
-                tab_stroka(i + 1, root->zapisi[i]);
-            tab_niz();
-            printf("Найдено записей: %d\n", root->weight);
-            return;
-        }
-        if (c < 0) root = root->left;
-        else root = root->right;
+    struct Derevo *found = nayti_v_dereve(root, key);
+    if (found == NULL) {
+        printf("Записей с таким заглавием нет.\n");
+        return;
     }
-    printf("Записей с таким заглавием нет.\n");
+    tab_shapka();
+    for (int i = 0; i < found->weight; i++) tab_stroka(i + 1, found->zapisi[i]);
+    tab_niz();
+    printf("Найдено записей: %d\n", found->weight);
 }
 
 void ochistit_derevo(struct Derevo *root) {

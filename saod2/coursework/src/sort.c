@@ -1,4 +1,4 @@
-#include "zapis.h"
+#include "coursework.h"
 
 int sravni_pole(const char *a, const char *b, int dlina) {
     int i;
@@ -25,6 +25,7 @@ int sravni(struct Zapis *a, struct Zapis *b) {
 }
 
 void hoar(struct Zapis **uk, int left, int right) {
+    if (left >= right) return;
     int i = left;
     int j = right;
     struct Zapis *opora = uk[(left + right) / 2];

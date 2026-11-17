@@ -2,112 +2,237 @@
 #include <stdlib.h>
 #include "tree.h"
 
-typedef struct {
+struct Layout
+{
     struct Derevo *node;
-    int x, y;
-} Position;
+    struct Layout *left;
+    struct Layout *right;
+    int leftX;
+    int rightX;
+    int depth;
+    int *minX;
+    int *maxX;
+};
 
-static int count_nodes(struct Derevo *p) {
-    if (p == NULL) return 0;
-    return 1 + count_nodes(p->left) + count_nodes(p->right);
+static struct Layout *makeLayout(struct Derevo *node)
+{
+    if (node == NULL)
+        return NULL;
+
+    struct Layout *p = calloc(1, sizeof(*p));
+    if (p == NULL)
+        exit(1);
+
+    p->node = node;
+    p->left = makeLayout(node->left);
+    p->right = makeLayout(node->right);
+
+    int a = p->left ? p->left->depth : 0;
+    int b = p->right ? p->right->depth : 0;
+
+    p->depth = 1 + (a > b ? a : b);
+    p->minX = malloc((size_t)p->depth * sizeof(int));
+    p->maxX = malloc((size_t)p->depth * sizeof(int));
+
+    if (p->minX == NULL || p->maxX == NULL)
+        exit(1);
+
+    if (p->left && p->right)
+    {
+        int distance = 20;
+        int overlap = a < b ? a : b;
+
+        for (int i = 0; i < overlap; i++)
+        {
+            int needed = p->left->maxX[i] - p->right->minX[i] + 4;
+            if (needed > distance)
+                distance = needed;
+        }
+
+        p->leftX = -distance / 2;
+        p->rightX = p->leftX + distance;
+    }
+    else if (p->left)
+        p->leftX = -10;
+    else if (p->right)
+        p->rightX = 10;
+
+    p->minX[0] = -8;
+    p->maxX[0] = 8;
+
+    for (int i = 1; i < p->depth; i++)
+    {
+        int min = 1000000000;
+        int max = -1000000000;
+
+        if (p->left && i <= a)
+        {
+            min = p->left->minX[i - 1] + p->leftX;
+            max = p->left->maxX[i - 1] + p->leftX;
+        }
+
+        if (p->right && i <= b)
+        {
+            int left = p->right->minX[i - 1] + p->rightX;
+            int right = p->right->maxX[i - 1] + p->rightX;
+
+            if (left < min)
+                min = left;
+            if (right > max)
+                max = right;
+        }
+
+        p->minX[i] = min;
+        p->maxX[i] = max;
+    }
+
+    return p;
 }
 
-static int depth(struct Derevo *p) {
-    if (p == NULL) return 0;
-    int l = depth(p->left), r = depth(p->right);
-    return 1 + (l > r ? l : r);
+static void freeLayout(struct Layout *p)
+{
+    if (p == NULL)
+        return;
+
+    freeLayout(p->left);
+    freeLayout(p->right);
+    free(p->minX);
+    free(p->maxX);
+    free(p);
 }
 
-static void positions(struct Derevo *p, Position *a, int *n, int level) {
-    if (p == NULL) return;
-    positions(p->left, a, n, level + 1);
-    a[*n].node = p;
-    a[*n].x = 125 + (*n) * 280;
-    a[*n].y = 130 + level * 155;
-    (*n)++;
-    positions(p->right, a, n, level + 1);
+static void svgEdges(FILE *file, struct Layout *p, int x, int level)
+{
+    if (p == NULL)
+        return;
+
+    int px = 20 * x;
+    int py = 80 + 200 * level;
+
+    if (p->left)
+    {
+        int child = x + p->leftX;
+        fprintf(file, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
+                px, py, 20 * child, py + 200);
+        svgEdges(file, p->left, child, level + 1);
+    }
+
+    if (p->right)
+    {
+        int child = x + p->rightX;
+        fprintf(file, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
+                px, py, 20 * child, py + 200);
+        svgEdges(file, p->right, child, level + 1);
+    }
 }
 
-static Position *find(Position *a, int n, struct Derevo *p) {
-    for (int i = 0; i < n; i++)
-        if (a[i].node == p) return &a[i];
-    return NULL;
-}
-
-static void xml_text(FILE *f, const char *s) {
+static void xmlText(FILE *file, const char *s)
+{
     for (; *s; s++) {
-        if (*s == '&') fputs("&amp;", f);
-        else if (*s == '<') fputs("&lt;", f);
-        else if (*s == '>') fputs("&gt;", f);
-        else if (*s == '"') fputs("&quot;", f);
-        else fputc(*s, f);
+        if (*s == '&') fputs("&amp;", file);
+        else if (*s == '<') fputs("&lt;", file);
+        else if (*s == '>') fputs("&gt;", file);
+        else if (*s == '"') fputs("&quot;", file);
+        else fputc(*s, file);
     }
 }
 
-static void wrapped_name(FILE *f, const char *name, int x, int y) {
-    char lines[4][128] = {{0}};
-    int lengths[4] = {0};
-    int line = 0, chars = 0;
-    const unsigned char *p = (const unsigned char *)name;
-
-    while (*p && line < 4) {
-        int bytes = (*p < 128) ? 1 : ((*p & 0xE0) == 0xC0 ? 2 : ((*p & 0xF0) == 0xE0 ? 3 : 4));
-        if (*p == ' ' && chars >= 13 && line < 3) {
-            line++;
-            chars = 0;
-            p++;
-            continue;
-        }
-        if (chars >= 17 && line < 3) {
-            line++;
-            chars = 0;
-        }
-        if (lengths[line] + bytes >= 127) break;
-        for (int j = 0; j < bytes && p[j]; j++)
-            lines[line][lengths[line]++] = (char)p[j];
-        chars++;
-        p += bytes;
+static void titleLines(FILE *file, const char *key, int x, int y)
+{
+    char lines[2][65] = {{0}};
+    int lengths[2] = {0}, line = 0, count = 0;
+    const unsigned char *p = (const unsigned char *)key;
+    while (*p) {
+        if (count == 18) { line++; count = 0; }
+        if (line == 2) break;
+        int bytes = *p < 128 ? 1 : 2;
+        if (lengths[line] + bytes >= 65) break;
+        for (int j = 0; j < bytes && *p; j++) lines[line][lengths[line]++] = (char)*p++;
+        count++;
     }
-
-    int count = line + 1;
-    for (int i = 0; i < count; i++) {
-        int yy = y - 30 + i * 19;
-        fprintf(f, "<text class=\"name\" x=\"%d\" y=\"%d\" text-anchor=\"middle\">", x, yy);
-        xml_text(f, lines[i]);
-        fputs("</text>\n", f);
+    int rows = line + 1;
+    if (rows > 2) rows = 2;
+    for (int i = 0; i < rows; i++) {
+        fprintf(file, "<text class=\"name\" x=\"%d\" y=\"%d\">", x, y - (rows == 2 ? 15 : 4) + i * 23);
+        xmlText(file, lines[i]);
+        fputs("</text>\n", file);
     }
 }
 
-int sohranit_svg(struct Derevo *root, const char *filename) {
-    int n = count_nodes(root);
-    if (n == 0) return 0;
-    Position *a = malloc(n * sizeof(Position));
-    if (a == NULL) return 0;
-    int k = 0;
-    positions(root, a, &k, 0);
-    FILE *f = fopen(filename, "w");
-    if (f == NULL) { free(a); return 0; }
-    int w = 280 + (n - 1) * 280;
-    int h = 260 + (depth(root) - 1) * 155;
-    fprintf(f, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%d\" height=\"%d\" viewBox=\"0 0 %d %d\">\n", w, h, w, h);
-    fputs("<rect width=\"100%\" height=\"100%\" fill=\"#f8fafc\"/>\n", f);
-    fputs("<style>text{font-family:Arial,sans-serif} .edge{stroke:#94a3b8;stroke-width:3;fill:none} .node{fill:#ffffff;stroke:#2563eb;stroke-width:2.5} .name{font-size:18px;fill:#0f172a;font-weight:bold} .weight{font-size:15px;fill:#475569}</style>\n", f);
-    for (int i = 0; i < n; i++) {
-        struct Derevo *p = a[i].node;
-        struct Derevo *children[2] = {p->left, p->right};
-        for (int j = 0; j < 2; j++) {
-            Position *c = find(a, n, children[j]);
-            if (c != NULL)
-                fprintf(f, "<path class=\"edge\" d=\"M%d %d L%d %d\"/>\n", a[i].x, a[i].y + 49, c->x, c->y - 49);
-        }
+static void svgNodes(FILE *file, struct Layout *p, int x, int level)
+{
+    if (p == NULL) return;
+    int px = 20 * x, py = 80 + 200 * level;
+    fputs("<g><title>", file);
+    xmlText(file, p->node->key);
+    fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"116\" rx=\"10\"/>\n", px - 160, py - 58);
+    titleLines(file, p->node->key, px, py);
+    fprintf(file, "<text class=\"weight\" x=\"%d\" y=\"%d\">Вес: %d</text></g>\n", px, py + 38, p->node->weight);
+    svgNodes(file, p->left, x + p->leftX, level + 1);
+    svgNodes(file, p->right, x + p->rightX, level + 1);
+}
+
+int sohranit_svg(struct Derevo *root, const char *filename)
+{
+    if (root == NULL)
+    {
+        FILE *file = fopen(filename, "w");
+        if (file == NULL)
+            return 0;
+        fputs("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 120\" width=\"400\" height=\"120\">\n"
+              "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>\n"
+              "<text x=\"200\" y=\"65\" fill=\"#2563eb\" text-anchor=\"middle\" "
+              "font-family=\"Arial,sans-serif\" font-size=\"20\">Дерево ещё не построено</text>\n</svg>\n", file);
+        return fclose(file) == 0;
     }
-    for (int i = 0; i < n; i++) {
-        fprintf(f, "<rect class=\"node\" x=\"%d\" y=\"%d\" width=\"260\" height=\"110\" rx=\"15\"/>\n", a[i].x - 130, a[i].y - 55);
-        wrapped_name(f, a[i].node->key, a[i].x, a[i].y);
-        fprintf(f, "<text class=\"weight\" x=\"%d\" y=\"%d\" text-anchor=\"middle\">Вес: %d</text>\n", a[i].x, a[i].y + 43, a[i].node->weight);
+
+    struct Layout *p = makeLayout(root);
+    int left = 0;
+    int right = 0;
+
+    for (int i = 0; i < p->depth; i++)
+    {
+        if (p->minX[i] < left)
+            left = p->minX[i];
+        if (p->maxX[i] > right)
+            right = p->maxX[i];
     }
-    fputs("</svg>\n", f);
-    fclose(f);
-    free(a);
-    return 1;
+
+    FILE *file = fopen(filename, "w");
+    if (file == NULL)
+    {
+        freeLayout(p);
+        return 0;
+    }
+
+    int width = 20 * (right - left + 8);
+    int height = p->depth * 200 - 40;
+    int start = 4 - left;
+
+    fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(file,
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 %d %d\" width=\"%d\" height=\"%d\">\n",
+            width, height, width, height);
+    fprintf(file, "<rect width=\"100%%\" height=\"100%%\" fill=\"white\"/>\n");
+
+    fprintf(file, "<g stroke=\"#64748b\" stroke-opacity=\"0.30\" stroke-width=\"1\" stroke-dasharray=\"4 7\">\n");
+    for (int level = 0; level < p->depth - 1; level++)
+        fprintf(file, "<line x1=\"8\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
+                180 + 200 * level, width - 8, 180 + 200 * level);
+    fprintf(file, "</g>\n");
+
+    fprintf(file, "<g stroke=\"#64748b\" stroke-width=\"2\">\n");
+    svgEdges(file, p, start, 0);
+    fprintf(file, "</g>\n");
+
+    fprintf(file, "<g fill=\"#2563eb\" stroke=\"#1e40af\" stroke-width=\"1\">\n");
+    svgNodes(file, p, start, 0);
+    fprintf(file, "</g>\n");
+
+    fprintf(file, "<style>text{fill:white;stroke:none;font:600 16px Arial,sans-serif;text-anchor:middle}.weight{font-size:13px}</style>\n");
+    fprintf(file, "</svg>\n");
+
+    int ok = fclose(file) == 0;
+    freeLayout(p);
+    return ok;
 }

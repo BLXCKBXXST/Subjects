@@ -30,6 +30,11 @@ jobs:
           for directory in labs/3.*; do
             make -C "$directory" -B CFLAGS="-std=c11 -O2 -Wall -Wextra -Werror" all
           done
+      - name: Coursework build and algorithms
+        run: |
+          make -C coursework -B CFLAGS="-std=c11 -O2 -Wall -Wextra -Werror" all
+          gcc -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined tests/check-coursework.c coursework/src/sort.c coursework/src/search.c coursework/src/queue.c coursework/src/a2.c coursework/src/tree.c coursework/src/tree-search.c coursework/src/svg.c -o build/check-coursework
+          ./build/check-coursework
       - name: ISDP and SDP invariants
         run: |
           gcc -std=c11 -O2 -Wall -Wextra -Werror tests/check-isdp.c labs/3.2-isdp/3.2-isdp.c labs/3.2-isdp/3.2-common.c labs/3.2-isdp/3.2-search.c -o build/check-isdp
@@ -49,4 +54,6 @@ jobs:
           python3 -m pip install playwright
           python3 -m playwright install --with-deps chromium
       - name: Launch paths, SVG failures, and real browser previews
-        run: python3 tests/check-labs.py
+        run: |
+          python3 tests/check-labs.py
+          python3 tests/check-coursework.py

@@ -1,37 +1,42 @@
 <!doctype html>
 <html lang="ru">
 <meta charset="utf-8">
-<title>Дерево А2 — курсовая</title>
-<style>
-  body { margin: 16px; font: 16px sans-serif; }
-  img { display: none; max-width: none; width: auto; height: auto; }
-</style>
-<h1>Дерево А2 — курсовая</h1>
-<p>Дерево строится по заглавиям книг. Вес вершины — количество записей с одинаковым заглавием. Масштаб можно менять в браузере.</p>
-<p>Дерево показано в исходном масштабе. Для просмотра используйте прокрутку страницы и масштаб браузера.</p>
-<p id="status">Дерево ещё не построено. Выполните сортировку и поиск по году в программе.</p>
-<img id="tree" alt="Изображение дерева А2">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Курсовая — дерево А2</title>
+<link rel="stylesheet" href="../../labs/lab-viewer.css">
+<header><h1>Курсовая — дерево А2</h1>
+<p>Ключ — заглавие книги. Вес — количество записей с таким заглавием среди найденных по году.</p></header>
+<section class="tree-view">
+<h2>Дерево найденных записей</h2>
+<p id="message">В программе выполните сортировку и поиск по году.</p>
+<div class="viewport"><img id="tree" alt="Дерево А2 по заглавиям книг"></div>
+</section>
+<script src="../../labs/lab-viewer.js"></script>
 <script>
-  const tree = document.getElementById('tree');
-  const status = document.getElementById('status');
-  let last = '';
-  function refresh() {
-    const test = new Image();
-    const url = 'a2.svg?' + Date.now();
-    test.onload = function () {
-      tree.src = url;
-      tree.style.display = 'block';
-      status.style.display = 'none';
+let revision = null, loading = false;
+function refresh() {
+    if (loading) return;
+    loading = true;
+    const script = document.createElement('script');
+    script.src = 'a2-state.js?v=' + Date.now();
+    script.onload = () => {
+        script.remove(); loading = false;
+        if (typeof window.courseworkRevision !== 'string') return;
+        if (revision !== window.courseworkRevision) {
+            revision = window.courseworkRevision;
+            document.getElementById('tree').src = 'a2.svg?v=' + encodeURIComponent(revision);
+            document.getElementById('message').textContent =
+                'Рисунок обновляется после нового поиска по году.';
+        }
     };
-    test.onerror = function () {
-      if (!tree.getAttribute('src')) {
-        tree.style.display = 'none';
-        status.style.display = 'block';
-      }
+    script.onerror = () => {
+        script.remove(); loading = false;
+        if (revision === null)
+            document.getElementById('message').textContent = 'Запустите курсовую и выполните поиск по году.';
     };
-    test.src = url;
-  }
-  refresh();
-  setInterval(refresh, 1500);
+    document.head.appendChild(script);
+}
+refresh();
+setInterval(refresh, 1000);
 </script>
 </html>
