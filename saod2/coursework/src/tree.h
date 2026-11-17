@@ -22,7 +22,8 @@ struct Derevo {
 
 void kopirovat(char *a, const char *b);
 int sravnit(const char *a, const char *b);
-struct Derevo *a2(Group *g, Element *a, int L, int R);
+void Add(struct Derevo **p, Group D, Element *a);
+void A2(struct Derevo **Root, Group V[], Element *a, int L, int R);
 struct Derevo *postroit_a2(struct Zapis **zapisi, int n);
 void pokazat_derevo(struct Derevo *root);
 int sohranit_svg(struct Derevo *root, const char *filename);

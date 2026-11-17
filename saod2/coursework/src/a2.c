@@ -1,28 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "tree.h"
 
-struct Derevo *a2(Group *g, Element *a, int L, int R) {
-    if (L > R) return NULL;
+void A2(struct Derevo **Root, Group V[], Element *a, int L, int R) {
+    int wes = 0, sum = 0, i;
 
-    int total = 0, sum = 0, i, j;
-    for (i = L; i <= R; i++) total += g[i].weight;
+    if (L <= R) {
+        for (i = L; i <= R; i++)
+            wes = wes + V[i].weight;
 
-    for (i = L; i < R; i++) {
-        if (2 * (sum + g[i].weight) >= total) break;
-        sum += g[i].weight;
+        for (i = L; i <= R; i++) {
+            if (2 * sum < wes &&
+                2 * (sum + V[i].weight) >= wes)
+                break;
+
+            sum = sum + V[i].weight;
+        }
+
+        Add(Root, V[i], a);
+
+        A2(Root, V, a, L, i - 1);
+        A2(Root, V, a, i + 1, R);
     }
-
-    struct Derevo *p = malloc(sizeof(struct Derevo));
-    if (p == NULL) { perror("А2"); exit(EXIT_FAILURE); }
-    kopirovat(p->key, g[i].key);
-    p->weight = g[i].weight;
-    p->zapisi = malloc(p->weight * sizeof(struct Zapis *));
-    if (p->zapisi == NULL) { perror("Записи А2"); free(p); exit(EXIT_FAILURE); }
-    for (j = 0; j < p->weight; j++)
-        p->zapisi[j] = a[g[i].start + j].zapis;
-
-    p->left = a2(g, a, L, i - 1);
-    p->right = a2(g, a, i + 1, R);
-    return p;
 }

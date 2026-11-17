@@ -54,6 +54,28 @@ static void hoar_zaglavie(Element *a, int L, int R) {
     if (i < R) hoar_zaglavie(a, i, R);
 }
 
+void Add(struct Derevo **p, Group D, Element *a) {
+    if (*p == NULL) {
+        *p = malloc(sizeof(struct Derevo));
+        if (*p == NULL) { perror("А2"); exit(EXIT_FAILURE); }
+        kopirovat((*p)->key, D.key);
+        (*p)->weight = D.weight;
+        (*p)->zapisi = malloc(D.weight * sizeof(struct Zapis *));
+        if ((*p)->zapisi == NULL) {
+            perror("Записи А2");
+            free(*p);
+            exit(EXIT_FAILURE);
+        }
+        for (int j = 0; j < D.weight; j++)
+            (*p)->zapisi[j] = a[D.start + j].zapis;
+        (*p)->left = (*p)->right = NULL;
+    } else if (sravnit(D.key, (*p)->key) < 0) {
+        Add(&(*p)->left, D, a);
+    } else {
+        Add(&(*p)->right, D, a);
+    }
+}
+
 struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
     if (n <= 0) return NULL;
 
@@ -83,7 +105,8 @@ struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
         }
     }
 
-    struct Derevo *root = a2(g, a, 0, k - 1);
+    struct Derevo *root = NULL;
+    A2(&root, g, a, 0, k - 1);
     free(g);
     free(a);
     return root;
