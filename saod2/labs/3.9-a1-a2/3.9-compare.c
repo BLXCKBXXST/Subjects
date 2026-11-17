@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "3.9-a1-a2.h"
+#include "../lab-table.h"
 
 int size(Vertex *p)
 {
@@ -30,9 +31,12 @@ int weightedSum(Vertex *p, int level)
 
 static void printRow(const char *name, Vertex *p, int total)
 {
-    printf("%-6s %8d %15d %9d %20.3f\n", name,
-           size(p), checksum(p), height(p),
-           (double)weightedSum(p, 1) / total);
+    tableCell(name, 6);
+    tableInt(size(p), 6);
+    tableInt(checksum(p), 13);
+    tableInt(height(p), 6);
+    tableDouble((double)weightedSum(p, 1) / total, 18);
+    printf("│\n");
 }
 
 int printComparison(void)
@@ -80,11 +84,18 @@ int printComparison(void)
         }
 
         printf("\nN = %d\n", n);
-        printf("%-6s %8s %15s %9s %20s\n",
-               "Дерево", "Размер", "Контр. сумма", "Высота", "Средневзв. высота");
+        const int widths[] = {6, 6, 13, 6, 18};
+        const char *headers[] = {"Дерево", "Размер", "Контр. сумма", "Высота", "Средневзв. высота"};
+        tableBorder(widths, 5, "┌", "┬", "┐");
+        for (int i = 0; i < 5; i++) tableCell(headers[i], widths[i]);
+        printf("│\n");
+        tableBorder(widths, 5, "├", "┼", "┤");
         printRow("ДОП", dop, AW[0][n]);
+        tableBorder(widths, 5, "├", "┼", "┤");
         printRow("А1", first, AW[0][n]);
+        tableBorder(widths, 5, "├", "┼", "┤");
         printRow("А2", second, AW[0][n]);
+        tableBorder(widths, 5, "└", "┴", "┘");
         printf("Проверка ДОП AP/AW: %.3f\n",
                (double)AP[0][n] / AW[0][n]);
 

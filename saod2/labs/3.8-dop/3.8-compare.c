@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "3.8-dop.h"
+#include "../lab-table.h"
 
 int size(Vertex *p)
 {
@@ -34,23 +35,35 @@ int weightedSum(Vertex *p, int level)
 
 void printMatrix(const char *name, int M[N + 1][N + 1], int n)
 {
+    int width = 4, widths[N + 2];
+    char text[32];
+    for (int i = 0; i <= n; i++)
+        for (int j = i; j <= n; j++)
+        {
+            int length = snprintf(text, sizeof(text), "%d", M[i][j]);
+            if (length > width) width = length;
+        }
+    for (int j = 0; j < n + 2; j++) widths[j] = width;
+
     printf("\n%s\n", name);
-    printf("      ");
-    for (int j = 0; j <= n; j++)
-        printf("%6d", j);
-    printf("\n");
+    tableBorder(widths, n + 2, "┌", "┬", "┐");
+    tableCell("i/j", width);
+    for (int j = 0; j <= n; j++) tableInt(j, width);
+    printf("│\n");
+    tableBorder(widths, n + 2, "├", "┼", "┤");
 
     for (int i = 0; i <= n; i++)
     {
-        printf("%5d ", i);
+        tableInt(i, width);
         for (int j = 0; j <= n; j++)
-            if (j < i)
-                printf("%6s", "-");
-            else
-                printf("%6d", M[i][j]);
-        printf("\n");
+            if (j < i) tableCell("-", width);
+            else tableInt(M[i][j], width);
+        printf("│\n");
+        if (i < n) tableBorder(widths, n + 2, "├", "┼", "┤");
     }
+    tableBorder(widths, n + 2, "└", "┴", "┘");
 }
+
 int showDOPMatrices(int show)
 {
     {
@@ -125,13 +138,25 @@ int printDOPComparison(void)
         freeTree(root);
     }
 
+    const int widths[] = {5, 6, 13, 6, 18, 10};
+    const char *headers[] = {"N", "Размер", "Контр. сумма", "Высота", "Средневзв. высота", "AP / AW"};
     printf("\nИтоговая таблица:\n");
-    printf("%-6s %8s %15s %9s %20s %12s\n",
-           "N", "Размер", "Контр. сумма", "Высота", "Средневзв. высота", "AP / AW");
+    tableBorder(widths, 6, "┌", "┬", "┐");
+    for (int i = 0; i < 6; i++) tableCell(headers[i], widths[i]);
+    printf("│\n");
+    tableBorder(widths, 6, "├", "┼", "┤");
     for (int t = 0; t < 5; t++)
-        printf("%-6d %8d %15d %9d %20.3f %12.3f\n",
-               sizes[t], resultSize[t], resultSum[t], resultHeight[t],
-               resultAvg[t], resultCheck[t]);
+    {
+        tableInt(sizes[t], widths[0]);
+        tableInt(resultSize[t], widths[1]);
+        tableInt(resultSum[t], widths[2]);
+        tableInt(resultHeight[t], widths[3]);
+        tableDouble(resultAvg[t], widths[4]);
+        tableDouble(resultCheck[t], widths[5]);
+        printf("│\n");
+        if (t < 4) tableBorder(widths, 6, "├", "┼", "┤");
+    }
+    tableBorder(widths, 6, "└", "┴", "┘");
 
     printf("\nSVG: 3.8-dop.svg, 3.8-example.svg\n");
     printf("Просмотр: labs/3.8-dop/3.8-view.html\n");
