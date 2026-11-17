@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS ?= -std=c11 -O2
 BUILD = ../../build
 PROGRAMS = 3.8-dop
-COMMON = 3.8-main.c 3.8-compare.c 3.8-dop.c 3.8-common.c 3.8-tree.c 3.8-svg.c ../lab-viewer.c
+COMMON = 3.8-main.c 3.8-compare.c 3.8-dop.c 3.8-common.c 3.8-tree.c 3.8-add.c 3.8-svg.c ../lab-viewer.c
 HEADERS = $(wildcard ./*.h ../*.h)
 VIEWER_LIBS =
 ifeq ($(OS),Windows_NT)

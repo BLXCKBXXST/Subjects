@@ -55,7 +55,8 @@ int showDOPMatrices(int show)
 {
     {
         buildMatrices(show);
-        Vertex *root = createTree(0, show);
+        Vertex *root = NULL;
+        CreateTree(0, show, &root);
 
         printf("Ключи и веса (n=%d):\n", show);
         for (int i = 1; i <= show; i++)
@@ -91,7 +92,8 @@ int printDOPComparison(void)
     {
         int n = sizes[t];
         buildMatrices(n);
-        Vertex *root = createTree(0, n);
+        Vertex *root = NULL;
+        CreateTree(0, n, &root);
         int sum = weightedSum(root, 1);
         double avg = (double)sum / AW[0][n];
 

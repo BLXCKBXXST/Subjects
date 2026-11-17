@@ -45,7 +45,8 @@ int printComparison(void)
         int n = counts[t];
         buildMatrices(n);
 
-        Vertex *dop = createTree(0, n);
+        Vertex *dop = NULL;
+        CreateTree(0, n, &dop);
         WeightedItem V1[N + 1], V2[N + 1];
         for (int i = 1; i <= n; i++)
         {

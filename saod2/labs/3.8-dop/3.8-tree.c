@@ -2,19 +2,15 @@
 #include <stdlib.h>
 #include "3.8-dop.h"
 
-Vertex *createTree(int L, int R)
+void CreateTree(int L, int R, Vertex **Root)
 {
-    if (L >= R)
-        return NULL;
-
-    int k = AR[L][R];
-    Vertex *p = malloc(sizeof(Vertex));
-    p->Data = A[k].Data;
-    p->Weight = A[k].Weight;
-    p->Index = k;
-    p->Left = createTree(L, k - 1);
-    p->Right = createTree(k, R);
-    return p;
+    if (L < R)
+    {
+        int k = AR[L][R];
+        addDOP(Root, k);
+        CreateTree(L, k - 1, Root);
+        CreateTree(k, R, Root);
+    }
 }
 
 void inorder(Vertex *p, int *count)

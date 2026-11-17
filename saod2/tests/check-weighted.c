@@ -57,8 +57,49 @@ static void duplicates(void)
     freeTree(second);
 }
 
+static void lectureDOP(void)
+{
+    A[1] = (Item){1, 60};
+    A[2] = (Item){2, 30};
+    A[3] = (Item){3, 10};
+    buildMatrices(3);
+    assert(AW[0][1] == 60 && AW[0][2] == 90 && AW[0][3] == 100);
+    assert(AW[1][2] == 30 && AW[1][3] == 40 && AW[2][3] == 10);
+    assert(AP[0][1] == 60 && AP[1][2] == 30 && AP[2][3] == 10);
+    assert(AP[0][2] == 120 && AP[1][3] == 50 && AP[0][3] == 150);
+    assert(AR[0][2] == 1 && AR[1][3] == 2 && AR[0][3] == 1);
+    Vertex *root = NULL;
+    CreateTree(0, 3, &root);
+    assert(root->Index == 1 && root->Left == NULL);
+    assert(root->Right->Index == 2 && root->Right->Left == NULL);
+    assert(root->Right->Right->Index == 3);
+    assert(ordered(root, 0, 1001) == 3);
+    assert(weightedSum(root, 1) == 150);
+    freeTree(root);
+    root = NULL;
+    CreateTree(1, 3, &root);
+    assert(root->Index == 2 && root->Left == NULL && root->Right->Index == 3);
+    assert(weightedSum(root, 1) == AP[1][3]);
+    freeTree(root);
+    root = NULL;
+    CreateTree(2, 2, &root);
+    assert(root == NULL);
+
+    for (int i = 1; i <= 3; i++) A[i] = (Item){5, 1};
+    AR[0][3] = 2;
+    AR[0][1] = 1;
+    AR[2][3] = 3;
+    CreateTree(0, 3, &root);
+    assert(root->Index == 2 && root->Left == NULL);
+    assert(root->Right->Index == 1 && root->Right->Left == NULL);
+    assert(root->Right->Right->Index == 3);
+    assert(ordered(root, 0, 1001) == 3);
+    freeTree(root);
+}
+
 int main(void)
 {
+    lectureDOP();
     Vertex *empty = NULL;
     A1(NULL, 0, &empty);
     A2(NULL, 1, 0, &empty);
@@ -76,7 +117,8 @@ int main(void)
         }
         input(V1, n); input(V2, n);
         buildMatrices(n);
-        Vertex *exact = createTree(0, n);
+        Vertex *exact = NULL;
+        CreateTree(0, n, &exact);
         Vertex *first = NULL, *second = NULL;
         A1(V1, n, &first);
         A2(V2, 1, n, &second);

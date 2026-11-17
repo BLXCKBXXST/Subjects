@@ -18,7 +18,8 @@ extern int AW[N + 1][N + 1], AP[N + 1][N + 1], AR[N + 1][N + 1];
 
 void generate(void);
 void buildMatrices(int n);
-Vertex *createTree(int L, int R);
+void addDOP(Vertex **p, int k);
+void CreateTree(int L, int R, Vertex **Root);
 void inorder(Vertex *p, int *count);
 void freeTree(Vertex *p);
 int size(Vertex *p);
