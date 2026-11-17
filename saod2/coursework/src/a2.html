@@ -7,9 +7,14 @@
 <header><h1>Курсовая — дерево А2</h1>
 <p>Ключ — заглавие книги. Вес — количество записей с таким заглавием среди найденных по году.</p></header>
 <section class="tree-view">
-<h2>Дерево найденных записей</h2>
+<h2>А2 с весами: одна вершина на заглавие</h2>
 <p id="message">В программе выполните сортировку и поиск по году.</p>
 <div class="viewport"><img id="tree" alt="Дерево А2 по заглавиям книг"></div>
+</section>
+<section class="tree-view">
+<h2>Все записи: отдельные вершины без весов</h2>
+<p>В каждой вершине - заглавие, автор, издательство, год и число страниц. Повторяющиеся заглавия соединены вправо.</p>
+<div class="viewport"><img id="records-tree" alt="Дерево отдельных записей с повторениями вправо"></div>
 </section>
 <script src="../../labs/lab-viewer.js"></script>
 <script>
@@ -25,6 +30,7 @@ function refresh() {
         if (revision !== window.courseworkRevision) {
             revision = window.courseworkRevision;
             document.getElementById('tree').src = 'a2.svg?v=' + encodeURIComponent(revision);
+            document.getElementById('records-tree').src = 'a2-records.svg?v=' + encodeURIComponent(revision);
             document.getElementById('message').textContent =
                 'Рисунок обновляется после нового поиска по году.';
         }

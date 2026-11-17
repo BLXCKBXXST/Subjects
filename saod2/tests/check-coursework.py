@@ -93,6 +93,35 @@ expected_records = collections.Counter(
     for row in rows if row[3] == year)
 assert actual_records == expected_records
 assert svg_weights() == weights
+search_output = result.stdout.split("Результаты поиска по заглавию:", 1)[1]
+search_rows = table_rows(search_output.split("Найдено записей:", 1)[0], columns=7)
+assert len(search_rows) == weights[title]
+assert all(row[2] == title and int(row[6]) == weights[title] for row in search_rows)
+records_svg = folder / "a2-records.svg"
+expanded = ET.parse(records_svg).getroot()
+ns = "{http://www.w3.org/2000/svg}"
+groups = [group for group in expanded.iter(ns + "g") if group.find(ns + "title") is not None]
+assert len(groups) == years[year]
+assert collections.Counter(group.find(ns + "title").text for group in groups) == weights
+assert not expanded.findall(".//" + ns + "text[@class='weight']")
+for group in groups:
+    assert group.find(ns + "text[@class='detail author']") is not None
+    assert group.find(ns + "text[@class='detail publisher']") is not None
+positions = {}
+for group in groups:
+    rect = group.find(ns + "rect")
+    point = (int(rect.get("x")) + 160, int(rect.get("y")) + 88)
+    positions[point] = group.find(ns + "title").text
+edges = expanded.find(ns + "g[@stroke-width='2']").findall(ns + "line")
+assert len(edges) == len(groups) - 1
+repeated_edges = 0
+for edge in edges:
+    start = (int(edge.get("x1")), int(edge.get("y1")))
+    end = (int(edge.get("x2")), int(edge.get("y2")))
+    if positions[start] == positions[end]:
+        assert end[0] > start[0]
+        repeated_edges += 1
+assert repeated_edges == sum(weight - 1 for weight in weights.values())
 
 invalid = run("abc\n99999999999999999999999\n2\nq\n3\nwrong\n-1\n0\n")
 assert invalid.returncode == 0 and "Введите целое число." in invalid.stdout
@@ -159,10 +188,10 @@ with sync_playwright() as p:
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto((folder / "a2.html").as_uri())
-    page.wait_for_function("() => document.getElementById('tree').naturalWidth > 0")
-    label = page.locator(".tree-view .status")
-    page.get_by_role("button", name="100%", exact=True).click()
-    page.get_by_role("button", name="+", exact=True).click()
+    page.wait_for_function("() => ['tree', 'records-tree'].every(id => document.getElementById(id).naturalWidth > 0)")
+    label = page.locator(".tree-view .status").first
+    page.get_by_role("button", name="100%", exact=True).first.click()
+    page.get_by_role("button", name="+", exact=True).first.click()
     assert label.inner_text() == "125%"
     old_source = page.locator("#tree").get_attribute("src")
     page.wait_for_timeout(1300)
@@ -179,10 +208,11 @@ with sync_playwright() as p:
     page.close()
 
     # Check actual SVG geometry, text wrapping, XML characters, and level separators.
-    for path in [root / "build" / "coursework-long.svg"]:
+    for path in [root / "build" / "coursework-long.svg",
+                 root / "build" / "coursework-long-records.svg"]:
         drawing = browser.new_page()
         drawing.goto(path.as_uri())
-        assert drawing.locator("rect.node").count() == 5
+        assert drawing.locator("rect.node").count() == (7 if "records" in path.stem else 5)
         assert drawing.locator("g[stroke-opacity='0.30']").count() == 1
         assert drawing.evaluate("""() => [...document.querySelectorAll('rect.node')].every(rect => {
             const box = rect.getBBox();

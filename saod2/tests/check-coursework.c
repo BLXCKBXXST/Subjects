@@ -87,6 +87,7 @@ int main(void) {
     assert(verify(root, NULL, NULL, 2000, root) == 7);
     assert(nayti_v_dereve(root, titles[0])->weight == 2);
     assert(sohranit_svg(root, "build/coursework-long.svg"));
+    assert(sohranit_zapisi_svg(root, "build/coursework-long-records.svg"));
     ochistit_derevo(root);
     puts("Coursework: actual 4000 records, year search, FIFO, A2 medians and duplicates passed.");
 }

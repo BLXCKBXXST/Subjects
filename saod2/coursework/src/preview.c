@@ -12,6 +12,10 @@ int obnovit_prosmotr(struct Derevo *root, int otkrit) {
         perror(SVG_FILE);
         return 0;
     }
+    if (!sohranit_zapisi_svg(root, "coursework/src/a2-records.svg")) {
+        perror("coursework/src/a2-records.svg");
+        return 0;
+    }
     FILE *file = fopen(REVISION_FILE, "w");
     if (file == NULL) {
         perror(REVISION_FILE);

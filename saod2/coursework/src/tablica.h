@@ -109,15 +109,15 @@ static inline void tab_niz_ves(int s_vesom) {
     liniya_ves("└", "┴", "┘", s_vesom);
 }
 
-static void tab_shapka(void) {
+static inline void tab_shapka(void) {
     tab_shapka_ves(0);
 }
 
-static void tab_stroka(int nomer, struct Zapis *z) {
+static inline void tab_stroka(int nomer, struct Zapis *z) {
     tab_stroka_ves(nomer, z, 0);
 }
 
-static void tab_niz(void) {
+static inline void tab_niz(void) {
     tab_niz_ves(0);
 }
 

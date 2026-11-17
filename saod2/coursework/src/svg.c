@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "tree.h"
+#include "cp866.h"
 
 struct Layout
 {
     struct Derevo *node;
+    int details;
+    int record;
     struct Layout *left;
     struct Layout *right;
     int leftX;
@@ -14,7 +17,7 @@ struct Layout
     int *maxX;
 };
 
-static struct Layout *makeLayout(struct Derevo *node)
+static struct Layout *makeLayout(struct Derevo *node, int details, int record)
 {
     if (node == NULL)
         return NULL;
@@ -24,8 +27,14 @@ static struct Layout *makeLayout(struct Derevo *node)
         exit(1);
 
     p->node = node;
-    p->left = makeLayout(node->left);
-    p->right = makeLayout(node->right);
+    p->details = details;
+    p->record = record;
+    if (record == 0)
+        p->left = makeLayout(node->left, details, 0);
+    if (details && record + 1 < node->weight)
+        p->right = makeLayout(node, details, record + 1);
+    else
+        p->right = makeLayout(node->right, details, 0);
 
     int a = p->left ? p->left->depth : 0;
     int b = p->right ? p->right->depth : 0;
@@ -107,13 +116,14 @@ static void svgEdges(FILE *file, struct Layout *p, int x, int level)
         return;
 
     int px = 20 * x;
-    int py = 80 + 200 * level;
+    int step = p->details ? 240 : 200;
+    int py = (p->details ? 100 : 80) + step * level;
 
     if (p->left)
     {
         int child = x + p->leftX;
         fprintf(file, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
-                px, py, 20 * child, py + 200);
+                px, py, 20 * child, py + step);
         svgEdges(file, p->left, child, level + 1);
     }
 
@@ -121,7 +131,7 @@ static void svgEdges(FILE *file, struct Layout *p, int x, int level)
     {
         int child = x + p->rightX;
         fprintf(file, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
-                px, py, 20 * child, py + 200);
+                px, py, 20 * child, py + step);
         svgEdges(file, p->right, child, level + 1);
     }
 }
@@ -162,17 +172,32 @@ static void titleLines(FILE *file, const char *key, int x, int y)
 static void svgNodes(FILE *file, struct Layout *p, int x, int level)
 {
     if (p == NULL) return;
-    int px = 20 * x, py = 80 + 200 * level;
+    int px = 20 * x;
+    int py = (p->details ? 100 : 80) + (p->details ? 240 : 200) * level;
     fputs("<g><title>", file);
     xmlText(file, p->node->key);
-    fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"116\" rx=\"10\"/>\n", px - 160, py - 58);
-    titleLines(file, p->node->key, px, py);
-    fprintf(file, "<text class=\"weight\" x=\"%d\" y=\"%d\">Вес: %d</text></g>\n", px, py + 38, p->node->weight);
+    if (p->details) {
+        struct Zapis *z = p->node->zapisi[p->record];
+        char author[32], publisher[40];
+        cp866_to_utf8(z->avtor, 12, author);
+        cp866_to_utf8(z->izd, 16, publisher);
+        fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"176\" rx=\"10\"/>\n", px - 160, py - 88);
+        titleLines(file, p->node->key, px, py - 40);
+        fprintf(file, "<text class=\"detail author\" x=\"%d\" y=\"%d\">Автор: ", px, py - 5);
+        xmlText(file, author);
+        fprintf(file, "</text><text class=\"detail publisher\" x=\"%d\" y=\"%d\">Издательство: ", px, py + 20);
+        xmlText(file, publisher);
+        fprintf(file, "</text><text class=\"detail\" x=\"%d\" y=\"%d\">Год: %d · Страниц: %d</text></g>\n", px, py + 48, z->god, z->str);
+    } else {
+        fprintf(file, "</title><rect class=\"node\" x=\"%d\" y=\"%d\" width=\"320\" height=\"116\" rx=\"10\"/>\n", px - 160, py - 58);
+        titleLines(file, p->node->key, px, py);
+        fprintf(file, "<text class=\"weight\" x=\"%d\" y=\"%d\">Вес: %d</text></g>\n", px, py + 38, p->node->weight);
+    }
     svgNodes(file, p->left, x + p->leftX, level + 1);
     svgNodes(file, p->right, x + p->rightX, level + 1);
 }
 
-int sohranit_svg(struct Derevo *root, const char *filename)
+static int saveTree(struct Derevo *root, const char *filename, int details)
 {
     if (root == NULL)
     {
@@ -186,7 +211,7 @@ int sohranit_svg(struct Derevo *root, const char *filename)
         return fclose(file) == 0;
     }
 
-    struct Layout *p = makeLayout(root);
+    struct Layout *p = makeLayout(root, details, 0);
     int left = 0;
     int right = 0;
 
@@ -206,7 +231,8 @@ int sohranit_svg(struct Derevo *root, const char *filename)
     }
 
     int width = 20 * (right - left + 8);
-    int height = p->depth * 200 - 40;
+    int step = details ? 240 : 200;
+    int height = p->depth * step - 40;
     int start = 4 - left;
 
     fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -218,7 +244,7 @@ int sohranit_svg(struct Derevo *root, const char *filename)
     fprintf(file, "<g stroke=\"#64748b\" stroke-opacity=\"0.30\" stroke-width=\"1\" stroke-dasharray=\"4 7\">\n");
     for (int level = 0; level < p->depth - 1; level++)
         fprintf(file, "<line x1=\"8\" y1=\"%d\" x2=\"%d\" y2=\"%d\"/>\n",
-                180 + 200 * level, width - 8, 180 + 200 * level);
+                (details ? 220 : 180) + step * level, width - 8, (details ? 220 : 180) + step * level);
     fprintf(file, "</g>\n");
 
     fprintf(file, "<g stroke=\"#64748b\" stroke-width=\"2\">\n");
@@ -229,10 +255,18 @@ int sohranit_svg(struct Derevo *root, const char *filename)
     svgNodes(file, p, start, 0);
     fprintf(file, "</g>\n");
 
-    fprintf(file, "<style>text{fill:white;stroke:none;font:600 16px Arial,sans-serif;text-anchor:middle}.weight{font-size:13px}</style>\n");
+    fprintf(file, "<style>text{fill:white;stroke:none;font:600 16px Arial,sans-serif;text-anchor:middle}.weight{font-size:13px}.detail{font-size:13px;font-weight:400}</style>\n");
     fprintf(file, "</svg>\n");
 
     int ok = fclose(file) == 0;
     freeLayout(p);
     return ok;
+}
+
+int sohranit_svg(struct Derevo *root, const char *filename) {
+    return saveTree(root, filename, 0);
+}
+
+int sohranit_zapisi_svg(struct Derevo *root, const char *filename) {
+    return saveTree(root, filename, 1);
 }

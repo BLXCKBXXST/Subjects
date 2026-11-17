@@ -27,6 +27,7 @@ void A2(struct Derevo **Root, Group V[], Element *a, int L, int R);
 struct Derevo *postroit_a2(struct Zapis **zapisi, int n);
 void pokazat_derevo(struct Derevo *root);
 int sohranit_svg(struct Derevo *root, const char *filename);
+int sohranit_zapisi_svg(struct Derevo *root, const char *filename);
 struct Derevo *nayti_v_dereve(struct Derevo *root, const char *key);
 void poisk_derevo(struct Derevo *root, const char *key);
 void ochistit_derevo(struct Derevo *root);

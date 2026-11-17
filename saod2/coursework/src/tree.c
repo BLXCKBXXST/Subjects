@@ -133,9 +133,11 @@ void poisk_derevo(struct Derevo *root, const char *key) {
         printf("Записей с таким заглавием нет.\n");
         return;
     }
-    tab_shapka();
-    for (int i = 0; i < found->weight; i++) tab_stroka(i + 1, found->zapisi[i]);
-    tab_niz();
+    printf("Результаты поиска по заглавию:\n");
+    tab_shapka_ves(1);
+    for (int i = 0; i < found->weight; i++)
+        tab_stroka_ves(i + 1, found->zapisi[i], found->weight);
+    tab_niz_ves(1);
     printf("Найдено записей: %d\n", found->weight);
 }
 
