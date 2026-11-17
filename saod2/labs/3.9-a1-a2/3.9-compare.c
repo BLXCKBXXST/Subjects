@@ -46,8 +46,15 @@ int printComparison(void)
         buildMatrices(n);
 
         Vertex *dop = createTree(0, n);
-        Vertex *first = a1(n);
-        Vertex *second = a2(1, n);
+        WeightedItem V1[N + 1], V2[N + 1];
+        for (int i = 1; i <= n; i++)
+        {
+            V1[i] = (WeightedItem){A[i].Data, A[i].Weight, i};
+            V2[i] = V1[i];
+        }
+        Vertex *first = NULL, *second = NULL;
+        A1(V1, n, &first);
+        A2(V2, 1, n, &second);
 
         if (n == 100)
         {

@@ -47,7 +47,7 @@ jobs:
         run: |
           gcc -std=c11 -O2 -Wall -Wextra -Werror tests/check-avl.c labs/3.5-avl/3.5-avl.c labs/3.5-avl/3.5-common.c labs/3.6-avl-delete/3.6-avl-delete.c -o build/check-avl
           ./build/check-avl
-          gcc -std=c11 -O2 -Wall -Wextra -Werror tests/check-weighted.c labs/3.9-a1-a2/3.9-a1-a2.c labs/3.9-a1-a2/3.9-compare.c labs/3.8-dop/3.8-dop.c labs/3.8-dop/3.8-common.c labs/3.8-dop/3.8-tree.c labs/3.8-dop/3.8-svg.c -o build/check-weighted
+          gcc -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined tests/check-weighted.c labs/3.9-a1-a2/3.9-a1-a2.c labs/3.9-a1-a2/3.9-add.c labs/3.9-a1-a2/3.9-sort.c labs/3.9-a1-a2/3.9-data.c labs/3.9-a1-a2/3.9-compare.c labs/3.8-dop/3.8-dop.c labs/3.8-dop/3.8-tree.c labs/3.8-dop/3.8-svg.c -o build/check-weighted
           ./build/check-weighted
       - name: Browser test dependency
         run: |
