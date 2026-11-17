@@ -26,7 +26,7 @@ year = years.most_common(1)[0][0]
 other_year = next(value for value, _ in reversed(years.most_common()) if value != year)
 weights = collections.Counter(text_field(row[1]) for row in rows if row[3] == year)
 title = weights.most_common(1)[0][0]
-query = "2\n3\n%d\n" % year
+query = "2\nq\n3\n%d\n" % year
 
 def run(input_text, desktop=None, make=False):
     command = (["make", "-C", str(root / "coursework"), "run"] if make
@@ -61,12 +61,13 @@ assert "Страница дерева:" not in initial.stdout
 assert not svg_weights()
 assert "Сначала выполните сортировку." in run("3\n0\n").stdout
 
-sorted_result = run("2\n0\n")
+sorted_result = run("2\n\nQ\n0\n")
 assert sorted_result.returncode == 0
-endpoints = table_rows(sorted_result.stdout)
-assert len(endpoints) == 2 and [r[0] for r in endpoints] == ["1", "4000"]
+sorted_pages = table_rows(sorted_result.stdout)
+assert len(sorted_pages) == 40
+assert [int(r[0]) for r in sorted_pages] == list(range(1, 41))
 expected = sorted(rows, key=lambda row: (row[3], row[0]))
-for printed, actual in zip(endpoints, [expected[0], expected[-1]]):
+for printed, actual in zip(sorted_pages, expected[:40]):
     assert (int(printed[4]), printed[1]) == (actual[3], text_field(actual[0]))
 
 pages = run("1\n\nq\n0\n")
@@ -83,7 +84,7 @@ traversal = re.findall(r"^(.+) \(вес (\d+)\)$", result.stdout, re.MULTILINE)
 assert [key for key, _ in traversal] == sorted(weights)
 assert svg_weights() == weights
 
-invalid = run("abc\n99999999999999999999999\n2\n3\nwrong\n-1\n0\n")
+invalid = run("abc\n99999999999999999999999\n2\nq\n3\nwrong\n-1\n0\n")
 assert invalid.returncode == 0 and "Введите целое число." in invalid.stdout
 assert "Записей с таким годом нет." in invalid.stdout
 assert not svg_weights()
@@ -157,11 +158,11 @@ with sync_playwright() as p:
     page.wait_for_timeout(1300)
     assert label.inner_text() == "125%"
     assert page.locator("#tree").get_attribute("src") == old_source
-    assert run("2\n3\n%d\n\n0\n" % other_year).returncode == 0
+    assert run("2\nq\n3\n%d\n\n0\n" % other_year).returncode == 0
     page.wait_for_function("(old) => document.getElementById('tree').getAttribute('src') !== old", arg=old_source)
     assert label.inner_text() == "125%"
     old_source = page.locator("#tree").get_attribute("src")
-    assert run("2\n3\n-1\n0\n").returncode == 0
+    assert run("2\nq\n3\n-1\n0\n").returncode == 0
     page.wait_for_function("(old) => document.getElementById('tree').getAttribute('src') !== old", arg=old_source)
     page.wait_for_function("() => document.getElementById('tree').naturalWidth === 400")
     assert not errors, errors

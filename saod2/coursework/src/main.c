@@ -65,11 +65,8 @@ int main(int argc, char **argv) {
         } else if (vibor == 2) {
             hoar(uk, 0, n - 1);
             otsortirovano = 1;
-            printf("Сортировка завершена. Первая и последняя записи:\n");
-            tab_shapka();
-            tab_stroka(1, uk[0]);
-            tab_stroka(n, uk[n - 1]);
-            tab_niz();
+            printf("Сортировка завершена.\n");
+            pokazat(uk, n, 0);
         } else if (vibor == 3) {
             int god;
             if (!otsortirovano) { printf("Сначала выполните сортировку.\n"); continue; }
