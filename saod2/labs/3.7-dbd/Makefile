@@ -27,3 +27,4 @@ run: $(BUILD)/3.7-dbd
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.7-*.svg

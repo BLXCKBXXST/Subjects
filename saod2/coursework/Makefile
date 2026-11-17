@@ -27,3 +27,4 @@ run: $(BUILD)/coursework
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f src/a2.svg src/a2-records.svg src/a2-state.js

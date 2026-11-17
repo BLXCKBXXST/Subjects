@@ -27,3 +27,4 @@ run: $(BUILD)/3.6-avl-delete
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.6-*.svg ../../3.6-avl-delete-steps.js ../../3.6-avl-delete-steps.tmp.js

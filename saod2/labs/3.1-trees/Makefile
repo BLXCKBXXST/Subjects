@@ -34,3 +34,4 @@ run-100: $(BUILD)/3.1-trees-100
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.1-*.svg

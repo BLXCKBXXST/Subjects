@@ -27,3 +27,4 @@ run: $(BUILD)/3.4-sdp-delete
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.4-*.svg ../../3.4-sdp-delete-steps.js ../../3.4-sdp-delete-steps.tmp.js

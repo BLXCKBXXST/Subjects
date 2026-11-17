@@ -48,3 +48,4 @@ run-repeat-iterative: $(BUILD)/3.3-sdp-repeat-iterative
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.3-*.svg

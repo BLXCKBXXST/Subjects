@@ -27,3 +27,4 @@ run: $(BUILD)/3.9-a1-a2
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.9-*.svg

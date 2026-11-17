@@ -27,3 +27,4 @@ run: $(BUILD)/3.5-avl
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.5-*.svg

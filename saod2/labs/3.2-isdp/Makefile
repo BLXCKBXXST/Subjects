@@ -34,3 +34,4 @@ run-iterative: $(BUILD)/3.2-isdp-iterative
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.2-*.svg

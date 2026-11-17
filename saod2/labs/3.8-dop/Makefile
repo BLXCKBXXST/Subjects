@@ -27,3 +27,4 @@ run: $(BUILD)/3.8-dop
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
+	rm -f ../../3.8-*.svg
