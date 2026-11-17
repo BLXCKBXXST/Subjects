@@ -117,6 +117,7 @@ int openLabPage(const char *page)
             freopen("/dev/null", "r", stdin) == NULL)
         {
             perror("Подготовка запуска браузера");
+            fflush(stderr);
             _exit(126);
         }
 #ifdef __APPLE__
@@ -125,6 +126,7 @@ int openLabPage(const char *page)
         execlp("xdg-open", "xdg-open", full, (char *)NULL);
 #endif
         perror("Открытие браузера");
+        fflush(stderr);
         _exit(127);
     }
     int status;
