@@ -33,7 +33,8 @@ jobs:
       - name: Coursework build and algorithms
         run: |
           make -C coursework -B CFLAGS="-std=c11 -O2 -Wall -Wextra -Werror" all
-          gcc -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined tests/check-coursework.c coursework/src/sort.c coursework/src/search.c coursework/src/queue.c coursework/src/a2.c coursework/src/tree.c coursework/src/tree-search.c coursework/src/svg.c -o build/check-coursework
+          gcc -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined -Dmain=coursework_main -c coursework/src/main.c -o build/coursework-main-test.o
+          gcc -std=c11 -O1 -g -Wall -Wextra -Werror -fsanitize=address,undefined tests/check-coursework.c build/coursework-main-test.o coursework/src/sort.c coursework/src/search.c coursework/src/a2.c coursework/src/svg.c labs/lab-viewer.c -o build/check-coursework
           ./build/check-coursework
       - name: ISDP and SDP invariants
         run: |

@@ -3,9 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../coursework/src/coursework.h"
-#include "../coursework/src/tree.h"
-#include "../coursework/src/queue.h"
-#include "../coursework/src/cp866.h"
 
 static struct Zapis records[N];
 static int seen[N];
