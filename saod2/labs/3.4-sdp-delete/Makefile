@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.4-sdp-delete
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,10 +22,8 @@ SOURCES_3_4_SDP_DELETE = $(COMMON)
 $(BUILD)/3.4-sdp-delete: $(SOURCES_3_4_SDP_DELETE) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_4_SDP_DELETE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.4-sdp-delete: $(BUILD)/3.4-sdp-delete
+run: $(BUILD)/3.4-sdp-delete
 	$(BUILD)/3.4-sdp-delete
-
-run: run-3.4-sdp-delete
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

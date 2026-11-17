@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.2-isdp run-3.2-isdp-iterative run-iterative
+.PHONY: all run clean run-iterative
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,19 +22,15 @@ SOURCES_3_2_ISDP = $(COMMON) 3.2-search.c
 $(BUILD)/3.2-isdp: $(SOURCES_3_2_ISDP) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_2_ISDP) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.2-isdp: $(BUILD)/3.2-isdp
+run: $(BUILD)/3.2-isdp
 	$(BUILD)/3.2-isdp
 
 SOURCES_3_2_ISDP_ITERATIVE = $(COMMON) 3.2-search-iterative.c
 $(BUILD)/3.2-isdp-iterative: $(SOURCES_3_2_ISDP_ITERATIVE) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_2_ISDP_ITERATIVE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.2-isdp-iterative: $(BUILD)/3.2-isdp-iterative
+run-iterative: $(BUILD)/3.2-isdp-iterative
 	$(BUILD)/3.2-isdp-iterative
-
-run: run-3.2-isdp
-
-run-iterative: run-3.2-isdp-iterative
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

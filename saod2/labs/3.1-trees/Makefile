@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.1-trees run-3.1-trees-100 run-100
+.PHONY: all run clean run-100
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,19 +22,15 @@ SOURCES_3_1_TREES = $(COMMON) 3.1-main.c
 $(BUILD)/3.1-trees: $(SOURCES_3_1_TREES) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_1_TREES) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.1-trees: $(BUILD)/3.1-trees
+run: $(BUILD)/3.1-trees
 	$(BUILD)/3.1-trees
 
 SOURCES_3_1_TREES_100 = $(COMMON) 3.1-main-100.c 3.1-insert.c
 $(BUILD)/3.1-trees-100: $(SOURCES_3_1_TREES_100) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_1_TREES_100) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.1-trees-100: $(BUILD)/3.1-trees-100
+run-100: $(BUILD)/3.1-trees-100
 	$(BUILD)/3.1-trees-100
-
-run: run-3.1-trees
-
-run-100: run-3.1-trees-100
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

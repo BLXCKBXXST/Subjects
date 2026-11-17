@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-coursework
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,10 +22,8 @@ SOURCES_COURSEWORK = $(COMMON)
 $(BUILD)/coursework: $(SOURCES_COURSEWORK) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_COURSEWORK) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-coursework: $(BUILD)/coursework
+run: $(BUILD)/coursework
 	$(BUILD)/coursework
-
-run: run-coursework
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

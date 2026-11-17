@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.6-avl-delete
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,10 +22,8 @@ SOURCES_3_6_AVL_DELETE = $(COMMON)
 $(BUILD)/3.6-avl-delete: $(SOURCES_3_6_AVL_DELETE) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_6_AVL_DELETE) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.6-avl-delete: $(BUILD)/3.6-avl-delete
+run: $(BUILD)/3.6-avl-delete
 	$(BUILD)/3.6-avl-delete
-
-run: run-3.6-avl-delete
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

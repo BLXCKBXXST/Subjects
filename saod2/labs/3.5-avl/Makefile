@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.5-avl
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,10 +22,8 @@ SOURCES_3_5_AVL = $(COMMON)
 $(BUILD)/3.5-avl: $(SOURCES_3_5_AVL) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_5_AVL) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.5-avl: $(BUILD)/3.5-avl
+run: $(BUILD)/3.5-avl
 	$(BUILD)/3.5-avl
-
-run: run-3.5-avl
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

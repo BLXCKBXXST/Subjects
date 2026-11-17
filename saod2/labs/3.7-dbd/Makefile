@@ -11,7 +11,7 @@ endif
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-3.7-dbd
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -22,10 +22,8 @@ SOURCES_3_7_DBD = $(COMMON)
 $(BUILD)/3.7-dbd: $(SOURCES_3_7_DBD) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_3_7_DBD) $(LDFLAGS) $(LDLIBS) $(VIEWER_LIBS) -o "$@"
 
-run-3.7-dbd: $(BUILD)/3.7-dbd
+run: $(BUILD)/3.7-dbd
 	$(BUILD)/3.7-dbd
-
-run: run-3.7-dbd
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))

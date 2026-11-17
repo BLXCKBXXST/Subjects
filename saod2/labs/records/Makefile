@@ -7,7 +7,7 @@ HEADERS =
 
 .DEFAULT_GOAL := all
 .DELETE_ON_ERROR:
-.PHONY: all run clean run-records
+.PHONY: all run clean
 
 all: $(addprefix $(BUILD)/,$(PROGRAMS))
 
@@ -18,10 +18,8 @@ SOURCES_RECORDS = $(COMMON)
 $(BUILD)/records: $(SOURCES_RECORDS) $(HEADERS) Makefile | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(SOURCES_RECORDS) $(LDFLAGS) $(LDLIBS) -o "$@"
 
-run-records: $(BUILD)/records
+run: $(BUILD)/records
 	cd ../.. && build/records
-
-run: run-records
 
 clean:
 	rm -f $(addprefix $(BUILD)/,$(PROGRAMS))
