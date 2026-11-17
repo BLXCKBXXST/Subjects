@@ -23,14 +23,17 @@ static int verify(struct Derevo *p, const char *low, const char *high,
     assert(!high || sravnit(p->key, high) < 0);
     assert(nayti_v_dereve(root, p->key) == p);
     assert(p->weight > 0);
-    for (int i = 0; i < p->weight; i++) {
-        struct Zapis *z = p->zapisi[i];
+    int list_size = 0;
+    for (struct Spisok *item = p->head; item != NULL; item = item->next) {
+        list_size++;
+        struct Zapis *z = item->zapis;
         assert(z >= records && z < records + N);
         assert(z->god == year);
         assert(seen[z - records]++ == 0);
         char key[65]; key_of(z, key);
         assert(sravnit(key, p->key) == 0);
     }
+    assert(list_size == p->weight);
     int left = verify(p->left, low, p->key, year, root);
     int right = verify(p->right, p->key, high, year, root);
     int total = left + p->weight + right;
@@ -129,6 +132,20 @@ int main(void) {
     assert(verify_records(individual, NULL, NULL, root, &count) == 25);
     assert(count == 5);
     ochistit_zapisi_a2(individual);
+    ochistit_derevo(root);
+    Element entries[5] = {0};
+    for (int i = 0; i < 5; i++) entries[i].zapis = &records[i];
+    Group first = {"Same", 0, 2}, last = {"Same", 2, 3};
+    root = NULL;
+    Add(&root, first, entries);
+    Add(&root, last, entries);
+    assert(root->weight == 5 && !root->left && !root->right);
+    struct Spisok *item = root->head;
+    for (int i = 0; i < 5; i++) {
+        assert(item && item->zapis == &records[i]);
+        item = item->next;
+    }
+    assert(item == NULL);
     ochistit_derevo(root);
     puts("Coursework: actual 4000 records, year search, FIFO, A2 medians and duplicates passed.");
 }

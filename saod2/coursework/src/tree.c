@@ -59,20 +59,27 @@ void Add(struct Derevo **p, Group D, Element *a) {
         *p = malloc(sizeof(struct Derevo));
         if (*p == NULL) { perror("А2"); exit(EXIT_FAILURE); }
         kopirovat((*p)->key, D.key);
-        (*p)->weight = D.weight;
-        (*p)->zapisi = malloc(D.weight * sizeof(struct Zapis *));
-        if ((*p)->zapisi == NULL) {
-            perror("Записи А2");
-            free(*p);
-            exit(EXIT_FAILURE);
-        }
-        for (int j = 0; j < D.weight; j++)
-            (*p)->zapisi[j] = a[D.start + j].zapis;
+        (*p)->weight = 0;
+        (*p)->head = NULL;
         (*p)->left = (*p)->right = NULL;
     } else if (sravnit(D.key, (*p)->key) < 0) {
         Add(&(*p)->left, D, a);
-    } else {
+        return;
+    } else if (sravnit(D.key, (*p)->key) > 0) {
         Add(&(*p)->right, D, a);
+        return;
+    }
+
+    struct Spisok **last = &(*p)->head;
+    while (*last != NULL)
+        last = &(*last)->next;
+    for (int i = 0; i < D.weight; i++) {
+        *last = malloc(sizeof(struct Spisok));
+        if (*last == NULL) { perror("Список записей"); exit(EXIT_FAILURE); }
+        (*last)->zapis = a[D.start + i].zapis;
+        (*last)->next = NULL;
+        last = &(*last)->next;
+        (*p)->weight++;
     }
 }
 
@@ -115,8 +122,8 @@ struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
 static void obhod_tablicey(struct Derevo *root, int *nomer) {
     if (root == NULL) return;
     obhod_tablicey(root->left, nomer);
-    for (int i = 0; i < root->weight; i++)
-        tab_stroka_ves((*nomer)++, root->zapisi[i], root->weight);
+    for (struct Spisok *p = root->head; p != NULL; p = p->next)
+        tab_stroka_ves((*nomer)++, p->zapis, root->weight);
     obhod_tablicey(root->right, nomer);
 }
 
@@ -135,8 +142,9 @@ void poisk_derevo(struct Derevo *root, const char *key) {
     }
     printf("Результаты поиска по заглавию:\n");
     tab_shapka_ves(1);
-    for (int i = 0; i < found->weight; i++)
-        tab_stroka_ves(i + 1, found->zapisi[i], found->weight);
+    int nomer = 1;
+    for (struct Spisok *p = found->head; p != NULL; p = p->next)
+        tab_stroka_ves(nomer++, p->zapis, found->weight);
     tab_niz_ves(1);
     printf("Найдено записей: %d\n", found->weight);
 }
@@ -145,7 +153,12 @@ void ochistit_derevo(struct Derevo *root) {
     if (root == NULL) return;
     ochistit_derevo(root->left);
     ochistit_derevo(root->right);
-    free(root->zapisi);
+    struct Spisok *p = root->head;
+    while (p != NULL) {
+        struct Spisok *next = p->next;
+        free(p);
+        p = next;
+    }
     free(root);
 }
 
@@ -163,10 +176,10 @@ static int chislo_zapisey(struct Derevo *root) {
 static void massiv_zapisey(struct Derevo *root, struct RecordItem V[], int *n) {
     if (root == NULL) return;
     massiv_zapisey(root->left, V, n);
-    for (int i = 0; i < root->weight; i++) {
+    for (struct Spisok *p = root->head; p != NULL; p = p->next) {
         V[*n].key = root->key;
         V[*n].weight = root->weight;
-        V[*n].zapis = root->zapisi[i];
+        V[*n].zapis = p->zapis;
         (*n)++;
     }
     massiv_zapisey(root->right, V, n);

@@ -13,10 +13,15 @@ typedef struct {
     int start, weight;
 } Group;
 
+struct Spisok {
+    struct Zapis *zapis;
+    struct Spisok *next;
+};
+
 struct Derevo {
     char key[65];
     int weight;
-    struct Zapis **zapisi;
+    struct Spisok *head;
     struct Derevo *left, *right;
 };
 
