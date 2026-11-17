@@ -80,8 +80,17 @@ assert result.returncode == 0, result.stderr
 assert "Записей с таким заглавием нет." in result.stdout
 found = list(map(int, re.findall(r"Найдено записей: (\d+)", result.stdout)))
 assert found == [years[year], weights[title]], found
-traversal = re.findall(r"^(.+) \(вес (\d+)\)$", result.stdout, re.MULTILINE)
-assert [key for key, _ in traversal] == sorted(weights)
+traversal_output = result.stdout.split("Обход дерева А2 слева направо:\n", 1)[1]
+traversal = table_rows(traversal_output.split("Введите заглавие книги", 1)[0])
+assert len(traversal) == years[year]
+assert [int(row[0]) for row in traversal] == list(range(1, years[year] + 1))
+assert [row[2] for row in traversal] == sorted(
+    key for key, weight in weights.items() for _ in range(weight))
+actual_records = collections.Counter(tuple(row[1:]) for row in traversal)
+expected_records = collections.Counter(
+    (text_field(row[0]), text_field(row[1]), text_field(row[2]), str(row[3]), str(row[4]))
+    for row in rows if row[3] == year)
+assert actual_records == expected_records
 assert svg_weights() == weights
 
 invalid = run("abc\n99999999999999999999999\n2\nq\n3\nwrong\n-1\n0\n")

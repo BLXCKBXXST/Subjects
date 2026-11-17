@@ -112,11 +112,19 @@ struct Derevo *postroit_a2(struct Zapis **zapisi, int n) {
     return root;
 }
 
-void pokazat_derevo(struct Derevo *root) {
+static void obhod_tablicey(struct Derevo *root, int *nomer) {
     if (root == NULL) return;
-    pokazat_derevo(root->left);
-    printf("%s (вес %d)\n", root->key, root->weight);
-    pokazat_derevo(root->right);
+    obhod_tablicey(root->left, nomer);
+    for (int i = 0; i < root->weight; i++)
+        tab_stroka((*nomer)++, root->zapisi[i]);
+    obhod_tablicey(root->right, nomer);
+}
+
+void pokazat_derevo(struct Derevo *root) {
+    int nomer = 1;
+    tab_shapka();
+    obhod_tablicey(root, &nomer);
+    tab_niz();
 }
 
 void poisk_derevo(struct Derevo *root, const char *key) {
